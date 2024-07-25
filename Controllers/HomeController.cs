@@ -1,6 +1,7 @@
 using KonserBiletim.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using KonserBiletim.ViewModels;
 
 namespace KonserBiletim.Controllers
 {

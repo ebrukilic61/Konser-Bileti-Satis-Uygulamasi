@@ -1,0 +1,24 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KonserBiletim.ViewModels
+{
+    public class ProfilViewModel
+    {
+        public int User {  get; set; } //id
+        public string Name {  get; set; }
+        public string Surname {  get; set; }
+        [Required]
+        [StringLength(100)]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string TelNo { get; set; }
+
+        [Url]
+        [StringLength(500)]
+        public string Avatar { get; set; } //profil foto url
+
+        public IFormFile ProfilFoto { get; set; }
+    }
+}

@@ -3,7 +3,7 @@ using System.Net.Mail;
 using System.Net;
 using System;
 using System.Data.SqlClient;
-using KonserBiletim.Models;
+using KonserBiletim.ViewModels;
 
 namespace KonserBiletim.Controllers
 {
@@ -58,7 +58,7 @@ namespace KonserBiletim.Controllers
                 {
                     if (dreader.Read())
                     {
-                        return RedirectToAction("Index","Home");
+                        return RedirectToAction("Anasayfa","Home");
                     }
                     else
                     {
@@ -81,7 +81,6 @@ namespace KonserBiletim.Controllers
         {
             SqlConnection conn = new SqlConnection(connectionString);
             SqlCommand cmd = new SqlCommand();
-            SqlDataReader reader;
             string newPassword = GenerateRandomPassword();
 
             try

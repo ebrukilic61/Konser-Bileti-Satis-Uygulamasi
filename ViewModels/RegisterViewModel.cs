@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KonserBiletim.Models
+namespace KonserBiletim.ViewModels
 {
     public class RegisterViewModel
     {

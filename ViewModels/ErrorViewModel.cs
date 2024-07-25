@@ -1,4 +1,4 @@
-namespace KonserBiletim.Models
+namespace KonserBiletim.ViewModels
 {
     public class ErrorViewModel
     {

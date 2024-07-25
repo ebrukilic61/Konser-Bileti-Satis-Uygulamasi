@@ -1,7 +1,7 @@
-﻿using KonserBiletim.Models;
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using KonserBiletim.ViewModels;
 
 namespace KonserBiletim.Controllers
 {

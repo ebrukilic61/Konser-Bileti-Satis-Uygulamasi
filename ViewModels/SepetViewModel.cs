@@ -1,6 +1,8 @@
-﻿namespace KonserBiletim.Models
+﻿using KonserBiletim.Models;
+
+namespace KonserBiletim.ViewModels
 {
-    public class SepetModelView
+    public class SepetViewModel
     {
         public string KullaniciId { get; set; }
         public List<Bilet> Items { get; set; } = new List<Bilet>();
