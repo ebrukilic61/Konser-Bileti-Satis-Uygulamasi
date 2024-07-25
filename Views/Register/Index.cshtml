@@ -1,0 +1,117 @@
+﻿@model KonserBiletim.Models.RegisterViewModel
+@{
+    Layout = "_Layout";
+}
+
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>KonserBiletim - Kayıt Ol</title>
+    <style>
+        .form-floating {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+            .form-floating input,
+            .form-floating select {
+                width: 100%;
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+                .form-floating input:focus,
+                .form-floating select:focus {
+                    outline: none;
+                    box-shadow: 0 0 30px rgba(0, 123, 255, 0.2);
+                }
+
+            .form-floating .error {
+                color: #dc3545;
+                font-size: 0.875em;
+            }
+
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body class="position-relative align-items-lg-center">
+
+    <section class="vh-100" style="background-color: #eee;">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px;">
+                        <div class="card-body p-md-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-5 col-xl-5 order-2" style="color:#3f3f3f;">
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Kayıt Ol</p>
+                                    <form asp-action="Index" method="post" class="mx-1 mx-md-4">
+                                        <div class="form-floating w-100">
+                                            <select asp-for="Role" class="form-control" style="background-color: #f2fff8;">
+                                                <option value="">Rol seçin</option>
+                                                <option value="Musteri">Müşteri</option>
+                                                <option value="Organizator">Organizatör</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <span asp-validation-for="Role" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-floating w-100 ">
+                                            <input asp-for="Name" class="form-control" id="name" placeholder="Adınızı girin" />
+                                            <label for="name">Adınız</label>
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-floating w-100">
+                                            <input asp-for="Surname" class="form-control" id="surname" placeholder="Soyadınızı girin" />
+                                            <label for="surname">Soyadınız</label>
+                                            <span asp-validation-for="Surname" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-floating w-100">
+                                            <input asp-for="Email" class="form-control" id="email" placeholder="Email adresinizi girin" />
+                                            <label for="email">Email adresiniz</label>
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-floating w-100">
+                                            <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Şifrenizi girin" />
+                                            <label for="password">Şifre</label>
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-floating w-100">
+                                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirm-password" placeholder="Şifrenizi Tekrar Giriniz" />
+                                            <label for="confirm-password">Şifrenizi Tekrar Giriniz</label>
+                                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        </div>
+                                        <button class="w-100 btn btn-lg btn-primary" type="submit">Kayıt Ol</button>
+
+                                        @if (ViewBag.Message != null)
+                                        {
+                                            <div class="alert alert-dismissible alert-danger">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                <strong>@ViewBag.Message</strong>
+                                            </div>
+                                        }
+                                        <p class="text-center text-muted mt-4 mb-0">
+                                            Zaten hesabın var mı? @Html.ActionLink("Giriş Yap", "Log", "Login", null, new { @class = "fw-bold text" })
+                                        </p>
+                                        <p class="mt-3 mb-3 text-body-secondary">&copy; konserbiletim - 2024</p>
+                                    </form>
+
+                                </div>
+                                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                                    <img src="~/images/oneway.png" class="img-fluid" alt="Sample image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
