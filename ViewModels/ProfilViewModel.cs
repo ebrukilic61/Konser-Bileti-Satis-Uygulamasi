@@ -4,7 +4,7 @@ namespace KonserBiletim.ViewModels
 {
     public class ProfilViewModel
     {
-        public int User {  get; set; } //id
+        public int UserID {  get; set; } //id
         public string Name {  get; set; }
         public string Surname {  get; set; }
         [Required]
@@ -17,7 +17,7 @@ namespace KonserBiletim.ViewModels
 
         [Url]
         [StringLength(500)]
-        public string Avatar { get; set; } //profil foto url
+        public string ProfilFotoPath { get; set; } //profil foto url
 
         public IFormFile ProfilFoto { get; set; }
     }

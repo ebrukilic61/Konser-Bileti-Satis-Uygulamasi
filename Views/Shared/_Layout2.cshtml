@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model ProfilViewModel
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,10 +25,16 @@
             margin-top: 50px;
         }
 
-        .btn:hover{
-            background-color:darkseagreen;
-            color:black;
+        .btn:hover {
+            background-color: #78C2AD;
+            color: black;
         }
+
+        .btn:focus {
+            border: 2px solid;
+            border-block-color: #6cae9b;
+        }
+
     </style>
 </head>
 <body>
@@ -40,7 +47,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor02">
                     <ul class="nav nav-pills">
-                        <li class="nav-item">@Html.ActionLink("Ana Sayfa", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Ana Sayfa", "Anasayfa", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Hakkımızda", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("İletişim", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Sanatçılar", "Artist", "Home", new { area = "" }, new { @class = "nav-link" })</li>
@@ -72,6 +79,22 @@
                         <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
                     </button>
                 </form>
+                <form class="d-flex m-lg-auto">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="@(Url.Content(Model.ProfilFotoPath ?? "~/images/profile_icon.jpg"))"
+                                 class="rounded-circle"
+                                 height="25"
+                                 alt="profile_pic"
+                                 loading="lazy" />
+                        </a>
+                        
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                            <li><a class="dropdown-item" href="~/Profil/Profile">Profilim</a></li>
+                            <li><a class="dropdown-item" href="#">Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+                </form>
             </div>
         </nav>
     </header>
@@ -81,7 +104,23 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-IT4Yd2hV7oNc1a0rTCCkIqFP6RTbQt5cf4CmBfBqqYH+MttcVhUwVj6a1o/dfD1j" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        let lastScrollTop = 0;
+        window.addEventListener("scroll", function () {
+            let navbar = document.getElementById("navbar");
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop) {
+                // aşağı kaydırırken navbar gizle
+                navbar.style.top = "-200px";
+            } else {
+                // yukarı kaydırırken navbar göster
+                navbar.style.top = "0";
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    </script>
 </body>
 </html>

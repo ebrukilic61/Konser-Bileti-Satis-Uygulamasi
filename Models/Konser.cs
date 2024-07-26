@@ -13,7 +13,7 @@ namespace KonserBiletim.Models
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime konserDate { get; set; } //bu veri tipi doğru mu emin değilim
+        public DateTime konserDate { get; set; } 
         public int konserLocId {  get; set; }
         public int sanatciId {  get; set; }
         public virtual KonserAlani KonserAlani { get; set; }

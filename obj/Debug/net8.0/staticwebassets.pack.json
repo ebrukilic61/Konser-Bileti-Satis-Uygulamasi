@@ -221,6 +221,10 @@
       "PackagePath": "staticwebassets\\images\\oneway.png"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\profile_icon.jpg",
+      "PackagePath": "staticwebassets\\images\\profile_icon.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\ticket.png",
       "PackagePath": "staticwebassets\\images\\ticket.png"
     },
@@ -467,6 +471,46 @@
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\0a77ace2-fcda-4168-9509-055343bd3329_odev1.3-ciktisi.png",
+      "PackagePath": "staticwebassets\\uploads\\0a77ace2-fcda-4168-9509-055343bd3329_odev1.3-ciktisi.png"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\1bc8c388-1df3-4c33-b054-b47900bce6ab_TSCHAMPION.jpg",
+      "PackagePath": "staticwebassets\\uploads\\1bc8c388-1df3-4c33-b054-b47900bce6ab_TSCHAMPION.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4b6a48f4-5765-4e0b-8ba9-4e4077e8ad7e_kedi.jpg",
+      "PackagePath": "staticwebassets\\uploads\\4b6a48f4-5765-4e0b-8ba9-4e4077e8ad7e_kedi.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\71ebe686-fd58-4623-be1b-30d469da1a71_istanbul.jpg",
+      "PackagePath": "staticwebassets\\uploads\\71ebe686-fd58-4623-be1b-30d469da1a71_istanbul.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\IMG_20230629_154719.jpg",
+      "PackagePath": "staticwebassets\\uploads\\IMG_20230629_154719.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\WhatsApp Image 2022-09-24 at 13.31.19 (2).jpeg",
+      "PackagePath": "staticwebassets\\uploads\\WhatsApp Image 2022-09-24 at 13.31.19 (2).jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\a99b65a3-73f1-4046-9d82-183d5fb93e84_profile_icon.jpg",
+      "PackagePath": "staticwebassets\\uploads\\a99b65a3-73f1-4046-9d82-183d5fb93e84_profile_icon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\b732ac44-8bd7-4066-8b7b-3f4e68b4f0a6_odev1-ciktisi.png",
+      "PackagePath": "staticwebassets\\uploads\\b732ac44-8bd7-4066-8b7b-3f4e68b4f0a6_odev1-ciktisi.png"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg",
+      "PackagePath": "staticwebassets\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\nostalji.jpg",
+      "PackagePath": "staticwebassets\\uploads\\nostalji.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.KonserBiletim.Microsoft.AspNetCore.StaticWebAssets.props",

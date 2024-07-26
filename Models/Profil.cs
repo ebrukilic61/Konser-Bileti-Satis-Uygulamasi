@@ -20,16 +20,17 @@ namespace KonserBiletim.Models
         [StringLength(15)]
         public string telNo { get; set; }
 
-        //[JsonPropertyName("profilFoto")]
         [Url]
         [StringLength(500)]
-        public string profilFotoPath { get; set; }
+        public string profil_foto_path { get; set; }
 
         public virtual Musteri Musteri { get; set; }
 
+        /*
         public override string ToString()
         {
             return JsonSerializer.Serialize(this);
         }
+        */
     }
 }

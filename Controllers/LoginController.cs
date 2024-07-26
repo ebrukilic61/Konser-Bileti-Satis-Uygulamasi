@@ -58,6 +58,9 @@ namespace KonserBiletim.Controllers
                 {
                     if (dreader.Read())
                     {
+                        string userID = dreader[0].ToString();
+                        HttpContext.Session.SetString("UserID", userID);
+                        HttpContext.Session.SetString("UserRole", model.Role);
                         return RedirectToAction("Anasayfa","Home");
                     }
                     else
@@ -82,6 +85,7 @@ namespace KonserBiletim.Controllers
             SqlConnection conn = new SqlConnection(connectionString);
             SqlCommand cmd = new SqlCommand();
             string newPassword = GenerateRandomPassword();
+            bool isUpdated = false;
 
             try
             {
@@ -92,16 +96,25 @@ namespace KonserBiletim.Controllers
                 cmd.Parameters.AddWithValue("@Email", email);
                 cmd.Parameters.AddWithValue("@Password", newPassword);
                 int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0) isUpdated = true;
 
                 // Organizator şifresini güncelle
-                cmd.CommandText = "UPDATE Organizator SET orgPassword = @Password WHERE orgMail = @Email";
-                rowsAffected += cmd.ExecuteNonQuery();
+                if (!isUpdated)
+                {
+                    cmd.CommandText = "UPDATE Organizator SET orgPassword = @Password WHERE orgMail = @Email";
+                    rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0) isUpdated = true;
+                }
 
                 // Admin şifresini güncelle
-                cmd.CommandText = "UPDATE Admin SET adminPsw = @Password WHERE admin_mail = @Email";
-                rowsAffected += cmd.ExecuteNonQuery();
+                if (!isUpdated)
+                {
+                    cmd.CommandText = "UPDATE Admin SET adminPsw = @Password WHERE admin_mail = @Email";
+                    rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0) isUpdated = true;
+                }
 
-                if (rowsAffected > 0)
+                if (isUpdated)
                 {
                     SendEmail(email, newPassword);
                     ViewBag.Message = "Yeni şifreniz email adresinize gönderildi.";
@@ -123,6 +136,7 @@ namespace KonserBiletim.Controllers
             return View();
         }
 
+
         private string GenerateRandomPassword()
         {
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -133,7 +147,7 @@ namespace KonserBiletim.Controllers
             return password;
         }
 
-        private void SendEmail(string email, string newPassword)
+        private void SendEmail(string email, string newPassword) //daha tamamlamadım bu islemi
         {
             var fromAddress = new MailAddress("kilicebruu61@gmail.com", "KonserBiletim");
             var toAddress = new MailAddress(email);

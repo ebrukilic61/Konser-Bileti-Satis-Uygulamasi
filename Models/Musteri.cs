@@ -16,7 +16,7 @@ namespace KonserBiletim.Models
 
         [Required]
         [StringLength(50)]
-        public string musteriSoyadi { get; set; } // Veritabanında aynı isimde olmalı
+        public string musteriSoyadi { get; set; } 
 
         [Required]
         [EmailAddress]
@@ -30,7 +30,10 @@ namespace KonserBiletim.Models
 
         [Required]
         [StringLength(20)]
-        public string role { get; set; } // Veritabanında da aynı isimde olmalı
+        public string role { get; set; }
+
+        [StringLength(255)]
+        public string profilFotoPath {  get; set; }
     }
 
 }

@@ -1,0 +1,22 @@
+﻿@model List<KonserViewModel>
+
+<div class="container">
+    <div class="row">
+        @foreach (var konser in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@konser.KonserName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@konser.SanatciName @konser.SanatciSurname</h6>
+                        <p class="card-text">
+                            Tarih: @konser.KonserDate.ToString("dd MMM yyyy") <br />
+                            Yer: @konser.KonserLoc
+                        </p>
+                        <a href="@Url.Action("Details", "Konser", new { id = konser.KonserID })" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
