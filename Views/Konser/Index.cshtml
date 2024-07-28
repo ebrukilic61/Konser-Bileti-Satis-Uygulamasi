@@ -1,22 +1,77 @@
-﻿@model List<KonserViewModel>
+﻿@model IEnumerable<KonserViewModel>
+@{
+    ViewData["Title"] = "Konser Listesi";
+    Layout = "_Layout2";
+}
 
-<div class="container">
-    <div class="row">
-        @foreach (var konser in Model)
-        {
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">@konser.KonserName</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@konser.SanatciName @konser.SanatciSurname</h6>
-                        <p class="card-text">
-                            Tarih: @konser.KonserDate.ToString("dd MMM yyyy") <br />
-                            Yer: @konser.KonserLoc
-                        </p>
-                        <a href="@Url.Action("Details", "Konser", new { id = konser.KonserID })" class="btn btn-primary">Detaylar</a>
+<style>
+    body{
+        margin-top:80px;
+        background: linear-gradient(90deg, rgba(254,224,229,1) 0%, rgba(238,238,224,1) 41%, rgba(231,243,229,1) 69%, rgba(215,255,242,1) 100%);
+    }
+    .card {
+        width :350px;
+        height :300px;
+    }
+    .card-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card:hover{
+        color: #78C2AD;
+    }
+
+    .fw-bolder:hover{
+        color: #78C2AD;
+    }
+    .btn-group {
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+        flex-direction: column;
+    }
+</style>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col mb-5">
+            <a href="@Url.Action("Details", "Konser", new { id = item.KonserID})" class="text-decoration-none">
+            <div class="card h-100">
+                <!-- Konser image-->
+                <img src="@Url.Content(item.ImageURL)" alt="@item.SanatciName" class="card-img-top" />
+                <!-- Konser details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <h4 class="fw-bolder">@item.KonserName</h4>
+                        <h5 class="card-subtitle mb-2 text-muted">@item.SanatciName</h5>
+                        <div class="d-flex justify-content-center small text-warning mb-2">
+                            <p class="card-text">@item.KonserTanim</p>
+                            <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
+                            <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
+                            <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
+                            @if (item.YeniTarih.HasValue)
+                            {
+                                <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+                            }
+                        </div>
+                        <!-- Konser ucreti -->
+                        <p class="card-text"><strong>Bilet Fiyatı:</strong> @item.BiletFiyati</p>
                     </div>
                 </div>
+                <!-- butonlar -->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
+                        </div>
+                        <div class="btn-group">
+                            <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary">Detaylar</a>
+                            <a href="@Url.Action("Edit", "Konser", new { id = item.KonserID })" class="btn btn-secondary">Düzenle</a>
+                        </div>
+                </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

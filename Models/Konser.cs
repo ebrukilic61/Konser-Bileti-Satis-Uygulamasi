@@ -16,6 +16,9 @@ namespace KonserBiletim.Models
         public DateTime konserDate { get; set; } 
         public int konserLocId {  get; set; }
         public int sanatciId {  get; set; }
+
+        [StringLength(500)]
+        public string konserTanim {  get; set; }
         public virtual KonserAlani KonserAlani { get; set; }
         public virtual Sanatci Sanatci { get; set; }
         public virtual ICollection<Bilet> Biletler { get; set; } = new HashSet<Bilet>();

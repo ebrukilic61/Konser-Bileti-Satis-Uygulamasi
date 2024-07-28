@@ -1,0 +1,91 @@
+﻿@model KonserViewModel
+
+@{
+    ViewData["Title"] = "Konser Detayları";
+    Layout = "_Layout2";
+}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin-top: 80px;
+            background: linear-gradient(90deg, rgba(254,224,229,1) 0%, rgba(238,238,224,1) 41%, rgba(231,243,229,1) 69%, rgba(215,255,242,1) 100%);
+        }
+
+        .card-body {
+            background-color: #eee;
+            position: relative; /* Ensure the button is positioned relative to the card */
+        }
+
+        .card-header {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .add-to-cart-btn {
+            background-color: #3f3f3f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+            .add-to-cart-btn:hover {
+                background-color: #2c2c2c;
+            }
+
+            .add-to-cart-btn i {
+                margin-right: 8px;
+            }
+    </style>
+</head>
+
+<div class="card">
+    <div class="card-header">
+        <h2>@Model.KonserName</h2>
+    </div>
+    <div class="card h-100">
+        @if (!string.IsNullOrEmpty(Model.ImageURL))
+        {
+            <img src="@Url.Content(Model.ImageURL)" alt="Konser Resmi" class="img-fluid" />
+        }
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@Model.SanatciName</h5>
+        <p class="card-text">@Model.KonserTanim</p>
+        <p class="card-text"><strong>Date:</strong> @Model.KonserDate.ToString("yyyy-MM-dd")</p>
+        <p class="card-text"><strong>Location:</strong> @Model.KonserLoc</p>
+        <p class="card-text"><strong>Status:</strong> @Model.KonserDurumu</p>
+        @if (Model.YeniTarih.HasValue)
+        {
+            <p class="card-text"><strong>New Date:</strong> @Model.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+        }
+        <div>
+            <h5>Bilet Fiyatları:</h5>
+            <ul>
+                @foreach (var kategori in Model.BiletKategorileri)
+                {
+                    <li><strong>@kategori.KategoriAdi:</strong> @kategori.Fiyat</li>
+                }
+            </ul>
+        </div>
+        <div class="mt-3 fixed-bottom-right">
+            <button class="add-to-cart-btn">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+        </div>
+    </div>
+</div>

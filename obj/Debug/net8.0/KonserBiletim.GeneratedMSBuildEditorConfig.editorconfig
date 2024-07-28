@@ -38,12 +38,40 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/KonserEski/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyRXNraVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/KonserEski/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyRXNraVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/KonserEski/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyRXNraVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/KonserEski/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyRXNraVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Konser/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Konser/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Konser/KonserEkle.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29uc2VyXEtvbnNlckVrbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Login/Log.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Organizator/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemF0b3JcRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Profil/Edit.cshtml]
@@ -58,12 +86,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Shared/Components/ProfilPhoto/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvZmlsUGhvdG9cRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Shared/_Layout2.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Shared/_Layout3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Shared/_ValidationScriptsPartial.cshtml]

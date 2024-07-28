@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - KonserBiletim</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/bootstrap.mint.css" asp-append-version="true" />
+    <style>
+        .form-signin {
+            background: transparent;
+            align-content: center;
+            border: 2px solid rgba(255,255,250,.2);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 10px rgba(0,0,0,.1);
+            color: aliceblue;
+            border-radius: 10px;
+            color: #272a2a;
+            padding: 10px;
+            width: 440px;
+            height: 500px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark fixed-top" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">KonserBiletim</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor02">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">@Html.ActionLink("Ana Sayfa", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Hakkımızda", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("İletişim", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <form class="d-flex m-lg-auto">
+                        <input class="form-control me-sm-2" type="search" placeholder="Konser Ara">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Ara</button>
+                    </form>
+                    <form class="d-flex m-lg-auto">
+                        <div class="dropdown">
+                            <a class="dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @await Component.InvokeAsync("ProfilPhoto")
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                                <li><a class="dropdown-item" href="~/Profil/Profile">Profilim</a></li>
+                                <li><a class="dropdown-item" href="#">Çıkış Yap</a></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        let lastScrollTop = 0;
+        window.addEventListener("scroll", function () {
+            let navbar = document.getElementById("navbar");
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop) {
+                // aşağı kaydırırken navbar gizle
+                navbar.style.top = "-200px";
+            } else {
+                // yukarı kaydırırken navbar göster
+                navbar.style.top = "0";
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    </script>
+</body>
+</html>

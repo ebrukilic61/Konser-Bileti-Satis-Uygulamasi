@@ -61,7 +61,15 @@ namespace KonserBiletim.Controllers
                         string userID = dreader[0].ToString();
                         HttpContext.Session.SetString("UserID", userID);
                         HttpContext.Session.SetString("UserRole", model.Role);
-                        return RedirectToAction("Anasayfa","Home");
+                        
+                        if(model.Role == "Musteri")
+                        {
+                            return RedirectToAction("Anasayfa", "Home");
+                        }else if(model.Role == "Organizator")
+                        {
+                            return RedirectToAction("Dashboard", "Organizator");
+                        }
+
                     }
                     else
                     {

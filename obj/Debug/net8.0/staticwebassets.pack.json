@@ -181,6 +181,10 @@
       "PackagePath": "staticwebassets\\KonserBiletim.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\css\\Dashboard.css",
+      "PackagePath": "staticwebassets\\css\\Dashboard.css"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\css\\bootstrap.mint.css",
       "PackagePath": "staticwebassets\\css\\bootstrap.mint.css"
     },
@@ -195,6 +199,10 @@
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\css\\styles.css",
       "PackagePath": "staticwebassets\\css\\styles.css"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\data\\konserImages.json",
+      "PackagePath": "staticwebassets\\data\\konserImages.json"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\favicon.ico",
@@ -223,6 +231,66 @@
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\profile_icon.jpg",
       "PackagePath": "staticwebassets\\images\\profile_icon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\ella_tour2.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\ella_tour2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\ellaa.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\ellaa.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\eras4.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\eras4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\eras6.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\eras6.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\green_day_tour.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\green_day_tour.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\julia_conc.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\julia_conc.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\julia_conc2.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\julia_conc2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\paramore_tour.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\paramore_tour.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\top_tour4.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\top_tour4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\ella_fitzgerald.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\ella_fitzgerald.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\green_day.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\green_day.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\julia_fischer.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\julia_fischer.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\paramore_icon.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\paramore_icon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\top_icon.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\top_icon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\ts_icon.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\ts_icon.jpg"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\ticket.png",
@@ -481,6 +549,10 @@
       "PackagePath": "staticwebassets\\uploads\\1bc8c388-1df3-4c33-b054-b47900bce6ab_TSCHAMPION.jpg"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4adc1d03-4174-469d-b28d-3f1b2dd05f61_tumblr_07260d89622c0adddb579c22ed062ff7_10957619_2048.jpg",
+      "PackagePath": "staticwebassets\\uploads\\4adc1d03-4174-469d-b28d-3f1b2dd05f61_tumblr_07260d89622c0adddb579c22ed062ff7_10957619_2048.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4b6a48f4-5765-4e0b-8ba9-4e4077e8ad7e_kedi.jpg",
       "PackagePath": "staticwebassets\\uploads\\4b6a48f4-5765-4e0b-8ba9-4e4077e8ad7e_kedi.jpg"
     },
@@ -489,12 +561,16 @@
       "PackagePath": "staticwebassets\\uploads\\71ebe686-fd58-4623-be1b-30d469da1a71_istanbul.jpg"
     },
     {
-      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\IMG_20230629_154719.jpg",
-      "PackagePath": "staticwebassets\\uploads\\IMG_20230629_154719.jpg"
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\7e9899a0-e322-440a-a13e-1370fc304ae7_w3.png",
+      "PackagePath": "staticwebassets\\uploads\\7e9899a0-e322-440a-a13e-1370fc304ae7_w3.png"
     },
     {
-      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\WhatsApp Image 2022-09-24 at 13.31.19 (2).jpeg",
-      "PackagePath": "staticwebassets\\uploads\\WhatsApp Image 2022-09-24 at 13.31.19 (2).jpeg"
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\8936834d-6d28-4308-95ac-d02e62284846_tsicon.jpg",
+      "PackagePath": "staticwebassets\\uploads\\8936834d-6d28-4308-95ac-d02e62284846_tsicon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\a5f433b1-de8e-4827-b65d-b378a6dfd8ca_w3.png",
+      "PackagePath": "staticwebassets\\uploads\\a5f433b1-de8e-4827-b65d-b378a6dfd8ca_w3.png"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\a99b65a3-73f1-4046-9d82-183d5fb93e84_profile_icon.jpg",
@@ -505,12 +581,16 @@
       "PackagePath": "staticwebassets\\uploads\\b732ac44-8bd7-4066-8b7b-3f4e68b4f0a6_odev1-ciktisi.png"
     },
     {
-      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg",
-      "PackagePath": "staticwebassets\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg"
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\db51f236-74f1-40e7-b82b-828d1f375172_altay.jpg",
+      "PackagePath": "staticwebassets\\uploads\\db51f236-74f1-40e7-b82b-828d1f375172_altay.jpg"
     },
     {
-      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\nostalji.jpg",
-      "PackagePath": "staticwebassets\\uploads\\nostalji.jpg"
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\ed6bf6bb-1ecb-48d8-93ee-2716784eaa50_GNB1HGDagAAHNoK.jpg",
+      "PackagePath": "staticwebassets\\uploads\\ed6bf6bb-1ecb-48d8-93ee-2716784eaa50_GNB1HGDagAAHNoK.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg",
+      "PackagePath": "staticwebassets\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.KonserBiletim.Microsoft.AspNetCore.StaticWebAssets.props",

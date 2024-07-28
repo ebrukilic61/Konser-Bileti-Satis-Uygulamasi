@@ -123,8 +123,8 @@ namespace KonserBiletim.Controllers
                 using (SqlCommand cmd = new SqlCommand(updateQuery, con))
                 {
                     cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = int.Parse(userID);
-                    cmd.Parameters.Add("@TelNo", SqlDbType.NVarChar).Value = model.TelNo;
-                    cmd.Parameters.Add("@ProfilFotoPath", SqlDbType.NVarChar).Value = fotoPath;
+                    cmd.Parameters.Add("@TelNo", SqlDbType.NVarChar).Value = (object)model.TelNo ?? DBNull.Value;
+                    cmd.Parameters.Add("@ProfilFotoPath", SqlDbType.NVarChar).Value = (object)fotoPath ?? DBNull.Value;
                     cmd.ExecuteNonQuery();
                 }
 

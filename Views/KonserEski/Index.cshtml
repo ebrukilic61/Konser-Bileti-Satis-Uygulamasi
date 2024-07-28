@@ -1,0 +1,65 @@
+﻿@model IEnumerable<KonserBiletim.ViewModels.KonserViewModel>
+
+@{
+    ViewData["Title"] = "Concert List";
+}
+<style>
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 10px;
+        background-color: #f9f9f9;
+        width: 300px;
+        height: 500px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        font-size: 1rem;
+        color: #888;
+    }
+
+    .card-text {
+        font-size: 0.875rem;
+        margin: 10px 0;
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+        max-height: 150px; /* Resmin maksimum yüksekliği */
+        object-fit: cover; /* Resmin kartın içine sığmasını sağlar */
+    }
+
+</style>
+<h2>Concert List</h2>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="@Url.Content(item.ProfilFotoPath)" alt="@item.SanatciName" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.KonserName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@item.SanatciName</h6>
+                    <p class="card-text">@item.KonserTanim</p>
+                    <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
+                    <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
+                    <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
+                    @if (item.YeniTarih.HasValue)
+                    {
+                        <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+                    }
+                    <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary">Detaylar</a>
+                    <a href="@Url.Action("Edit", "Konser", new { id = item.KonserID })" class="btn btn-secondary">Düzenle</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
