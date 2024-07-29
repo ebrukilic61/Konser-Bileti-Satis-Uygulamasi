@@ -1,10 +1,9 @@
-﻿@model KonserEkleViewModel
+﻿@model KonserBiletim.ViewModels.KonserEkleViewModel
 
 @{
-    ViewData["Title"] = "Konser Ekle";
-    Layout = "_Layout";
+    ViewBag.Title = "Konser Ekle";
+    Layout = "_Layout2";
 }
-
 <style>
     body {
         margin-top: 80px;
@@ -17,82 +16,82 @@
 <form asp-action="KonserEkle" method="post">
     <div class="form-group">
         <label for="KonserName">Konser Adı</label>
-        <input type="text" class="form-control" id="KonserName" name="KonserName" required />
+        <input type="text" class="form-control" asp-for="KonserName" required />
+        <span asp-validation-for="KonserName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="KonserDate">Konser Tarihi</label>
-        <input type="date" class="form-control" id="KonserDate" name="KonserDate" required />
-    </div>
+        <input type="date" class="form-control" asp-for="KonserDate" required />
+        <span asp-validation-for="KonserDate" class="text-danger"></span>
+    </div>  
 
     <div class="form-group">
-        <label for="KonserLocId">Konser Yeri</label>
-        <select class="form-control" id="KonserLocId" name="KonserLocId" required>
-            @foreach (var alan in Model.KonserAlanlari)
+        <label for="KonserLocId">Konser Alanı</label>
+        <select class="form-control" asp-for="KonserLocId">
+            <option value="">Konser Alanı Seçiniz</option>
+            @if (Model.KonserAlanlari != null)
             {
-                <option value="@alan.konserLocId">@alan.alanName</option>
+                @foreach (var alan in Model.KonserAlanlari)
+                {
+                    <option value="@alan.konserLocId">@alan.alanName</option>
+                }
             }
         </select>
+        <span asp-validation-for="KonserLocId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="SanatciId">Sanatçı</label>
-        <select class="form-control" id="SanatciId" name="SanatciId" required>
-            @foreach (var sanatci in Model.Sanatcilar)
+        <select class="form-control" asp-for="SanatciId">
+            <option value="">Sanatçı Seçiniz</option>
+            @if (Model.Sanatcilar != null)
             {
-                <option value="@sanatci.sanatciID">@sanatci.sanatciName</option>
+                @foreach (var sanatci in Model.Sanatcilar)
+                {
+                    <option value="@sanatci.sanatciID">@sanatci.sanatciName</option>
+                }
             }
         </select>
+        <span asp-validation-for="SanatciId" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating w-100">
+        <select asp-for="KategoriAdi" class="form-control" style="background-color: #f2fff8;">
+            <option value="">Kategori Seçiniz</option>
+            <option value="VIP">VIP</option>
+            <option value="Standard">Standard</option>
+        </select>
+        <span asp-validation-for="KategoriAdi" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating w-100">
+        <select asp-for="KonserDurum" class="form-control" style="background-color: #f2fff8;">
+            <option value="">Konser Durumu</option>
+            <option value="Planned">Devam Ediyor</option>
+            <option value="Rescheduled">Tarihi Degistirildi</option>
+            <option value="Cancelled">Ertelendi</option>
+        </select>
+        <span asp-validation-for="KonserDurum" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Fiyat">Bilet Fiyatı</label>
+        <input type="number" step="0.01" class="form-control" asp-for="Fiyat" required />
+        <span asp-validation-for="Fiyat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="KisiSayisi">Kişi Sayısı</label>
+        <input type="number" class="form-control" asp-for="KisiSayisi" required />
+        <span asp-validation-for="KisiSayisi" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="KonserTanim">Konser Tanımı</label>
-        <textarea class="form-control" id="KonserTanim" name="KonserTanim"></textarea>
+        <textarea class="form-control" asp-for="KonserTanim" rows="4"></textarea>
+        <span asp-validation-for="KonserTanim" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label for="KonserDurumu">Konser Durumu</label>
-        <select class="form-control" id="KonserDurumu" name="KonserDurumu" required>
-            @foreach (var durum in Model.KonserDurumlari)
-            {
-                <option value="@durum.konserStatID">@durum.konser_durumu</option>
-            }
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="YeniTarih">Yeni Tarih</label>
-        <input type="date" class="form-control" id="YeniTarih" name="YeniTarih" />
-    </div>
-
-    <div id="biletKategorileriContainer">
-        @for (int i = 0; i < Model.BiletKategorileri.Count; i++)
-        {
-            <div class="form-group">
-                <label for="KategoriAdi">Bilet Kategorisi</label>
-                <input type="text" class="form-control" name="BiletKategorileri[@i].KategoriAdi" value="@Model.BiletKategorileri[i].KategoriAdi" />
-                <label for="Fiyat">Fiyat</label>
-                <input type="number" class="form-control" name="BiletKategorileri[@i].Fiyat" value="@Model.BiletKategorileri[i].Fiyat" />
-                <label for="KisiSayisi">Kişi Sayısı</label>
-                <input type="number" class="form-control" name="BiletKategorileri[@i].KisiSayisi" value="@Model.BiletKategorileri[i].KisiSayisi" />
-            </div>
-        }
-    </div>
-
-    <button type="submit" class="btn btn-primary">Kaydet</button>
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
-    }
+    <button type="submit" class="btn btn-primary">Ekle</button>
 </form>
-

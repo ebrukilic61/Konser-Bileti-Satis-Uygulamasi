@@ -6,6 +6,7 @@ using Dapper;
 using System.Linq;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 namespace KonserBiletim.Controllers
 {
@@ -110,10 +111,7 @@ namespace KonserBiletim.Controllers
                         {
                             konser.KonserID = reader1.GetInt32(reader1.GetOrdinal("konserID"));
                             konser.KonserName = reader1.GetString(reader1.GetOrdinal("konserName"));
-
-                            //konser.KonserTanim = reader1.GetString(reader1.GetOrdinal("konserTanim"));
                             konser.SanatciTanim = reader1.IsDBNull(reader1.GetOrdinal("description")) ? (string?)null : reader1.GetString(reader1.GetOrdinal("description"));
-
                             konser.KonserDate = reader1.GetDateTime(reader1.GetOrdinal("konserDate"));
                             konser.KonserLoc = reader1.GetString(reader1.GetOrdinal("KonserLoc"));
                             konser.SanatciName = reader1.GetString(reader1.GetOrdinal("sanatciName"));
@@ -148,6 +146,7 @@ namespace KonserBiletim.Controllers
             return konser;
         }
 
+        [HttpGet]
         private List<KonserAlani> GetKonserAlanlari()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -157,6 +156,7 @@ namespace KonserBiletim.Controllers
             }
         }
 
+        [HttpGet]
         private List<Sanatci> GetSanatcilar()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -166,6 +166,7 @@ namespace KonserBiletim.Controllers
             }
         }
 
+        [HttpGet]
         private List<Genre> GetGenres()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -175,6 +176,7 @@ namespace KonserBiletim.Controllers
             }
         }
 
+        [HttpGet]
         private List<KonserDurumu> GetKonserDurumlari()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -184,26 +186,16 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        private List<BiletKategoriViewModel> GetBiletKategorileri()
-        {
-            using (var con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                string query = "SELECT kategoriID, kategoriName FROM BiletKategori";
-                return con.Query<BiletKategoriViewModel>(query).ToList();
-            }
-        }
-
         [HttpGet]
         public IActionResult KonserEkle()
         {
             // Get lists for dropdowns
             var model = new KonserEkleViewModel
             {
-                BiletKategorileri = new List<BiletKategoriViewModel>(),
+                //BiletKategorileri = new List<KonserEkleViewModel>(),
                 Sanatcilar = GetSanatcilar(),
                 KonserAlanlari = GetKonserAlanlari(),
-                KonserDurumlari = GetKonserDurumlari(),
+                //KonserDurumlari = GetKonserDurumlari()
             };
 
             return View(model);
@@ -216,65 +208,64 @@ namespace KonserBiletim.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    using (var con = new SqlConnection(connectionString))
+                    using (SqlConnection con = new SqlConnection(connectionString))
                     {
                         con.Open();
 
-                        // Insert konser
-                        var insertKonserQuery = @"
-            INSERT INTO Konser (konserName, konserDate, konserLocId, sanatciId, konserTanim) 
-            VALUES (@KonserName, @KonserDate, @KonserLocId, @SanatciId, @KonserTanim);
-            SELECT CAST(SCOPE_IDENTITY() as int)";
-
-                        var konserId = con.Query<int>(insertKonserQuery, new
+                        using (var transaction = con.BeginTransaction())
                         {
-                            KonserName = model.KonserName,
-                            KonserDate = model.KonserDate,
-                            KonserLocId = model.KonserLocId,
-                            SanatciId = model.SanatciId,
-                            KonserTanim = model.KonserTanim
-                        }).Single();
-
-                        if (konserId <= 0)
-                        {
-                            throw new Exception("Konser ID alınamadı.");
-                        }
-
-                        // Insert konser durumu
-                        var insertDurumQuery = @"
-            INSERT INTO KonserDurumu (konser_id, konser_durumu, yeni_tarih) 
-            VALUES (@KonserId, @KonserDurumu, @YeniTarih)";
-
-                        var rowsAffected = con.Execute(insertDurumQuery, new
-                        {
-                            KonserId = konserId,
-                            KonserDurumu = model.KonserDurumu,
-                            YeniTarih = model.YeniTarih
-                        });
-
-                        if (rowsAffected <= 0)
-                        {
-                            throw new Exception("Konser durumu eklenemedi.");
-                        }
-
-                        // Insert bilet kategorileri
-                        var insertBiletQuery = @"
-            INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
-            VALUES (@KonserId, @KategoriName, @BiletFiyati, @KisiSayisi)";
-
-                        foreach (var kategori in model.BiletKategorileri)
-                        {
-                            var biletRowsAffected = con.Execute(insertBiletQuery, new
+                            try
                             {
-                                KonserId = konserId,
-                                KategoriName = kategori.KategoriAdi,
-                                BiletFiyati = kategori.Fiyat,
-                                KisiSayisi = kategori.KisiSayisi
-                            });
+                                // Insert konser
+                                string insertKonserQuery = @"
+                                INSERT INTO Konser (konserName, konserDate, konserLocId, sanatciId, konserTanim) 
+                                VALUES (@KonserName, @KonserDate, @KonserLocId, @SanatciId, @KonserTanim);
+                                SELECT SCOPE_IDENTITY();";
 
-                            if (biletRowsAffected <= 0)
+                                int konserId;
+                                using (SqlCommand cmd1 = new SqlCommand(insertKonserQuery, con, transaction))
+                                {
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserName", model.KonserName));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserDate", model.KonserDate));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserLocId", model.KonserLocId));
+                                    cmd1.Parameters.Add(new SqlParameter("@SanatciId", model.SanatciId));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserTanim", model.KonserTanim));
+
+                                    konserId = Convert.ToInt32(cmd1.ExecuteScalar()); //yeni eklenen konser id'si
+                                }
+
+                                // Insert konser durumu
+                                string insertDurumQuery = @"
+                                INSERT INTO KonserDurumu (konser_id, konser_durumu) 
+                                VALUES (@KonserId, @KonserDurum)";
+
+                                using (SqlCommand cmd2 = new SqlCommand(insertDurumQuery, con, transaction))
+                                {
+                                    cmd2.Parameters.AddWithValue("@KonserId", konserId);
+                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserDurum); 
+
+                                    cmd2.ExecuteNonQuery();
+                                }
+
+                                string insertBiletQuery = @"
+                                INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
+                                VALUES (@KonserId, @KategoriAdi, @BiletFiyati, @KisiSayisi)";
+
+                                using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
+                                {
+                                    cmd3.Parameters.Add(new SqlParameter("@KonserId", konserId));
+                                    cmd3.Parameters.Add(new SqlParameter("@KategoriAdi", model.KategoriAdi));
+                                    cmd3.Parameters.Add(new SqlParameter("@BiletFiyati", model.Fiyat));
+                                    cmd3.Parameters.Add(new SqlParameter("@KisiSayisi", model.KisiSayisi));
+                                    cmd3.ExecuteNonQuery();
+                                }
+
+                                transaction.Commit();
+                            }
+                            catch (Exception ex)
                             {
-                                throw new Exception($"Bilet kategorisi '{kategori.KategoriAdi}' eklenemedi.");
+                                transaction.Rollback();
+                                throw ex;
                             }
                         }
                     }
@@ -282,10 +273,16 @@ namespace KonserBiletim.Controllers
                     TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
                     return RedirectToAction("Index");
                 }
+                else {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                
+                }
 
+                // Eğer model state geçerli değilse, dropdown verilerini tekrar yükle
+                //model.BiletKategorileri = GetBiletKategorileri();
                 model.Sanatcilar = GetSanatcilar();
                 model.KonserAlanlari = GetKonserAlanlari();
-                model.KonserDurumlari = GetKonserDurumlari();
+                //model.KonserDurumlari = GetKonserDurumlari();
                 return View(model);
             }
             catch (Exception ex)

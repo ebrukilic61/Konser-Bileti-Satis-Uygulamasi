@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pttpfq5Fm2qgiyzPp/lPFUrz6M/W1tlIqmJs5JkLwMM=",
+  "Hash": "ey7EVvQ/g49nIcZWghceQ6X5DK0CB0lQKDPVqcFBoPw=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -3872,6 +3872,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\8936834d-6d28-4308-95ac-d02e62284846_tsicon.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "uploads/933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\a5f433b1-de8e-4827-b65d-b378a6dfd8ca_w3.png",

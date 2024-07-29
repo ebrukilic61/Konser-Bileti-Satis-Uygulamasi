@@ -2272,6 +2272,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\8936834d-6d28-4308-95ac-d02e62284846_tsicon.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>KonserBiletim</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/KonserBiletim</BasePath>
+      <RelativePath>uploads/933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\a5f433b1-de8e-4827-b65d-b378a6dfd8ca_w3.png))">
       <SourceType>Package</SourceType>
       <SourceId>KonserBiletim</SourceId>
