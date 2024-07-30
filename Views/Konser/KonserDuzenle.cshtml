@@ -1,9 +1,10 @@
 ﻿@model KonserBiletim.ViewModels.KonserEkleViewModel
 
 @{
-    ViewBag.Title = "Konser Ekle";
+    ViewBag.Title = "Konser Bilgisini Düzenle";
     Layout = "_Layout2";
 }
+
 <style>
     body {
         margin-top: 80px;
@@ -11,20 +12,21 @@
     }
 </style>
 
-<h2>Konser Ekle</h2>
+<h2>Konser Düzenle</h2>
 
-<form asp-action="KonserEkle" method="post">
+<form asp-action="KonserDuzenle" method="post">
+    <input type="hidden" asp-for="KonserID" />
+    <input type="hidden" asp-for="SanatciId" />
+
     <div class="form-group">
-        <label for="KonserName">Konser Adı</label>
-        <input type="text" class="form-control" asp-for="KonserName" required />
-        <span asp-validation-for="KonserName" class="text-danger"></span>
+        <label asp-for="KonserName"></label>
+        <input asp-for="KonserName" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label for="KonserDate">Konser Tarihi</label>
-        <input type="date" class="form-control" asp-for="KonserDate" required />
-        <span asp-validation-for="KonserDate" class="text-danger"></span>
-    </div>  
+        <label asp-for="KonserDate"></label>
+        <input asp-for="KonserDate" type="date" class="form-control" />
+    </div>
 
     <div class="form-group">
         <label for="KonserLocId">Konser Alanı</label>
@@ -41,21 +43,6 @@
         <span asp-validation-for="KonserLocId" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label for="SanatciId">Sanatçı</label>
-        <select class="form-control" asp-for="SanatciId">
-            <option value="">Sanatçı Seçiniz</option>
-            @if (Model.Sanatcilar != null)
-            {
-                @foreach (var sanatci in Model.Sanatcilar)
-                {
-                    <option value="@sanatci.sanatciID">@sanatci.sanatciName</option>
-                }
-            }
-        </select>
-        <span asp-validation-for="SanatciId" class="text-danger"></span>
-    </div>
-
     <div class="form-floating w-100">
         <select asp-for="KategoriAdi" class="form-control" style="background-color: #f2fff8;">
             <option value="">Kategori Seçiniz</option>
@@ -64,7 +51,9 @@
         </select>
         <span asp-validation-for="KategoriAdi" class="text-danger"></span>
     </div>
+
     <br />
+
     <div class="form-floating w-100">
         <select asp-for="KonserDurum" class="form-control" style="background-color: #f2fff8;">
             <option value="">Konser Durumu</option>
@@ -79,7 +68,7 @@
         <label for="Fiyat">Bilet Fiyatı</label>
         <input type="number" step="0.01" class="form-control" asp-for="Fiyat" required />
         <span asp-validation-for="Fiyat" class="text-danger"></span>
-    </div>
+    </div> 
 
     <div class="form-group">
         <label for="KisiSayisi">Kişi Sayısı</label>
@@ -93,5 +82,5 @@
         <span asp-validation-for="KonserTanim" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Ekle</button>
+    <button type="submit" class="btn btn-secondary">Güncelle</button>
 </form>

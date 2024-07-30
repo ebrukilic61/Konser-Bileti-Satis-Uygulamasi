@@ -20,8 +20,8 @@ namespace KonserBiletim.ViewModels
 
         [Required]
         public int SanatciId { get; set; }
+        //public string SanatciName { get; set; }
 
-        [Required]
         [StringLength(200)]
         public string KonserTanim { get; set; }
 
@@ -33,9 +33,13 @@ namespace KonserBiletim.ViewModels
         public int KategoriID { get; set; }
         [Required]
         public string KategoriAdi { get; set; }
+
         [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Fiyat pozitif bir değer olmalıdır.")]
         public decimal Fiyat { get; set; }
+        
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Kişi sayısı en az 1 olmalıdır.")]
         public int KisiSayisi { get; set; }
 
         public List<KonserAlani> KonserAlanlari { get; set; } = new List<KonserAlani>();
