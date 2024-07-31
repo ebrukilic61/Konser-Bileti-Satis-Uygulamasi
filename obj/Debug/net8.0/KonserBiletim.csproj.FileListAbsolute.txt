@@ -19,6 +19,7 @@ C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Konser
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\KonserBiletim.pdb
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Dapper.dll
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Humanizer.dll
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -271,4 +272,3 @@ C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\obj\Debug\net8.0\refint
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\obj\Debug\net8.0\KonserBiletim.pdb
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\obj\Debug\net8.0\KonserBiletim.genruntimeconfig.cache
 C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\obj\Debug\net8.0\ref\KonserBiletim.dll
-C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim\bin\Debug\net8.0\Dapper.dll

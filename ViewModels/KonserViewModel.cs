@@ -20,6 +20,7 @@ namespace KonserBiletim.ViewModels
         public string ImageURL { get; set; }
         public string ProfilFotoPath { get; set; }
         public decimal BiletFiyati { get; set; }
+        public int ToplamBiletSayisi { get; set; }
         public int GenreID {  get; set; }
         public string GenreName { get; set; }
         //public IFormFile SanatciFoto { get; set; }

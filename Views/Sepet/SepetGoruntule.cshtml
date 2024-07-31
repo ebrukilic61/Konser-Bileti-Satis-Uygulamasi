@@ -1,0 +1,97 @@
+﻿@model SepetViewModel
+@{
+    ViewData["Title"] = "Sepet Görüntüle";
+    Layout = "_Layout2";
+}
+
+<head>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <section class="h-100 h-custom" style="background-color:#eee">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Kategori ID</th>
+                                        <th>Miktar</th>
+                                        <th>Fiyat</th>
+                                        <th>Total</th>
+                                        <th>Sil</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.SepetDetaylar)
+                                    {
+                                        <tr>
+                                            <td>@item.KategoriID</td>
+                                            <td>@item.Miktar</td>
+                                            <td>@item.Fiyat.ToString("C")</td>
+                                            <td>@(item.Fiyat * item.Miktar)</td>
+                                            <td>
+                                                <form asp-action="BiletSil" method="post">
+                                                    <input type="hidden" name="konserID" value="@item.KonserID" />
+                                                    <input type="hidden" name="sepetID" value="@Model.SepetID" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="@Url.Action("Delete", "Sepet")" style="color:orangered">
+                                                            <span data-feather="trash-2" style="color:darkred"></span>
+                                                        </a>
+                                                    </li>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <h3>Toplam Fiyat: @Model.ToplamFiyat.ToString("C")</h3>
+                            <div class="card bg-primary text-white rounded-3">
+                                <div class="card-body">
+                                    <!-- Kart bilgileri ve ödeme formu -->
+                                    <form asp-action="OdemeYap" method="post" class="mt-4">
+                                        <input type="hidden" name="sepetID" value="@Model.SepetID" />
+                                        <!-- Kart Bilgileri -->
+                                        <div class="form-group">
+                                            <label asp-for="KartNo">Kart Numarası:</label>
+                                            <input type="text" class="form-control" asp-for="KartNo" required />
+                                            <span asp-validation-for="KartNo" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="CVV">CVV:</label>
+                                            <input type="text" class="form-control" asp-for="CVV" required />
+                                            <span asp-validation-for="CVV" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="SKT">Son Kullanma Tarihi:</label>
+                                            <input type="date" class="form-control" asp-for="SKT" required />
+                                            <span asp-validation-for="SKT" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="SahipIsmi">Kart Sahibi İsmi:</label>
+                                            <input type="text" class="form-control" asp-for="SahipIsmi" required />
+                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="SahipSoyismi">Kart Sahibi Soyismi:</label>
+                                            <input type="text" class="form-control" asp-for="SahipSoyismi" required />
+                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Ödeme Yap</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>

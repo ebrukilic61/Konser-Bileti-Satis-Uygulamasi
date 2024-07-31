@@ -71,6 +71,7 @@ namespace KonserBiletim.Controllers
         }
 
         // Konser detaylarını gösterir
+
         public IActionResult Details(int id, int kid)
         {
             var konser = GetKonserById(id);
@@ -300,6 +301,11 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public IActionResult KonserDuzenle(int id)
         {
+            if (GetUserRole() != "Organizator") //bunu sonradan ekledim, hata yaratıyor mu diye kontrol et!
+            {
+                return Unauthorized();
+            }
+
             KonserEkleViewModel model = new KonserEkleViewModel
             {
                 Sanatcilar = GetSanatcilar(),
@@ -441,6 +447,24 @@ namespace KonserBiletim.Controllers
             model.Sanatcilar = GetSanatcilar();
             model.KonserAlanlari = GetKonserAlanlari();
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult KonserSil(int id) //buna bilet kategori ve konser durumu da eklemem lazım, konser tablosundan silmek yerine konseri bilet durumundan cancelled olarak gösterebilirim...
+        {
+            if (GetUserRole() != "Organizatör")
+            {
+                return Unauthorized();
+            }
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                var query = "DELETE FROM Konser WHERE konserID = @KonserID";
+                con.Execute(query, new { KonserID = id });
+            }
+
+            return RedirectToAction("Index");
         }
 
     }

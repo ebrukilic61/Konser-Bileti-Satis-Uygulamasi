@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ey7EVvQ/g49nIcZWghceQ6X5DK0CB0lQKDPVqcFBoPw=",
+  "Hash": "tWERx3Mb8IGy1T8siet/IFmvh08IFbAclz63GajruSI=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -2297,12 +2297,12 @@
       "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\ella_tour2.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\ellaa.jpg",
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\ellaa_f.jpg",
       "SourceId": "KonserBiletim",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
       "BasePath": "_content/KonserBiletim",
-      "RelativePath": "images/singers/concerts/ellaa.jpg",
+      "RelativePath": "images/singers/concerts/ellaa_f.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2313,7 +2313,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\ellaa.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\ellaa_f.jpg"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\eras4.jpg",

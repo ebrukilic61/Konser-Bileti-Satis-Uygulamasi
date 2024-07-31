@@ -3,19 +3,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KonserBiletim.Models
 {
-    public class RezerveBilet
+    public class SepetDetay
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int rezerveBiletID { get; set; }
-        [ForeignKey("Sepet")]
-        public int sepetID { get; set; }
+        public int SepetDetayID { get; set; }
 
-        [ForeignKey("Bilet")]
-        public int biletID { get; set; }
-        public decimal totalFiyat { get; set; }
-        public decimal bonusPuan { get; set; }
-        public decimal finalFiyat { get; set; }
+        [ForeignKey("Sepet")]
+        public int SepetID { get; set; }
+
+        [ForeignKey("Konser")]
+        public int KonserID { get; set; }
+
+        public int KategoriID { get; set; }
+        public int Miktar { get; set; }
+        public decimal Fiyat { get; set; }
+
         public virtual Sepet Sepet { get; set; }
         public virtual Bilet Bilet { get; set; }
     }

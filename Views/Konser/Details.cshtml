@@ -82,10 +82,52 @@
                 }
             </ul>
         </div>
-        <div class="mt-3 fixed-bottom-right">
-            <button class="add-to-cart-btn">
-                <i class="fas fa-shopping-cart"></i> Add to Cart
+        <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
+            <input type="hidden" name="KonserID" value="@Model.KonserID" />
+            <div class="form-group">
+                <label for="BiletSayisi">Bilet Sayısı:</label>
+                <input type="number" id="BiletSayisi" name="BiletSayisi" class="form-control" min="1" style="width:70px" value="1" />
+            </div>
+            <div class="form-group">
+                <label for="Kategori">Kategori:</label>
+                <select id="Kategori" name="KategoriID" class="form-control">
+                    @foreach (var kategori in Model.BiletKategorileri)
+                    {
+                        <option value="@kategori.KategoriID">@kategori.KategoriAdi - @kategori.Fiyat.ToString("C")</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ToplamFiyat">Toplam Fiyat:</label>
+                <input type="text" id="ToplamFiyat" name="ToplamFiyat" class="form-control" readonly />
+            </div>
+            <button type="submit" class="add-to-cart-btn">
+                <i class="fas fa-shopping-cart"></i> Sepete Ekle
             </button>
-        </div>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const biletSayisiInput = document.getElementById('BiletSayisi');
+                const kategoriSelect = document.getElementById('Kategori');
+                const toplamFiyatInput = document.getElementById('ToplamFiyat');
+
+                function updateTotalPrice() {
+                    const biletSayisi = parseInt(biletSayisiInput.value, 10);
+                    const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
+                    const fiyat = parseFloat(selectedOption.text.split('-')[1].replace('₺', '').trim());
+
+                    const toplamFiyat = biletSayisi * fiyat;
+                    toplamFiyatInput.value = toplamFiyat.toFixed(2) + ' ₺';
+                }
+
+                biletSayisiInput.addEventListener('input', updateTotalPrice);
+                kategoriSelect.addEventListener('change', updateTotalPrice);
+
+                // İlk yüklemede toplam fiyatı hesapla
+                updateTotalPrice();
+            });
+        </script>
+
     </div>
 </div>

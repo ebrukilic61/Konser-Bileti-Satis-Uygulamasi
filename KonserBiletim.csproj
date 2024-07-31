@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Sepet\" />
     <Folder Include="wwwroot\images\data\" />
   </ItemGroup>
 

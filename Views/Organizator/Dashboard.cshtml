@@ -47,23 +47,24 @@
                 <div class="nav nav-sidebar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">
+                            <a class="nav-link active" href="@Url.Action("Dashboard","Organizator")">
                                 <span data-feather="home"></span>
-                                Dashboard <span class="sr-only">(current)</span>
+                                Dashboard <span class="sr-only"></span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="@Url.Action("Profile","Profil")">
                                 <span data-feather="user"></span>
                                 Profil
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="@Url.Action("KonserEkle", "Konser")">
                                 <span data-feather="plus-circle"></span>
-                                @Html.ActionLink("Konser Ekle", "KonserEkle", "Konser")
+                                Konser Ekle
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <span data-feather="headphones"></span>
@@ -80,9 +81,9 @@
                     </h6>
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link" href="#" style="color:lightpink">
+                            <a class="nav-link" href="@Url.Action("Index", "Konser")" style="color:lightpink">
                                 <span data-feather="music" style="color:lightpink"></span>
-                                @Html.ActionLink("Konserler ve Satılan Bilet Sayıları", "Index", "Konser")
+                                Konserler ve Satılan Bilet Sayıları
                             </a>
                         </li>
                     </ul>
@@ -104,7 +105,7 @@
                     </div>
                 </div>
 
-                <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+                <canvas class="my-4 w-100" id="myChart" width="800" height="380"></canvas>
 
               
             </main>
