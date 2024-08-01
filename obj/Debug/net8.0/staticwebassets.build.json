@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tWERx3Mb8IGy1T8siet/IFmvh08IFbAclz63GajruSI=",
+  "Hash": "wAH034Gd7mHF/lRSxoqRfS1OCmnGzD7CWQCpA+rjuOg=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -2599,6 +2599,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\ticketyan.png"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\trash-2.svg",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "images/trash-2.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\trash-2.svg"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\yelllow.png",

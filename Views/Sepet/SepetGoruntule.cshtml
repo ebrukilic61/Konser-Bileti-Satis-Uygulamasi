@@ -3,95 +3,385 @@
     ViewData["Title"] = "Sepet Görüntüle";
     Layout = "_Layout2";
 }
-
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMO2xrLa0tjF6x3r5yB1Jhb8yho5WroZGPw7iT2" crossorigin="anonymous">
+
     <style>
+        body{
+            margin-top:60px;
+        }
+        .bilet {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            height: 120px;
+            width: 120px;
+            border-radius: 10px;
+            border: 1px solid #E0E0E0;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
 
+        .bilet-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            object-fit: cover;
+        }
+
+        .pad-left {
+            padding-left: 15px;
+        }
+
+        .mob-text {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            margin-left: 160px;
+        }
+
+        .row.d-flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .plus-minus {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plus, .minus {
+            font-size: 20px;
+            color: #673AB7;
+            cursor: pointer;
+        }
+
+            .plus:hover, .minus:hover {
+                color: #311B92;
+            }
+
+        .my-auto {
+            display: flex;
+            align-items: center;
+        }
+
+        #cnt1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .border-top {
+            border-top: 1px solid #EEEEEE !important;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+
+        .card {
+            margin: 40px 0px;
+            padding: 40px 50px;
+            border-radius: 20px;
+            border: 2px solid #673AB7;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2), 0px 6px 6px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to bottom right, #ffffff, #f3e5f5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.3), 0px 10px 10px rgba(0, 0, 0, 0.2);
+            }
+
+        input, textarea {
+            background-color: #F3E5F5;
+            padding: 8px 15px;
+            width: 100%;
+            border-radius: 5px !important;
+            box-sizing: border-box;
+            border: 1px solid #F3E5F5;
+            font-size: 15px !important;
+            color: #000 !important;
+            font-weight: 300;
+        }
+
+            input:focus, textarea:focus {
+                box-shadow: none !important;
+                border: 1px solid #9FA8DA;
+                outline-width: 0;
+                font-weight: 400;
+            }
+
+        button:focus {
+            box-shadow: none !important;
+            outline-width: 0;
+        }
+
+        .pay {
+            width: 80px;
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid #673AB7;
+            margin: 10px 20px 10px 0px;
+            cursor: pointer;
+            box-shadow: 1px 5px 10px 1px rgba(0,0,0,0.2);
+        }
+
+        .gray {
+            filter: grayscale(100%);
+            color: #E0E0E0;
+        }
+
+            .gray .pay {
+                box-shadow: none;
+            }
+
+        #tax {
+            border-top: 1px lightgray solid;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .btn-blue {
+            border: none;
+            border-radius: 10px;
+            background-color: #673AB7;
+            color: #fff;
+            padding: 8px 15px;
+            margin: 20px 0px;
+            cursor: pointer;
+        }
+
+            .btn-blue:hover {
+                background-color: #311B92;
+                color: #fff;
+            }
+
+        #checkout {
+            float: left;
+        }
+
+        #check-amt {
+            float: right;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-right: 30px;
+        }
+
+        .delete-button {
+            background-color: #eee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+            .delete-button:hover {
+                background-color: pink;
+            }
+
+        .plus-minus {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            margin-left: 60px;
+        }
+
+        .fa-trash {
+            font-size: 24px;
+        }
     </style>
+
 </head>
-
 <body>
-    <section class="h-100 h-custom" style="background-color:#eee">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body p-4">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Kategori ID</th>
-                                        <th>Miktar</th>
-                                        <th>Fiyat</th>
-                                        <th>Total</th>
-                                        <th>Sil</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.SepetDetaylar)
-                                    {
-                                        <tr>
-                                            <td>@item.KategoriID</td>
-                                            <td>@item.Miktar</td>
-                                            <td>@item.Fiyat.ToString("C")</td>
-                                            <td>@(item.Fiyat * item.Miktar)</td>
-                                            <td>
-                                                <form asp-action="BiletSil" method="post">
-                                                    <input type="hidden" name="konserID" value="@item.KonserID" />
-                                                    <input type="hidden" name="sepetID" value="@Model.SepetID" />
-                                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="@Url.Action("Delete", "Sepet")" style="color:orangered">
-                                                            <span data-feather="trash-2" style="color:darkred"></span>
-                                                        </a>
-                                                    </li>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-
-                            <h3>Toplam Fiyat: @Model.ToplamFiyat.ToString("C")</h3>
-                            <div class="card bg-primary text-white rounded-3">
-                                <div class="card-body">
-                                    <!-- Kart bilgileri ve ödeme formu -->
-                                    <form asp-action="OdemeYap" method="post" class="mt-4">
-                                        <input type="hidden" name="sepetID" value="@Model.SepetID" />
-                                        <!-- Kart Bilgileri -->
-                                        <div class="form-group">
-                                            <label asp-for="KartNo">Kart Numarası:</label>
-                                            <input type="text" class="form-control" asp-for="KartNo" required />
-                                            <span asp-validation-for="KartNo" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="CVV">CVV:</label>
-                                            <input type="text" class="form-control" asp-for="CVV" required />
-                                            <span asp-validation-for="CVV" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="SKT">Son Kullanma Tarihi:</label>
-                                            <input type="date" class="form-control" asp-for="SKT" required />
-                                            <span asp-validation-for="SKT" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="SahipIsmi">Kart Sahibi İsmi:</label>
-                                            <input type="text" class="form-control" asp-for="SahipIsmi" required />
-                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="SahipSoyismi">Kart Sahibi Soyismi:</label>
-                                            <input type="text" class="form-control" asp-for="SahipSoyismi" required />
-                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Ödeme Yap</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+    <div class="container px-4 py-5 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-2">
+                <h4 class="heading">Sepetim</h4>
+            </div>
+            <div class="col-7">
+                <div class="row text-right">
+                    <div class="col-4">
+                        <h6 class="mt-2">Miktar</h6>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="mt-2">Fiyat</h6>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        @foreach (var item in Model.SepetDetaylar)
+        {
+            <div class="row d-flex justify-content-center border-top">
+                <div class="col-5 col">
+                    <div class="row d-flex justify-content-center">
+                        <div class="bilet">
+                            <img src="~/images/singers/icons/@item.BiletGorselPath" class="bilet-img" alt="Sanatçı Fotoğrafı">
+                        </div>
+                        <div class="my-auto flex-column d-flex mt-2 align-content-center" style="padding:10px">
+                            <h6 class="text">@item.KonserAdi</h6>
+                            <p class="text">@item.SanatciAdi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-auto col-7">
+                    <div class="row">
+                        <div class="col-2 d-flex justify-content-end align-items-center">
+                            <div class="plus-minus">
+                                <span class="vsm-text plus">+</span>
+                                <p class="mb-0" id="cnt1">@item.Miktar</p>
+                                <span class="vsm-text minus">-</span>
+                            </div>
+                            <div class="col-5">
+                                <p class="mob-text">@item.KategoriAdi</p>
+                            </div>
+                        </div>
+                        <div class="col-3 text-right">
+                            <h6 class="mob-text">@item.Fiyat.ToString("C")</h6>
+                        </div>
+                    </div>
+                    <div class="col-2 text-right">
+                        <form asp-action="KonserSil" method="post">
+                            <input type="hidden" name="konserID" value="@item.KonserID" />
+                            <button class="delete-button">
+                                <img src= "~/images/trash-2.svg" alt = "sil-buton" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-lg-3 radio-group">
+                            <div class="row d-flex px-3 radio">
+                                <img class="pay" src="https://i.imgur.com/WIAP9Ku.jpg">
+                                <p class="my-auto">Kredi Kartı</p>
+                            </div>
+                        </div>
+                        <form asp-action="OdemeYap" method="post" class="mt-4">
+                            <input type="hidden" name="sepetID" value="@Model.SepetID" />
+                            <input type="hidden" name="kart_id" value="@Model.KartID" />
+                            <input type="hidden" name="sahip_ismi" value="@Model.SahipIsmi" />
+                            <input type="hidden" name="sahip_soyismi" value="@Model.SahipSoyismi" />
+                            <input type="hidden" name="kart_no" value="@Model.KartNo" />
+                            <input type="hidden" name="skt" value="@Model.SKT" />
+                            <input type="hidden" name="cvv" value="@Model.CVV" />
+
+                            <div class="col-lg-5">
+                                <div class="row px-2">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
+                                            <input type="text" asp-for="SahipIsmi" placeholder="Johnny Doe" required>
+                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
+                                            <input type="text" asp-for="SahipSoyismi" placeholder="Doe" required>
+                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label asp-for="KartNo" class="form-control-label">Kart Numarası</label>
+                                        <input type="text" asp-for="KartNo" placeholder="1111 2222 3333 4444" required>
+                                        <span asp-validation-for="KartNo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row px-2">
+                                    <div class="form-group col-md-6">
+                                        <label asp-for="SKT" class="form-control-label">Son Kullanma Tarihi:</label>
+                                        <input type="text" asp-for="SKT" placeholder="MM/YYYY" required>
+                                        <span asp-validation-for="SKT" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label asp-for="CVV" class="form-control-label">CVV</label>
+                                        <input type="text" asp-for="CVV" placeholder="***" required>
+                                        <span asp-validation-for="CVV" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mt-2">
+                                <div class="row d-flex justify-content-between px-4" id="tax">
+                                    <p class="mb-1 text-left">Toplam: </p>
+                                    <h6 class="mb-1 text-left" id="toplamFiyat">@Model.ToplamFiyat.ToString("C")</h6>
+                                    <p class="mb-1 text-left">İndirim: </p>
+                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.</h6>
+                                </div>
+                                <br />
+                                <button class="btn btn-dark">
+                                    <span>
+                                        <span id="checkout">Ödeme Yap</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const plusButtons = document.querySelectorAll('.plus');
+            const minusButtons = document.querySelectorAll('.minus');
+
+            plusButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const quantityElement = this.closest('.row').querySelector('#cnt1');
+                    let quantity = parseInt(quantityElement.textContent);
+                    quantityElement.textContent = quantity + 1;
+                });
+            });
+
+            minusButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const quantityElement = this.closest('.row').querySelector('#cnt1');
+                    let quantity = parseInt(quantityElement.textContent);
+                    if (quantity > 0) {
+                        quantityElement.textContent = quantity - 1;
+                    }
+                });
+            });
+
+            const biletSayisiInput = document.getElementById('BiletSayisi');
+            const kategoriSelect = document.getElementById('Kategori');
+            const toplamFiyatInput = document.getElementById('ToplamFiyat');
+
+            function updateTotalPrice() {
+                const biletSayisi = parseInt(biletSayisiInput.value, 10);
+                const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
+                const fiyat = parseFloat(selectedOption.text.split('-')[1].replace('₺', '').trim());
+
+                const toplamFiyat = biletSayisi * fiyat;
+                toplamFiyatInput.value = toplamFiyat.toFixed(2) + ' ₺';
+            }
+
+            biletSayisiInput.addEventListener('input', updateTotalPrice);
+            kategoriSelect.addEventListener('change', updateTotalPrice);
+
+            // İlk yüklemede toplam fiyatı hesapla
+            updateTotalPrice();
+        });
+    </script>
 </body>
+</html>

@@ -84,6 +84,8 @@
         </div>
         <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
             <input type="hidden" name="KonserID" value="@Model.KonserID" />
+
+            
             <div class="form-group">
                 <label for="BiletSayisi">Bilet Sayısı:</label>
                 <input type="number" id="BiletSayisi" name="BiletSayisi" class="form-control" min="1" style="width:70px" value="1" />

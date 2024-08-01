@@ -301,6 +301,10 @@
       "PackagePath": "staticwebassets\\images\\ticketyan.png"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\trash-2.svg",
+      "PackagePath": "staticwebassets\\images\\trash-2.svg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\yelllow.png",
       "PackagePath": "staticwebassets\\images\\yelllow.png"
     },

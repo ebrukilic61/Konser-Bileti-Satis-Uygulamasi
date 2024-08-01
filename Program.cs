@@ -29,6 +29,8 @@ builder.Services.AddAuthorization(options =>
     // Diğer roller için politikalar ekleyebilirsiniz
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // MVC ve Razor Pages için servisleri ekleyin
 builder.Services.AddControllersWithViews();
 

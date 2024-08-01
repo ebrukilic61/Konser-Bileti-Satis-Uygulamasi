@@ -1,8 +1,318 @@
-﻿@{
-    ViewData["Title"] = "Ödeme Tamamlandı";
+﻿@model SepetViewModel
+@{
+    ViewData["Title"] = "Sepet Görüntüle";
+    Layout = "_Layout2";
 }
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
 
-<h2>@ViewData["Title"]</h2>
+    <style>
+        body {
+        color: #000;
+        overflow-x: hidden;
+        height: 100%;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        }
 
-<p>Ödemeniz başarıyla tamamlanmıştır. Teşekkür ederiz!</p>
-<a asp-action="SepetGoruntule" class="btn btn-primary">Sepetime Dön</a>
+        .plus-minus {
+            position: relative;
+        }
+
+        .plus {
+            position: absolute;
+            top: -4px;
+            left: 2px;
+            cursor: pointer;
+        }
+
+        .minus {
+            position: absolute;
+            top: 8px;
+            left: 5px;
+            cursor: pointer;
+        }
+
+        .vsm-text:hover {
+            color: #FF5252;
+        }
+
+        .book, .book-img {
+            width: 120px;
+            height: 180px;
+            border-radius: 5px;
+        }
+
+        .book {
+            margin: 20px 15px 5px 15px;
+        }
+
+        .border-top {
+            border-top: 1px solid #EEEEEE !important;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+
+        .card {
+            margin: 40px 0px;
+            padding: 40px 50px;
+            border-radius: 20px;
+            border: none;
+            box-shadow: 1px 5px 10px 1px rgba(0,0,0,0.2);
+        }
+
+        input, textarea {
+            background-color: #F3E5F5;
+            padding: 8px 15px 8px 15px;
+            width: 100%;
+            border-radius: 5px !important;
+            box-sizing: border-box;
+            border: 1px solid #F3E5F5;
+            font-size: 15px !important;
+            color: #000 !important;
+            font-weight: 300;
+        }
+
+        input:focus, textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #9FA8DA;
+            outline-width: 0;
+            font-weight: 400;
+        }
+
+        button:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            outline-width: 0;
+        }
+
+        .pay {
+            width: 80px;
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid #673AB7;
+            margin: 10px 20px 10px 0px;
+            cursor: pointer;
+            box-shadow: 1px 5px 10px 1px rgba(0,0,0,0.2);
+        }
+
+        .gray {
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            filter: grayscale(100%);
+            color: #E0E0E0;
+        }
+
+        .gray .pay {
+            box-shadow: none;
+        }
+
+        #tax {
+            border-top: 1px lightgray solid;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .btn-blue {
+            border: none;
+            border-radius: 10px;
+            background-color: #673AB7;
+            color: #fff;
+            padding: 8px 15px;
+            margin: 20px 0px;
+            cursor: pointer;
+        }
+
+        .btn-blue:hover {
+            background-color: #311B92;
+            color: #fff;
+        }
+
+        #checkout {
+            float: left;
+        }
+
+        #check-amt {
+            float: right;
+        }
+        
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-right: 30px; 
+        }
+
+    
+    </style>
+
+</head>
+<body>
+<div class="container px-4 py-5 mx-auto">
+    <div class="row d-flex justify-content-center">
+        <div class="col-5">
+            <h4 class="heading">Sepetim</h4>
+        </div>
+        <div class="col-7">
+            <div class="row text-right">
+                <div class="col-4">
+                    <h6 class="mt-2">Konser</h6>
+                </div>
+                <div class="col-4">
+                    <h6 class="mt-2">Miktar</h6>
+                </div>
+                <div class="col-4">
+                    <h6 class="mt-2">Fiyat</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @foreach (var item in Model.SepetDetaylar)
+    {
+        <div class="row d-flex justify-content-center border-top">
+            <div class="col-5">
+                <div class="row d-flex">
+                    <div class="book">
+                        <img src="@item.BiletGorselPath" class="bilet-img" alt="Sanatçı Fotoğrafı">
+                    </div>
+                    <div class="my-auto flex-column d-flex pad-left">
+                        <h6 class="mob-text">@item.KonserAdi</h6>
+                        <p class="mob-text">@item.SanatciAdi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="my-auto col-7">
+                <div class="row text-right">
+                    <div class="col-4">
+                        <p class="mob-text">@item.KategoriAdi</p>
+                    </div>
+                    <div class="col-4">
+                        <div class="row d-flex justify-content-end px-3">
+                            <p class="mb-0" id="cnt1">@item.Miktar</p>
+                            <div class="d-flex flex-column plus-minus">
+                                <span class="vsm-text plus">+</span>
+                                <span class="vsm-text minus">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="mob-text">@item.Fiyat.ToString("C")</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-lg-3 radio-group">
+                        <div class="row d-flex px-3 radio">
+                            <img class="pay" src="https://i.imgur.com/WIAP9Ku.jpg">
+                            <p class="my-auto">Kredi Kartı</p>
+                        </div>
+                        <div class="row d-flex px-3 radio gray">
+                            <img class="pay" src="https://i.imgur.com/OdxcctP.jpg">
+                            <p class="my-auto">Bankamatik Kartı</p>
+                        </div>
+                        <div class="row d-flex px-3 radio gray mb-3">
+                            <img class="pay" src="https://i.imgur.com/cMk1MtK.jpg">
+                            <p class="my-auto">PayPal</p>
+                        </div>
+                    </div>
+                    <form asp-action="OdemeYap" method="post" class="mt-4">
+                        <input type="hidden" name="sepetID" value="@Model.SepetID" />
+                        <input type="hidden" name="kart_id" value="@Model.KartID" />
+                        <input type="hidden" name="sahip_ismi" value="@Model.SahipIsmi" />
+                        <input type="hidden" name="sahip_soyismi" value="@Model.SahipSoyismi" />
+                        <input type="hidden" name="kart_no" value="@Model.KartNo" />
+                        <input type="hidden" name="skt" value="@Model.SKT" />
+                        <input type="hidden" name="cvv" value="@Model.CVV" />
+
+                        <div class="col-lg-5">
+                            <div class="row px-2">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
+                                            <input type="text" asp-for="SahipIsmi" placeholder="Johnny Doe" required>
+                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
+                                            <input type="text" asp-for="SahipSoyismi" placeholder="Doe" required>
+                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="KartNo" class="form-control-label">Kart Numarası</label>
+                                    <input type="text" asp-for="KartNo" placeholder="1111 2222 3333 4444" required>
+                                    <span asp-validation-for="KartNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row px-2">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="SKT" class="form-control-label">Son Kullanma Tarihi:</label>
+                                    <input type="text" asp-for="SKT" placeholder="MM/YYYY" required>
+                                    <span asp-validation-for="SKT" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="CVV" class="form-control-label">CVV</label>
+                                    <input type="text" asp-for="CVV" placeholder="***" required>
+                                    <span asp-validation-for="CVV" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mt-2">
+                            <div class="row d-flex justify-content-between px-4" id="tax">
+                                <p class="mb-1 text-left">Toplam (KDV dahil)</p>
+                                <h6 class="mb-1 text-right">@Model.ToplamFiyat.ToString("C")</h6>
+                            </div>
+                            <button class="btn-block btn-secondary">
+                                <span>
+                                    <span id="checkout">Ödeme Yap</span>
+                                    <span id="check-amt">@Model.ToplamFiyat.ToString("C")</span>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const plusButtons = document.querySelectorAll('.plus');
+            const minusButtons = document.querySelectorAll('.minus');
+
+            plusButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const quantityElement = this.closest('.row').querySelector('#cnt1');
+                    let quantity = parseInt(quantityElement.textContent);
+                    quantityElement.textContent = quantity + 1;
+                });
+            });
+
+            minusButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const quantityElement = this.closest('.row').querySelector('#cnt1');
+                    let quantity = parseInt(quantityElement.textContent);
+                    if (quantity > 0) {
+                        quantityElement.textContent = quantity - 1;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

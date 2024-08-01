@@ -18,7 +18,11 @@ namespace KonserBiletim.Models
         public int KategoriID { get; set; }
         public int Miktar { get; set; }
         public decimal Fiyat { get; set; }
-
+        public string BiletGorselPath {  get; set; }
+        public string KategoriAdi {  get; set; }
+        public string KonserAdi {  get; set; }
+        public string SanatciAdi {  get; set; }
+        public string SanatciSoyadi {  get; set; }
         public virtual Sepet Sepet { get; set; }
         public virtual Bilet Bilet { get; set; }
     }

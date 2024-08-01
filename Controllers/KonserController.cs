@@ -93,16 +93,16 @@ namespace KonserBiletim.Controllers
                 con.Open();
 
                 var query1 = @"
-            SELECT k.konserID, k.konserName, k.konserDate, 
-                   l.alanName AS KonserLoc, s.sanatciName, s.description, s.profilFotoPath AS ImageURL, 
-                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                   d.yeni_tarih AS YeniTarih
-                   FROM Konser k 
-                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                   JOIN Genre g ON s.genreId = g.genre_id 
-                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                   JOIN KonserDurumu d ON k.konserID = d.konser_id
-                   WHERE k.konserID = @KonserID";
+                SELECT k.konserID, k.konserName, k.konserDate, 
+                       l.alanName AS KonserLoc, s.sanatciName, s.description, s.profilFotoPath AS ImageURL, 
+                       g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                       d.yeni_tarih AS YeniTarih
+                       FROM Konser k 
+                       JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                       JOIN Genre g ON s.genreId = g.genre_id 
+                       JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                       JOIN KonserDurumu d ON k.konserID = d.konser_id
+                       WHERE k.konserID = @KonserID";
 
                 var query2 = @"SELECT bk.kategoriID, bk.kategoriName, bk.biletFiyati, bk.kisi_sayisi
                                 FROM BiletKategori bk
