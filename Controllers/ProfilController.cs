@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Data;
+using System.Globalization;
 
 namespace KonserBiletim.Controllers
 {
@@ -135,6 +136,49 @@ namespace KonserBiletim.Controllers
             }
             return RedirectToAction("Profile","Profil");
         }
+
+        public string ConvertToDateFormat(string mmYY)
+        {
+            if (DateTime.TryParseExact(mmYY, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+            {
+                // Tarih bilgisini YYYY-MM-DD formatına dönüştür
+                return date.ToString("yyyy-MM-01"); // Ayın ilk günü olarak ayarla
+            }
+            else
+            {
+                throw new ArgumentException("Geçersiz tarih formatı.");
+            }
+        }
+
+        public async Task<IActionResult> SaveCardInfo(string mmYY, string kartNo, int cvv, string sahipIsmi, string sahipSoyismi)
+        {
+            string formattedDate = ConvertToDateFormat(mmYY);
+            string user_id = HttpContext.Session.GetString("UserID");
+            int userID = Int32.Parse(user_id);
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                await con.OpenAsync();
+
+                string query = @"INSERT INTO KartBilgileri (cust_id, kart_no, cvv, skt, sahip_ismi, sahip_soyismi) 
+                         VALUES (@CustID, @KartNo, @CVV, @Skt, @SahipIsmi, @SahipSoyismi)";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@CustID", userID); 
+                    cmd.Parameters.AddWithValue("@KartNo", kartNo);
+                    cmd.Parameters.AddWithValue("@CVV", cvv);
+                    cmd.Parameters.AddWithValue("@Skt", formattedDate);
+                    cmd.Parameters.AddWithValue("@SahipIsmi", sahipIsmi);
+                    cmd.Parameters.AddWithValue("@SahipSoyismi", sahipSoyismi);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+
+            return RedirectToAction("Index"); // veya uygun bir yönlendirme
+        }
+
 
         private string SaveUploadedFile(IFormFile file)
         {

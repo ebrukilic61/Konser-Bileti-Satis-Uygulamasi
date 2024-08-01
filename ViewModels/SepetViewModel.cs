@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using KonserBiletim.Models;
+using Microsoft.Build.Framework;
 
 namespace KonserBiletim.ViewModels
 {
@@ -21,9 +23,18 @@ namespace KonserBiletim.ViewModels
         public decimal BonusPuan {  get; set; }
         public int KartID {  get; set; }
         public string KartNo { get; set; }
-        public int CVV { get; set; }
-        public DateTime SKT { get; set; }
+
+        [Range(100, 999, ErrorMessage = "CVV alanı 3 rakamdan oluşmalıdır.")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public int? CVV { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
+        public DateTime? SKT { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
         public string SahipIsmi { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
         public string SahipSoyismi { get; set; }
         public int OdemeID {  get; set; }   
         public DateTime OdemeTarihi { get; set; }   //satın alma tarihi aynı zamanda

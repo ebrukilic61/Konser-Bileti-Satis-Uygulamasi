@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using KonserBiletim.Models;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using System.Globalization;
 
 namespace KonserBiletim.Controllers
 {
@@ -414,7 +415,7 @@ namespace KonserBiletim.Controllers
                 int odemeID = await EkleOdemeBilgileriniAsync(musteriID, toplamFiyat, model.KartID, con);
 
                 // Sepeti temizle
-                await TemizleSepetiAsync(sepetID.Value, con);
+                await SepetiTemizle(sepetID.Value, con);
 
                 // Kullanıcı puanını güncelle
                 await GuncellePuanAsync(musteriID, kullaniciPuan, con);
@@ -522,12 +523,38 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        private async Task TemizleSepetiAsync(int sepetID, SqlConnection con)
+        private async Task SepetiTemizle(int sepetID, SqlConnection con)
         {
             string query = @"DELETE FROM SepetDetay WHERE sepetID = @SepetID";
             using (SqlCommand cmd = new SqlCommand(query, con))
             {
                 cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BiletSil(int kategoriID, int konserID)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                await con.OpenAsync();
+                await BiletiSil(kategoriID, konserID, con);
+            }
+
+            return RedirectToAction("SepetGoruntule","Sepet");
+        }
+
+        private async Task BiletiSil(int kategoriID, int konserID, SqlConnection con)
+        {
+            int? sepetID = HttpContext.Session.GetInt32("SepetID");
+
+            string query = @"DELETE FROM SepetDetay WHERE sepetID = @SepetID AND kategoriID = @KategoriID AND konserID = @KonserID ";
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+                cmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kategoriID;
+                cmd.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserID;
                 await cmd.ExecuteNonQueryAsync();
             }
         }

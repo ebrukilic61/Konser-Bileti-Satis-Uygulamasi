@@ -258,8 +258,9 @@
                         </div>
                     </div>
                     <div class="col-2 text-right">
-                        <form asp-action="KonserSil" method="post">
+                        <form asp-action="BiletSil" method="post">
                             <input type="hidden" name="konserID" value="@item.KonserID" />
+                            <input type="hidden" name="kategoriID" value="@item.KategoriID" />
                             <button class="delete-button">
                                 <img src="~/images/trash-2.svg" alt="sil-buton" />
                             </button>
@@ -294,7 +295,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label asp-for="SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
-                                            <input type="text" asp-for="SahipIsmi" placeholder="Johnny Doe" required>
+                                            <input type="text" asp-for="SahipIsmi" placeholder="John" required>
                                             <span asp-validation-for="SahipIsmi" class="text-danger"></span>
                                         </div>
                                         <div class="form-group col-md-6">
@@ -312,9 +313,10 @@
                                 <div class="row px-2">
                                     <div class="form-group col-md-6">
                                         <label asp-for="SKT" class="form-control-label">Son Kullanma Tarihi:</label>
-                                        <input type="text" asp-for="SKT" placeholder="MM/YYYY" required>
+                                        <input type="text" asp-for="SKT" placeholder="MM/YYYY" required pattern="(0[1-9]|1[0-2])\/20[2-9][0-9]" minlength="7" maxlength="7" title="Lütfen geçerli bir son kullanma tarihi giriniz (MM/YYYY)">
                                         <span asp-validation-for="SKT" class="text-danger"></span>
                                     </div>
+
                                     <div class="form-group col-md-6">
                                         <label asp-for="CVV" class="form-control-label">CVV</label>
                                         <input type="text" asp-for="CVV" placeholder="***" required>
