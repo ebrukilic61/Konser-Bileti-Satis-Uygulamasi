@@ -4,6 +4,8 @@ using KonserBiletim.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KonserBiletim.Controllers
 {
@@ -90,6 +92,13 @@ namespace KonserBiletim.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Log", "Login");
+        }
+
 
         public IActionResult ResetPassword()
         {

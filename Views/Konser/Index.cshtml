@@ -3,75 +3,94 @@
     ViewData["Title"] = "Konser Listesi";
     Layout = "_Layout2";
 }
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    body{
-        margin-top:80px;
-        background: linear-gradient(90deg, rgba(254,224,229,1) 0%, rgba(238,238,224,1) 41%, rgba(231,243,229,1) 69%, rgba(215,255,242,1) 100%);
-    }
-    .card {
-        width :350px;
-        height :300px;
-    }
-    .card-footer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+    <style>
+        body {
+            margin-top: 80px;
+            background: linear-gradient(90deg, rgba(254,224,229,1) 0%, rgba(238,238,224,1) 41%, rgba(231,243,229,1) 69%, rgba(215,255,242,1) 100%);
+        }
 
-    .card:hover{
-        color: #78C2AD;
-    }
+        .card {
+            width: 350px;
+            height: 380px; /* Yüksekliği sabitleyin */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-bottom: 20px; /* Kartlar arasında boşluk bırakın */
+        }
 
-    .fw-bolder:hover{
-        color: #78C2AD;
-    }
-    .btn-group {
-        justify-content: center;
-        gap: 10px;
-        margin-top: 10px;
-        flex-direction: column;
-    }
-</style>
+        .card-img-top {
+            width: 100%;
+            height: 350px; 
+            object-fit: cover;
+        }
+
+        .card-body {
+            flex-grow: 1; /* İçeriğin kartın kalan alanını kaplamasını sağlayın */
+            overflow: hidden; /* İçeriğin taşmasını engelleyin */
+        }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column; /* Butonları alt alta yerleştirin */
+            align-items: center;
+        }
+
+        .btn-group {
+            margin-top: 10px;
+        }
+
+            .btn-group a {
+                width: 100%; /* Butonların genişliğini kartla uyumlu hale getirin */
+            }
+    </style>
+</head>
 
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col mb-5">
-            <a href="@Url.Action("Details", "Konser", new { id = item.KonserID})" class="text-decoration-none">
-            <div class="card h-100">
-                <!-- Konser image-->
-                <img src="@Url.Content(item.ImageURL)" alt="@item.SanatciName" class="card-img-top" />
-                <!-- Konser details-->
-                <div class="card-body p-4">
-                    <div class="text-center">
-                        <h4 class="fw-bolder">@item.KonserName</h4>
-                        <h5 class="card-subtitle mb-2 text-muted">@item.SanatciName</h5>
-                        <div class="d-flex justify-content-center small text-warning mb-2">
-                            <p class="card-text">@item.KonserTanim</p>
-                            <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
-                            <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
-                            <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
-                            @if (item.YeniTarih.HasValue)
-                            {
-                                <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
-                            }
+        <div class="col mb-5 d-flex justify-content-center">
+            <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
+                <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="text-decoration-none">
+                    <div class="card h-100">
+                        <!-- Konser image-->
+                        <img src="@Url.Content(item.ImageURL)" alt="@item.SanatciName" class="card-img-top" />
+                        <!-- Konser details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h4 class="fw-bolder">@item.KonserName</h4>
+                                <h5 class="card-subtitle mb-2 text-muted">@item.SanatciName</h5>
+                                <div class="d-flex flex-column small text-warning mb-2">
+                                    <p class="card-text">@item.KonserTanim</p>
+                                    <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
+                                    <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
+                                    <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
+                                    @if (item.YeniTarih.HasValue)
+                                    {
+                                        <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <!-- Konser ucreti -->
-                        <p class="card-text" href="@Url.Action("SepetGoruntule", "Sepet", new{id=item.KonserID})"><strong>Bilet Fiyatı:</strong> @item.BiletFiyati</p>
+                        <!-- butonlar -->
+                        <div class="card-footer p-4 border-top-0 bg-transparent">
+                            <div>
+                                <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
+
+                                @if (User.IsInRole("Organizator"))
+                                {
+                                    <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
+                                    <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <!-- butonlar -->
-                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-                        </div>
-                        <div class="btn-group">
-                            <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary">Detaylar</a>
-                            <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-primary">Düzenle</a>
-                        </div>
-                </div>
-            </div>
+                </a>
+            </form>
         </div>
     }
 </div>

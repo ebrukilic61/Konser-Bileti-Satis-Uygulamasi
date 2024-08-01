@@ -20,7 +20,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Login/Log";
-        options.AccessDeniedPath = "/Login/AccessDenied";
+        options.LogoutPath = "/Login/Logout";
+        options.AccessDeniedPath = "/Shared/AccessDenied";
     });
 
 builder.Services.AddAuthorization(options =>
@@ -29,12 +30,11 @@ builder.Services.AddAuthorization(options =>
     // Diğer roller için politikalar ekleyebilirsiniz
 });
 
+
 builder.Services.AddHttpContextAccessor();
 
-// MVC ve Razor Pages için servisleri ekleyin
-builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -46,6 +46,17 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+// Middleware for status code pages
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == 403)
+    {
+        response.Redirect("/Shared/AccessDenied");
+    }
+});
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

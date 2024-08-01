@@ -38,7 +38,7 @@ namespace KonserBiletim.Controllers
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                string query = @"
+                /*string query = @"
                    SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
                    l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
                    g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
@@ -49,6 +49,18 @@ namespace KonserBiletim.Controllers
                    JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
                    JOIN KonserDurumu d ON k.konserID = d.konser_id
                    JOIN BiletKategori bk ON k.konserID = bk.konser_ID";
+                */
+
+                string query = @"
+                   SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                   d.yeni_tarih AS YeniTarih
+                   FROM Konser k 
+                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                   JOIN Genre g ON s.genreId = g.genre_id 
+                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                   JOIN KonserDurumu d ON k.konserID = d.konser_id";
 
                 var results = con.Query<KonserViewModel>(query).ToList();
 
@@ -72,7 +84,7 @@ namespace KonserBiletim.Controllers
 
         // Konser detaylarını gösterir
 
-        public IActionResult Details(int id, int kid)
+        public IActionResult Details(int id)
         {
             var konser = GetKonserById(id);
             if (konser == null)

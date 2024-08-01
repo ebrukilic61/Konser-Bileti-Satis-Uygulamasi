@@ -15,7 +15,7 @@ namespace KonserBiletim.Controllers
       
         //sepete bilet ekleme
         [HttpPost]
-        public async Task<IActionResult> SepeteEkle(int konserId, int kategoriID, int biletSayisi, string kategoriAdi, string konserAdi, string sanatciAdi, int sanatciID, string fotoUrl)
+        public async Task<IActionResult> SepeteEkle(int konserId, int kategoriID, int biletSayisi, string kategoriAdi, string konserAdi, string sanatciAdi, int sanatciID, string fotoUrl, decimal biletFiyati)
         {
             
             var musteriID = HttpContext.Session.GetString("UserID");
@@ -132,11 +132,12 @@ namespace KonserBiletim.Controllers
                     {
                         //bilet fiyatı:
                         string getFiyatQuery = @"SELECT biletFiyati FROM BiletKategori WHERE kategoriID = @KategoriID";
-                        decimal biletFiyati = 0;
 
                         using (SqlCommand getFiyatCmd = new SqlCommand(getFiyatQuery, con))
                         {
                             getFiyatCmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kategoriID;
+
+                            var res = await getFiyatCmd.ExecuteScalarAsync();
 
                             if (await getFiyatCmd.ExecuteScalarAsync() != null && await getFiyatCmd.ExecuteScalarAsync() != DBNull.Value)
                             {
@@ -148,21 +149,7 @@ namespace KonserBiletim.Controllers
                                 return NotFound("Bilet fiyatı bulunamadı.");
                             }
                         }
-                        /*
-                        string insertSepetDetayQuery = @"
-                        INSERT INTO SepetDetay (sepetID, kategoriID, miktar, fiyat)
-                        VALUES (@SepetID, @KategoriID, @Miktar, @BiletFiyati)";
 
-                        using (SqlCommand cmd = new SqlCommand(insertSepetDetayQuery, con))
-                        {
-                            cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
-                            cmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kategoriID;
-                            cmd.Parameters.Add("@Miktar", SqlDbType.Int).Value = biletSayisi;
-                            cmd.Parameters.Add("@BiletFiyati", SqlDbType.Decimal).Value = biletFiyati;
-
-                            await cmd.ExecuteNonQueryAsync();
-                        }
-                        */
                         string insertSepetDetayQuery = @"
                         INSERT INTO SepetDetay (sepetID, kategoriID, miktar, fiyat, konserID, BiletGorselPath, KategoriAdi, KonserAdi, SanatciAdi)
                         VALUES (@SepetID, @KategoriID, @Miktar, @BiletFiyati, @KonserID, @BiletGorselPath, @KategoriAdi, @KonserAdi, @SanatciAdi)";
@@ -279,75 +266,118 @@ namespace KonserBiletim.Controllers
             return View(model);
         }
 
-        /*
-        [HttpGet]
-        public async Task<IActionResult> SepetGoruntule()
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateBiletMiktar(int konserID, int miktar)
         {
-            SepetViewModel model = new SepetViewModel();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    await con.OpenAsync();
+
+                    var sepetID = HttpContext.Session.GetInt32("SepetID");
+                    if (sepetID == null)
+                    {
+                        return Json(new { success = false, message = "SepetID bulunamadı." });
+                    }
+
+
+                    string updateQuery = @"UPDATE SepetDetay
+                                   SET miktar = @Miktar
+                                   WHERE konserID = @KonserID AND sepetID = @SepetID";
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, con))
+                    {
+                        cmd.Parameters.Add("@Miktar", SqlDbType.Int).Value = miktar;
+                        cmd.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserID;
+                        cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                        if (rowsAffected > 0)
+                        {
+                            return Json(new { success = true });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Güncelleme başarısız oldu." });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetTotalPrice()
+        {
+            // Sepetteki tüm biletlerin toplam fiyatını hesapla
+            var toplamFiyat = HesaplaToplamFiyat(); 
+
+            return Json(new { success = true, totalPrice = toplamFiyat });
+        }
+
+        private decimal HesaplaToplamFiyat()
+        {
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
+
+            // Eğer sepetID null ise 0 döner
             if (sepetID == null)
             {
-                return NotFound("Sepet bulunamadı.");
+                return 0;
             }
 
-            using (SqlConnection con = new SqlConnection(connectionString))
+            SepetViewModel model = GetSepetDetaylarFromDatabase(sepetID.Value);
+
+            decimal toplamFiyat = 0;
+
+            // SepetDetaylar null değilse ve içinde eleman varsa fiyat hesapla
+            if (model.SepetDetaylar != null && model.SepetDetaylar.Any())
             {
-                await con.OpenAsync();
-
-                // Sepet detaylarını al
-                string getSepetQuery = @"SELECT * FROM Sepet WHERE sepetID = @SepetID";
-                using (SqlCommand cmd = new SqlCommand(getSepetQuery, con))
+                foreach (var item in model.SepetDetaylar)
                 {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID.Value;
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (reader.Read())
-                        {
-                            model.SepetID = reader["sepetID"] != DBNull.Value ? (int)reader["sepetID"] : 0;
-                            model.MusteriID = reader["musteriID"] != DBNull.Value ? (int)reader["musteriID"] : 0;
-                        }
-                    }
+                    toplamFiyat += item.Fiyat * item.Miktar;
                 }
+            }
 
-                // Sepet detaylarını al
-                string getSepetDetayQuery = @"
-                SELECT sd.miktar, sd.fiyat, sd.konserID, b.kategoriName, k.konserName,
-                       s.sanatciName, s.profilFotoPath AS SanatciProfilFotoPath
-                FROM SepetDetay sd
-                JOIN BiletKategori b ON sd.kategoriID = b.kategoriID
-                JOIN Konser k ON sd.konserID = k.konserID
-                JOIN Sanatci s ON k.sanatciID = s.sanatciID
-                WHERE sd.sepetID = @SepetID";
-                using (SqlCommand cmd = new SqlCommand(getSepetDetayQuery, con))
+            return toplamFiyat;
+        }
+
+        private SepetViewModel GetSepetDetaylarFromDatabase(int sepetID)
+        {
+            SepetViewModel model = new SepetViewModel();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT sd.fiyat, sd.miktar FROM SepetDetay sd WHERE sd.SepetID = @SepetID";
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID.Value;
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         model.SepetDetaylar = new List<SepetDetay>();
-                        while (await reader.ReadAsync())
+                        while (reader.Read())
                         {
-                            var sanatciProfilFotoPath = reader["SanatciProfilFotoPath"] != DBNull.Value ? (string)reader["SanatciProfilFotoPath"] : string.Empty;
                             model.SepetDetaylar.Add(new SepetDetay
                             {
-                                KonserID = reader["konserID"] != DBNull.Value ? (int)reader["konserID"] : 0,
-                                KategoriID = reader["kategoriID"] != DBNull.Value ? (int)reader["kategoriID"] : 0,
-                                Miktar = reader["miktar"] != DBNull.Value ? (int)reader["miktar"] : 0,
-                                Fiyat = reader["fiyat"] != DBNull.Value ? (decimal)reader["fiyat"] : 0,
-                                KonserAdi = reader["konserName"].ToString(),
-                                SanatciAdi = reader["sanatciName"].ToString(),
-                                KategoriAdi = reader["kategoriName"].ToString(),
-                                BiletGorselPath = string.IsNullOrEmpty(sanatciProfilFotoPath) ? string.Empty : $"~/images/singers/icons/{sanatciProfilFotoPath}"
+                                Fiyat = reader.GetDecimal(reader.GetOrdinal("fiyat")),
+                                Miktar = reader.GetInt32(reader.GetOrdinal("miktar"))
                             });
                         }
-
-                        model.ToplamFiyat = model.SepetDetaylar.Sum(sd => sd.Fiyat * sd.Miktar);
+                        reader.Close();
                     }
                 }
+                return model;
             }
 
-            return View(model);
         }
-        */
+
         [HttpPost]
         public async Task<IActionResult> OdemeYap(SepetViewModel model, Dictionary<int, int> updatedQuantities)
         {

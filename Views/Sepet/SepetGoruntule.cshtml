@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMO2xrLa0tjF6x3r5yB1Jhb8yho5WroZGPw7iT2" crossorigin="anonymous">
 
     <style>
-        body{
-            margin-top:60px;
+        body {
+            margin-top: 60px;
         }
+
         .bilet {
             display: flex;
             align-items: center;
@@ -244,9 +245,9 @@
                     <div class="row">
                         <div class="col-2 d-flex justify-content-end align-items-center">
                             <div class="plus-minus">
-                                <span class="vsm-text plus">+</span>
+                                <span class="vsm-text plus" data-konserid="@item.KonserID">+</span>
                                 <p class="mb-0" id="cnt1">@item.Miktar</p>
-                                <span class="vsm-text minus">-</span>
+                                <span class="vsm-text minus" data-konserid="@item.KonserID">-</span>
                             </div>
                             <div class="col-5">
                                 <p class="mob-text">@item.KategoriAdi</p>
@@ -260,7 +261,7 @@
                         <form asp-action="KonserSil" method="post">
                             <input type="hidden" name="konserID" value="@item.KonserID" />
                             <button class="delete-button">
-                                <img src= "~/images/trash-2.svg" alt = "sil-buton" />
+                                <img src="~/images/trash-2.svg" alt="sil-buton" />
                             </button>
                         </form>
                     </div>
@@ -286,6 +287,7 @@
                             <input type="hidden" name="kart_no" value="@Model.KartNo" />
                             <input type="hidden" name="skt" value="@Model.SKT" />
                             <input type="hidden" name="cvv" value="@Model.CVV" />
+                            <input type="hidden" id="totalPriceInput" name="totalPrice" />
 
                             <div class="col-lg-5">
                                 <div class="row px-2">
@@ -344,43 +346,107 @@
         document.addEventListener('DOMContentLoaded', function () {
             const plusButtons = document.querySelectorAll('.plus');
             const minusButtons = document.querySelectorAll('.minus');
+            const toplamFiyatElem = document.getElementById('toplamFiyat');
+            const totalPriceInput = document.getElementById('totalPriceInput');
+            const itemElements = document.querySelectorAll('.row.d-flex');
+
+            function updateItemQuantity(konserID, miktar) {
+                fetch('/Sepet/UpdateBiletMiktar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ konserID: konserID, miktar: miktar })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Toplam fiyatı güncellemek için sunucuya istek gönder
+                            fetch('/Sepet/GetTotalPrice', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                                },
+                                body: JSON.stringify({})
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        document.getElementById('toplamFiyat').textContent = data.totalPrice.toFixed(2) + ' ₺';
+                                        totalPriceInput.value = data.totalPrice.toFixed(2); // Gizli input değerini güncelle
+                                    } else {
+                                        alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Fetch error:', error);
+                                    alert('Bir hata oluştu: ' + error.message);
+                                });
+                        } else {
+                            alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        alert('Bir hata oluştu: ' + error.message);
+                    });
+            }
 
             plusButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('#cnt1');
-                    let quantity = parseInt(quantityElement.textContent);
-                    quantityElement.textContent = quantity + 1;
+                    const quantityElement = this.closest('.row').querySelector('.miktar');
+                    const konserID = this.dataset.konserid;
+                    if (quantityElement) {
+                        let miktar = parseInt(quantityElement.textContent, 10);
+                        quantityElement.textContent = ++miktar;
+                        updateItemQuantity(konserID, miktar);
+                    }
                 });
             });
 
             minusButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('#cnt1');
-                    let quantity = parseInt(quantityElement.textContent);
-                    if (quantity > 0) {
-                        quantityElement.textContent = quantity - 1;
+                    const quantityElement = this.closest('.row').querySelector('.miktar');
+                    const konserID = this.dataset.konserid;
+                    if (quantityElement) {
+                        let miktar = parseInt(quantityElement.textContent, 10);
+                        if (miktar > 1) {
+                            quantityElement.textContent = --miktar;
+                            updateItemQuantity(konserID, miktar);
+                        }
                     }
                 });
             });
 
-            const biletSayisiInput = document.getElementById('BiletSayisi');
-            const kategoriSelect = document.getElementById('Kategori');
-            const toplamFiyatInput = document.getElementById('ToplamFiyat');
-
-            function updateTotalPrice() {
-                const biletSayisi = parseInt(biletSayisiInput.value, 10);
-                const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
-                const fiyat = parseFloat(selectedOption.text.split('-')[1].replace('₺', '').trim());
-
-                const toplamFiyat = biletSayisi * fiyat;
-                toplamFiyatInput.value = toplamFiyat.toFixed(2) + ' ₺';
-            }
-
-            biletSayisiInput.addEventListener('input', updateTotalPrice);
-            kategoriSelect.addEventListener('change', updateTotalPrice);
-
-            // İlk yüklemede toplam fiyatı hesapla
-            updateTotalPrice();
+            // İlk yüklendiğinde toplam fiyatı hesapla
+            fetch('/Sepet/GetTotalPrice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('toplamFiyat').textContent = data.totalPrice.toFixed(2) + ' ₺';
+                        totalPriceInput.value = data.totalPrice.toFixed(2);
+                    } else {
+                        alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    alert('Bir hata oluştu: ' + error.message);
+                });
         });
     </script>
 </body>
