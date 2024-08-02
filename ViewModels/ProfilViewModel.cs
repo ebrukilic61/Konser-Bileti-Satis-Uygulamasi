@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KonserBiletim.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace KonserBiletim.ViewModels
 {
@@ -7,6 +8,7 @@ namespace KonserBiletim.ViewModels
         public int UserID {  get; set; } //id
         public string Name {  get; set; }
         public string Surname {  get; set; }
+
         [Required]
         [StringLength(100)]
         [DataType(DataType.EmailAddress)]
@@ -20,5 +22,6 @@ namespace KonserBiletim.ViewModels
         public string ProfilFotoPath { get; set; } //profil foto url
 
         public IFormFile ProfilFoto { get; set; }
+        public IEnumerable<KartViewModel> Kartlar { get; set; }
     }
 }

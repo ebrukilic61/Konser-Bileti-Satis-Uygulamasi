@@ -46,5 +46,6 @@ namespace KonserBiletim.ViewModels
         public string BiletGorselPath {  get; set; }
         public int Miktar { get; set; }
         public decimal Fiyat { get; set; }
+        public bool BosSepet { get; set; } //bos sepet kontrolu icin
     }
 }

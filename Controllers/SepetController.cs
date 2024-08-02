@@ -231,7 +231,15 @@ namespace KonserBiletim.Controllers
                     reader.Close();
 
                     model.ToplamFiyat = model.SepetDetaylar.Sum(sd => sd.Fiyat * sd.Miktar);
-                    model.KonserID = model.SepetDetaylar[0].KonserID;
+
+                    if (!model.SepetDetaylar.Any())
+                    {
+                        model.BosSepet = true; // Boş sepet olduğunu belirten bir bayrak ekleyin
+                    }
+                    else
+                    {
+                        model.KonserID = model.SepetDetaylar[0].KonserID;
+                    }
                 }
 
                 string getNameQuery = @"

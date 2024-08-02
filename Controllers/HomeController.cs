@@ -33,17 +33,22 @@ namespace KonserBiletim.Controllers
 
         public async Task<IActionResult> Sepet()
         {
-            // musteriID'yi string olarak aldýnýz, bunu int'e dönüþtürmelisiniz
+            // Müþteri ID'sini string olarak aldýnýz, bunu int'e dönüþtürmelisiniz
             var musteriIDString = HttpContext.Session.GetString("UserID");
-            int musteriID = int.Parse(musteriIDString);
+            if (string.IsNullOrEmpty(musteriIDString) || !int.TryParse(musteriIDString, out int musteriID))
+            {
+                // Müþteri ID'si oturumda yoksa ya da geçersizse hata döndür
+                return BadRequest("Müþteri ID'si bulunamadý.");
+            }
+
             int sepetID;
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 await con.OpenAsync();
 
+                // Sepet var mý kontrol et
                 string checkSepetQuery = @"SELECT sepetID FROM Sepet WHERE musteriID = @MusteriID";
-
                 using (SqlCommand cmd = new SqlCommand(checkSepetQuery, con))
                 {
                     cmd.Parameters.Add("@MusteriID", SqlDbType.Int).Value = musteriID;
@@ -52,7 +57,6 @@ namespace KonserBiletim.Controllers
                     if (result != null)
                     {
                         sepetID = (int)result;
-                        HttpContext.Session.SetInt32("SepetID", sepetID);
                     }
                     else
                     {
@@ -62,13 +66,18 @@ namespace KonserBiletim.Controllers
                         {
                             createCmd.Parameters.Add("@MusteriID", SqlDbType.Int).Value = musteriID;
                             sepetID = (int)await createCmd.ExecuteScalarAsync();
-                            HttpContext.Session.SetInt32("SepetID", sepetID);
                         }
                     }
+
+                    // Sepet ID'sini oturuma kaydet
+                    HttpContext.Session.SetInt32("SepetID", sepetID);
                 }
             }
-            return RedirectToAction("SepetGoruntule", "Sepet");
+
+            // Sepet sayfasýna yönlendir
+            return RedirectToAction("SepetGoruntule","Sepet");
         }
+
 
         public IActionResult Privacy()
         {

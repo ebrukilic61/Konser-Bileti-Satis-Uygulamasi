@@ -7,7 +7,7 @@
 <h2>Sepete Ekle</h2>
 
 <form asp-action="SepetGoruntule" method="post">
-    <input type="hidden" asp-for="SepetID" />
+    <input type="hidden" asp-for="SepetID" value="@Model.SepetID"/>
     <input type="hidden" asp-for="MusteriID" />
     <input type="hidden" asp-for="KonserID" value="@Model.KonserID" />
 
