@@ -22,6 +22,7 @@ namespace KonserBiletim.ViewModels
         public string ProfilFotoPath { get; set; } //profil foto url
 
         public IFormFile ProfilFoto { get; set; }
+        public KartViewModel Kart { get; set; }
         public IEnumerable<KartViewModel> Kartlar { get; set; }
     }
 }

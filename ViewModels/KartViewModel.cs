@@ -16,7 +16,8 @@ namespace KonserBiletim.ViewModels
         public int? CVV { get; set; }
 
         [Required]
-        public DateTime SKT { get; set; }
+        [StringLength(5, ErrorMessage = "Son Kullanma Tarihi MM/YY formatında olmalıdır.")]
+        public string SKT { get; set; }
 
         [Required]
         public string SahipIsmi { get; set; }
@@ -24,6 +25,5 @@ namespace KonserBiletim.ViewModels
         [Required]
         public string SahipSoyismi { get; set; }
 
-        public string FormattedSKT => SKT.ToString("MM/yy");
     }
 }

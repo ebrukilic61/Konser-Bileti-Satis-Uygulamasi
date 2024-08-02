@@ -16,7 +16,7 @@
         body {
             background-color: #eee;
             color: #495057;
-            margin-top:50px;
+            margin-top: 50px;
         }
 
         .main-body {
@@ -54,7 +54,7 @@
         }
 
             .btn-dark:hover {
-                background-color: #;
+                background-color: #7bc3ab;
             }
 
         .card .master {
@@ -85,6 +85,7 @@
             background-color: #21D4FD;
             background-image: linear-gradient(116deg, #aaa8d4 10%, #d7abe6 100%);
         }
+
         .text-muted {
             color: #6c757d;
         }
@@ -183,12 +184,12 @@
                         <br />
                         <div class="wrapper">
                             <div class="card px-4">
-                                <div class=" my-3">
+                                <div class="my-3">
                                     <h4>Kayıtlı Kart Bilgileri</h4>
-                                    <p class="text-muted "</p>
+                                    <p class="text-muted"></p>
                                 </div>
 
-                                @if (Model.Kartlar != null)
+                                @if (Model.Kartlar != null && Model.Kartlar.Any())
                                 {
                                     @foreach (var item in Model.Kartlar)
                                     {
@@ -197,8 +198,7 @@
                                                 <label class="d-block">
                                                     <div class="d-flex position-relative">
                                                         <div>
-                                                            <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png"
-                                                                 alt="master" class="master">
+                                                            <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png" alt="master" class="master">
                                                             <p class="text-white fw-bold">@item.SahipIsmi @item.SahipSoyismi</p>
                                                         </div>
                                                         <div class="input">
@@ -213,10 +213,9 @@
                                                     </div>
                                                     <div>
                                                         <label for="skt" class="d-block">SKT:</label>
-                                                        <p class="m-0" id="skt">@item.FormattedSKT</p>
+                                                        <p class="m-0" id="skt">@item.SKT</p>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     }
@@ -226,10 +225,44 @@
                                     <p>Kart bilgileri bulunmamaktadır.</p>
                                 }
 
-
-                                <div class="btn btn-dark" style="width:100px;margin:10px;">
+                                <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#kartEkleFormu" aria-expanded="false" aria-controls="kartEkleFormu" style="width:200px;margin:10px">
                                     Kart Ekle
+                                </button>
+
+                                <div class="collapse" id="kartEkleFormu">
+                                    <div class="collapse-card mt-4">
+                                        <h5>Yeni Kart Ekle</h5>
+                                        <form asp-action="KartEkle" method="post">
+                                            <div class="mb-3">
+                                                <label for="KartNo" class="form-label">Kart Numarası</label>
+                                                <input type="text" class="form-control" id="KartNo" name="KartNo" required />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="SahipIsmi" class="form-label">Kart Sahibi İsmi</label>
+                                                <input type="text" class="form-control" id="SahipIsmi" name="SahipIsmi" required />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="SahipSoyismi" class="form-label">Kart Sahibi Soyismi</label>
+                                                <input type="text" class="form-control" id="SahipSoyismi" name="SahipSoyismi" required />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="SKT" class="form-label">Son Kullanma Tarihi (MM/YY)</label>
+                                                <input type="text" class="form-control" id="SKT" name="SKT" required />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="CVV" class="form-label">CVV</label>
+                                                <input type="text" class="form-control" id="CVV" name="CVV" required />
+                                            </div>
+
+                                            <button type="submit" class="btn btn-dark" style="margin:10px">Ekle</button>
+                                        </form>
+                                    </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -237,6 +270,6 @@
         </div>
     </div>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

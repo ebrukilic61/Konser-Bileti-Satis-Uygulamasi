@@ -14,11 +14,11 @@ namespace KonserBiletim.Controllers
     {
         private string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Lenovo\\Documents\\BiletSistemiDB.mdf;Integrated Security=True;Connect Timeout=30";
 
-        public ActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
             var model = new ProfilViewModel
             {
-                Kartlar = GetKartlar() // Kartlar listesini buraya atayın
+                Kartlar = await GetKartlar() // Kartlar listesini buraya atayın
             };
 
             string user_id = HttpContext.Session.GetString("UserID");
@@ -66,11 +66,11 @@ namespace KonserBiletim.Controllers
             return View(model);
         }
 
-        private IEnumerable<KartViewModel> GetKartlar() //query ekle
+        private async Task<IEnumerable<KartViewModel>> GetKartlar() // async olarak tanımla
         {
-            List<KartViewModel> kartListesi = new List<KartViewModel> ();
+            List<KartViewModel> kartListesi = new List<KartViewModel>();
 
-            using (SqlConnection con = new SqlConnection(connectionString)) 
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
                 string user_id = HttpContext.Session.GetString("UserID");
@@ -83,20 +83,20 @@ namespace KonserBiletim.Controllers
                 }
 
                 string query = @"SELECT kart_no, cvv, skt, sahip_ismi, sahip_soyismi FROM KartBilgileri
-                WHERE cust_id = @CustID";
+        WHERE cust_id = @CustID";
 
-                using (SqlCommand cmd = new SqlCommand(query, con)) 
+                using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.Add("@CustID",SqlDbType.Int).Value = userID;
-                    using (SqlDataReader dreader = cmd.ExecuteReader())
+                    cmd.Parameters.Add("@CustID", SqlDbType.Int).Value = userID;
+                    using (SqlDataReader dreader = await cmd.ExecuteReaderAsync())
                     {
-                        while (dreader.Read())
+                        while (await dreader.ReadAsync())
                         {
                             KartViewModel kart = new KartViewModel()
                             {
                                 KartNo = dreader["kart_no"].ToString(),
                                 CVV = Convert.ToInt32(dreader["cvv"]),
-                                SKT = Convert.ToDateTime(dreader["skt"]), //bunun için bir metod olusturmustum ConvertToDateFormat diye
+                                SKT = dreader["skt"].ToString(),
                                 SahipIsmi = dreader["sahip_ismi"].ToString(),
                                 SahipSoyismi = dreader["sahip_soyismi"].ToString()
                             };
@@ -105,61 +105,68 @@ namespace KonserBiletim.Controllers
                         }
                     }
                 }
-            
             }
-                return kartListesi; 
+            return kartListesi;
         }
 
-        public async Task<IActionResult> KartEkle(KartViewModel model, string date)
+        [HttpPost]
+        public async Task<IActionResult> KartEkle(KartViewModel model)
         {
             if (ModelState.IsValid)
             {
-                int? userID = HttpContext.Session.GetInt32("UserID");
+                string user_id = HttpContext.Session.GetString("UserID");
+                int userID = Int32.Parse(user_id);
 
                 try
                 {
-                    DateTime sktDate = ConvertToDateFormat(date); // Tarih formatı kontrolü burada yapılır
-
+                    bool kartVarMi = false;
                     using (SqlConnection con = new SqlConnection(connectionString))
                     {
                         await con.OpenAsync();
-
-                        string query = @"INSERT INTO KartBilgileri (cust_id, kart_no, cvv, skt, sahip_ismi, sahip_soyismi)
-                                 VALUES (@CustID, @KartNo, @CVV, @SKT, @SahipIsmi, @SahipSoyismi)";
-
-                        using (SqlCommand cmd = new SqlCommand(query, con))
+                        string checkQuery = @"SELECT COUNT(1) FROM KartBilgileri WHERE cust_id = @CustID AND kart_no = @KartNo";
+                        using (SqlCommand checkCmd = new SqlCommand(checkQuery, con))
                         {
-                            cmd.Parameters.AddWithValue("@CustID", userID);
-                            cmd.Parameters.AddWithValue("@KartNo", model.KartNo);
-                            cmd.Parameters.AddWithValue("@CVV", model.CVV);
-                            cmd.Parameters.AddWithValue("@SKT", sktDate); // Tarihi burada SQL komutuna ekleyin
-                            cmd.Parameters.AddWithValue("@SahipIsmi", model.SahipIsmi);
-                            cmd.Parameters.AddWithValue("@SahipSoyismi", model.SahipSoyismi);
-
-                            await cmd.ExecuteNonQueryAsync();
+                            checkCmd.Parameters.AddWithValue("@CustID", userID);
+                            checkCmd.Parameters.AddWithValue("@KartNo", model.KartNo);
+                            kartVarMi = (int)await checkCmd.ExecuteScalarAsync() > 0;
                         }
                     }
-                    return RedirectToAction("Profile", "Profil");
-                }
-                catch (ArgumentException ex)
-                {
-                    // Geçersiz tarih formatı durumunda kullanıcıya bir hata mesajı gösterin
-                    ModelState.AddModelError("", ex.Message);
-                }
-            }
-            return View(model);
-        }
 
-        public DateTime ConvertToDateFormat(string mmYY)
-        {
-            if (DateTime.TryParseExact(mmYY, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
-            {
-                return new DateTime(date.Year, date.Month, 1); // Tarihi ayın ilk günü olarak döndür
+                    if (kartVarMi)
+                    {
+                        ViewBag.Message = "Bu kart sistemde kayıtlıdır";
+                    }
+                    else
+                    {
+                        using (SqlConnection con = new SqlConnection(connectionString))
+                        {
+                            await con.OpenAsync();
+                            string query = @"INSERT INTO KartBilgileri (cust_id, kart_no, cvv, skt, sahip_ismi, sahip_soyismi)
+                                    VALUES (@CustID, @KartNo, @CVV, @SKT, @SahipIsmi, @SahipSoyismi)";
+
+                            using (SqlCommand cmd = new SqlCommand(query, con))
+                            {
+                                cmd.Parameters.AddWithValue("@CustID", userID);
+                                cmd.Parameters.AddWithValue("@KartNo", model.KartNo);
+                                cmd.Parameters.AddWithValue("@CVV", model.CVV);
+                                cmd.Parameters.AddWithValue("@SKT", model.SKT);
+                                cmd.Parameters.AddWithValue("@SahipIsmi", model.SahipIsmi);
+                                cmd.Parameters.AddWithValue("@SahipSoyismi", model.SahipSoyismi);
+
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        ViewBag.Message = "Kart başarıyla kaydedildi!";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = $"Bir hata oluştu: {ex.Message}";
+                }
             }
-            else
-            {
-                throw new ArgumentException("Geçersiz tarih formatı.");
-            }
+
+            return RedirectToAction("Profile", "Profil");
         }
 
 

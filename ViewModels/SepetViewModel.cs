@@ -29,7 +29,7 @@ namespace KonserBiletim.ViewModels
         public int? CVV { get; set; }
 
         [System.ComponentModel.DataAnnotations.Required]
-        public DateTime? SKT { get; set; }
+        public string SKT { get; set; }
 
         [System.ComponentModel.DataAnnotations.Required]
         public string SahipIsmi { get; set; }
