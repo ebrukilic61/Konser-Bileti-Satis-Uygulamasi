@@ -42,7 +42,7 @@
             margin: 0;
             font-size: 16px;
             font-weight: 500;
-            margin-left: 160px;
+            margin-left: 150px;
         }
 
         .row.d-flex {
@@ -212,18 +212,16 @@
 <body>
     <div class="container px-4 py-5 mx-auto">
         <div class="row d-flex justify-content-center">
-            <div class="col-2">
+            <div class="col-12">
                 <h4 class="heading">Sepetim</h4>
             </div>
-            <div class="col-7">
-                <div class="row text-right">
-                    <div class="col-4">
-                        <h6 class="mt-2">Miktar</h6>
-                    </div>
-                    <div class="col-4">
-                        <h6 class="mt-2">Fiyat</h6>
-                    </div>
-                </div>
+        </div>
+        <div class="row d-flex text-right mb-3">
+            <div class="col-4">
+                <h6>Miktar</h6>
+            </div>
+            <div class="col-4">
+                <h6>Fiyat</h6>
             </div>
         </div>
         @if (!Model.SepetDetaylar.Any())
@@ -256,11 +254,11 @@
                                     <p class="mb-0" id="cnt1">@item.Miktar</p>
                                     <span class="vsm-text minus" data-konserid="@item.KonserID">-</span>
                                 </div>
-                                <div class="col-5">
+                                <div class="col-9 text-left">
                                     <p class="mob-text">@item.KategoriAdi</p>
                                 </div>
                             </div>
-                            <div class="col-3 text-right">
+                            <div class="col-4 text-right">
                                 <h6 class="mob-text">@item.Fiyat.ToString("C")</h6>
                             </div>
                         </div>
@@ -333,11 +331,12 @@
                             </div>
                             <div class="col-lg-4 mt-2">
                                 <div class="row d-flex justify-content-between px-4" id="tax">
+                                    <input type="hidden" name="ToplamFiyat" value="@Model.ToplamFiyat" />
+                                    <input type="hidden" name="FinalFiyat" value="@Model.FinalFiyat" />
                                     <p class="mb-1 text-left">Toplam: </p>
                                     <h6 class="mb-1 text-left" id="toplamFiyat">@Model.ToplamFiyat.ToString("C")</h6>
-                                    <p class="mb-1 text-left">İndirim: </p>
-                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.</h6>
-                                </div>
+                                    <p class="mb-1 text-left">İndirimli Fiyat: </p>
+                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.FinalFiyat.ToString("C")</h6> 
                                 <br />
                                 <button class="btn btn-dark">
                                     <span>
@@ -345,118 +344,13 @@
                                     </span>
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const plusButtons = document.querySelectorAll('.plus');
-            const minusButtons = document.querySelectorAll('.minus');
-            const toplamFiyatElem = document.getElementById('toplamFiyat');
-            const totalPriceInput = document.getElementById('totalPriceInput');
-            const itemElements = document.querySelectorAll('.row.d-flex');
-
-            function updateItemQuantity(konserID, miktar) {
-                fetch('/Sepet/UpdateBiletMiktar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify({ konserID: konserID, miktar: miktar })
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            // Toplam fiyatı güncellemek için sunucuya istek gönder
-                            fetch('/Sepet/GetTotalPrice', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                                },
-                                body: JSON.stringify({})
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        document.getElementById('toplamFiyat').textContent = data.totalPrice.toFixed(2) + ' ₺';
-                                        totalPriceInput.value = data.totalPrice.toFixed(2); // Gizli input değerini güncelle
-                                    } else {
-                                        alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Fetch error:', error);
-                                    alert('Bir hata oluştu: ' + error.message);
-                                });
-                        } else {
-                            alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Fetch error:', error);
-                        alert('Bir hata oluştu: ' + error.message);
-                    });
-            }
-
-            plusButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('.miktar');
-                    const konserID = this.dataset.konserid;
-                    if (quantityElement) {
-                        let miktar = parseInt(quantityElement.textContent, 10);
-                        quantityElement.textContent = ++miktar;
-                        updateItemQuantity(konserID, miktar);
-                    }
-                });
-            });
-
-            minusButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('.miktar');
-                    const konserID = this.dataset.konserid;
-                    if (quantityElement) {
-                        let miktar = parseInt(quantityElement.textContent, 10);
-                        if (miktar > 1) {
-                            quantityElement.textContent = --miktar;
-                            updateItemQuantity(konserID, miktar);
-                        }
-                    }
-                });
-            });
-
-            // İlk yüklendiğinde toplam fiyatı hesapla
-            fetch('/Sepet/GetTotalPrice', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('toplamFiyat').textContent = data.totalPrice.toFixed(2) + ' ₺';
-                        totalPriceInput.value = data.totalPrice.toFixed(2);
-                    } else {
-                        alert('Bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    alert('Bir hata oluştu: ' + error.message);
-                });
-        });
-    </script>
+    
 </body>
 </html>

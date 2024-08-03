@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Data;
 using System.Data.SqlClient;
+using Dapper;
+using Humanizer.Localisation;
 
 namespace KonserBiletim.Controllers
 {
@@ -26,9 +28,150 @@ namespace KonserBiletim.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Anasayfa()
+        public async Task<IActionResult> Anasayfa(string genre = null, string searchTerm = null)
         {
-            return View();
+            IEnumerable<KonserViewModel> konserler;
+            if (string.IsNullOrEmpty(genre))
+            {
+                konserler = GetKonserler();
+            }
+            else
+            {
+                konserler = GetConcertsByGenre(genre);
+            }
+
+            var sanatcilar = GetSanatcilar();
+
+            var model = new KonserSanatciViewModel
+            {
+                Konserler = konserler,
+                Sanatcilar = sanatcilar,
+                SearchTerm = searchTerm
+            };
+
+            return View(model);
+        }
+
+        private IEnumerable<KonserViewModel> GetKonserler()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                string query = @"
+                   SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                   d.yeni_tarih AS YeniTarih
+                   FROM Konser k 
+                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                   JOIN Genre g ON s.genreId = g.genre_id 
+                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                   JOIN KonserDurumu d ON k.konserID = d.konser_id";
+
+                var results = con.Query<KonserViewModel>(query).ToList();
+
+                if (results.Count == 0)
+                {
+                    return Enumerable.Empty<KonserViewModel>();
+                }
+
+                string fileName = "/images/singers/icons/";
+
+                foreach (var result in results)
+                {
+                    result.ImageURL = fileName + result.ImageURL;
+                    // Loglama
+                    Console.WriteLine($"ID: {result.KonserID}, ImageURL: {result.ImageURL}");
+                }
+
+                return results;
+            }
+        }
+
+        private IEnumerable<KonserViewModel> GetKonserler(string genre = null, string searchTerm = null)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                string query = @"
+            SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                   d.yeni_tarih AS YeniTarih
+            FROM Konser k 
+            JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+            JOIN Genre g ON s.genreId = g.genre_id 
+            JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+            JOIN KonserDurumu d ON k.konserID = d.konser_id
+            WHERE (@genre IS NULL OR g.genre_name = @genre)
+              AND (@searchTerm IS NULL OR k.konserName LIKE '%' + @searchTerm + '%' OR k.konserTanim LIKE '%' + @searchTerm + '%')";
+
+                var parameters = new
+                {
+                    genre = genre,
+                    searchTerm = searchTerm
+                };
+
+                var results = con.Query<KonserViewModel>(query, parameters).ToList();
+
+                if (results.Count == 0)
+                {
+                    return Enumerable.Empty<KonserViewModel>();
+                }
+
+                string fileName = "/images/singers/icons/";
+
+                foreach (var result in results)
+                {
+                    result.ImageURL = fileName + result.ImageURL;
+                    Console.WriteLine($"ID: {result.KonserID}, ImageURL: {result.ImageURL}");
+                }
+
+                return results;
+            }
+        }
+
+        private IEnumerable<KonserViewModel> GetConcertsByGenre(string genreName)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                string query = @"SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                d.yeni_tarih AS YeniTarih
+                FROM Konser k 
+                JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                JOIN Genre g ON s.genreId = g.genre_id 
+                JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                JOIN KonserDurumu d ON k.konserID = d.konser_id
+                WHERE g.genre_name = @GenreName";
+
+                return con.Query<KonserViewModel>(query, new { GenreName = genreName }).ToList();
+            }
+        }
+
+        public IEnumerable<KonserViewModel> GetJazzConcerts()
+        {
+            return GetConcertsByGenre("Jazz");
+        }
+
+        public IEnumerable<KonserViewModel> GetRockConcerts()
+        {
+            return GetConcertsByGenre("Rock");
+        }
+
+        public IEnumerable<KonserViewModel> GetPopConcerts()
+        {
+            return GetConcertsByGenre("Pop");
+        }
+
+        public IEnumerable<KonserViewModel> GetClassicalConcerts()
+        {
+            return GetConcertsByGenre("Klasik");
         }
 
         public async Task<IActionResult> Sepet()
@@ -78,6 +221,32 @@ namespace KonserBiletim.Controllers
             return RedirectToAction("SepetGoruntule","Sepet");
         }
 
+        private IEnumerable<Sanatci> GetSanatcilar()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT sanatciID, sanatciName, profilFotoPath FROM Sanatci";
+
+                var results = con.Query<Sanatci>(query).ToList();
+
+                if (results.Count == 0)
+                {
+                    return Enumerable.Empty<Sanatci>();
+                }
+
+                // Profil fotoðraflarýnýn yolu
+                string fileName = "/images/singers/icons/";
+
+                foreach (var result in results)
+                {
+                    result.profilFotoPath = fileName + result.profilFotoPath;
+                    Console.WriteLine($"ID: {result.sanatciID}, ProfilFotoPath: {result.profilFotoPath}");
+                }
+
+                return results;
+            }
+        }
 
         public IActionResult Privacy()
         {

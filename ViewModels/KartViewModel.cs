@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KonserBiletim.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace KonserBiletim.ViewModels
@@ -24,6 +25,8 @@ namespace KonserBiletim.ViewModels
 
         [Required]
         public string SahipSoyismi { get; set; }
+        [Required]
+        public IEnumerable<KartViewModel> Kartlar { get; set; }
 
     }
 }

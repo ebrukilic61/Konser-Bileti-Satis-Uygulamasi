@@ -244,7 +244,7 @@ namespace KonserBiletim.Controllers
                     model.ProfilFotoPath = $"~/uploads/{model.ProfilFotoPath}";
                 }
             }
-            return RedirectToAction("Profile","Profil");
+            return RedirectToAction("Profile", "Profil");
         }
 
         private string SaveUploadedFile(IFormFile file)

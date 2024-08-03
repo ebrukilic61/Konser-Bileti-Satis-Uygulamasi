@@ -400,35 +400,38 @@ namespace KonserBiletim.Controllers
             {
                 await con.OpenAsync();
 
-                // Kart bilgilerini kontrol et
+                //Kart bilgilerini kontrol et
                 bool kartGecerli = await KartBilgileriniDogrulaAsync(model, con);
                 if (!kartGecerli)
                 {
                     return BadRequest("Geçersiz kart bilgileri.");
                 }
 
-                // Sepet detaylarını güncelle
+                //Sepet detaylarını güncelle
                 await GuncelleSepetiAsync(sepetID.Value, updatedQuantities, con);
 
-                // Toplam fiyatı yeniden hesapla
-                decimal toplamFiyat = await HesaplaToplamFiyatAsync(sepetID.Value, con);
+                //Toplam fiyatı yeniden hesapla
+                decimal toplamFiyat = await HesaplaIndirimliToplamFiyatAsync(sepetID.Value, con);
 
-                // Kullanıcı puanını al ve indirim uygula
+                //Kullanıcı puanını al ve indirim uygula
                 var musteriID = HttpContext.Session.GetString("UserID");
                 int kullaniciPuan = await GetKullaniciPuanAsync(musteriID, con);
                 decimal indirim = HesaplaIndirim(kullaniciPuan);
                 toplamFiyat -= indirim;
 
-                // Ödeme bilgilerini ekle
+                //Ödeme bilgilerini ekle
                 int odemeID = await EkleOdemeBilgileriniAsync(musteriID, toplamFiyat, model.KartID, con);
 
-                // Sepeti temizle
+                //Sepeti temizle
                 await SepetiTemizle(sepetID.Value, con);
 
-                // Kullanıcı puanını güncelle
+                //Kullanıcı puanını güncelle
                 await GuncellePuanAsync(musteriID, kullaniciPuan, con);
 
-                // Bilet oluştur
+                //İndirim kullanıldı işaretle
+                await IndirimKullanildiBiletleriGuncelleAsync(sepetID.Value, con);
+
+                //Bilet oluştur
                 await OlusturBiletAsync(sepetID.Value, odemeID, con);
             }
 
@@ -491,6 +494,52 @@ namespace KonserBiletim.Controllers
                 return (decimal)await cmd.ExecuteScalarAsync();
             }
         }
+
+        private async Task<decimal> HesaplaIndirimliToplamFiyatAsync(int sepetID, SqlConnection con)
+        {
+            // Kullanıcı ID'sini al
+            var musteriID = HttpContext.Session.GetString("UserID");
+
+            // İndirim için uygun biletleri al
+            string query = @"
+            SELECT SUM(sd.miktar * bk.biletFiyati) AS ToplamFiyat
+            FROM SepetDetay sd
+            JOIN BiletKategori bk ON sd.kategoriID = bk.kategoriID
+            JOIN Bilet b ON sd.biletID = b.bilet_id
+            WHERE sd.sepetID = @SepetID AND b.indirimKullanildi = 0";
+
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+                decimal toplamFiyat = (decimal)await cmd.ExecuteScalarAsync();
+
+                // Kullanıcının puanını al
+                int kullaniciPuan = await GetKullaniciPuanAsync(musteriID, con);
+                decimal indirim = HesaplaIndirim(kullaniciPuan);
+                toplamFiyat -= indirim;
+
+                return toplamFiyat;
+            }
+        }
+
+        private async Task IndirimKullanildiBiletleriGuncelleAsync(int sepetID, SqlConnection con)
+        {
+            string query = @"
+        UPDATE Bilet
+        SET indirimKullanildi = 1
+        WHERE bilet_id IN (
+            SELECT biletID
+            FROM SepetDetay
+            WHERE sepetID = @SepetID
+        )";
+
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
 
         private async Task<int> GetKullaniciPuanAsync(string musteriID, SqlConnection con)
         {

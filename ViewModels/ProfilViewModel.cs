@@ -23,6 +23,8 @@ namespace KonserBiletim.ViewModels
 
         public IFormFile ProfilFoto { get; set; }
         public KartViewModel Kart { get; set; }
+        [Required]
         public IEnumerable<KartViewModel> Kartlar { get; set; }
+        //public List<KartViewModel> Karts { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model KonserSanatciViewModel
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -44,18 +46,18 @@
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Konserler
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-dark">
-                                        <li><a class="dropdown-item" href="#">Jazz</a></li>
-                                        <li><a class="dropdown-item" href="#">Klasik</a></li>
-                                        <li><a class="dropdown-item" href="#">Pop</a></li>
-                                        <li><a class="dropdown-item" href="#">Rock</a></li>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="@Url.Action("Anasayfa", "Home", new { genre = "Jazz", searchTerm = Model?.SearchTerm })">Jazz</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Anasayfa", "Home", new { genre = "Klasik", searchTerm = Model?.SearchTerm })">Klasik</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Anasayfa", "Home", new { genre = "Pop", searchTerm = Model?.SearchTerm })">Pop</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Anasayfa", "Home", new { genre = "Rock", searchTerm = Model?.SearchTerm })">Rock</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                     </ul>
-                    <form class="d-flex m-lg-auto">
-                        <input class="form-control me-sm-2" type="search" placeholder="Konser Ara">
+                    <form class="d-flex m-lg-auto" method="get" action="@Url.Action("Anasayfa", "Home")">
+                        <input class="form-control me-sm-2" type="search" name="searchTerm" placeholder="Konser Ara" value="@(Model?.SearchTerm ?? string.Empty)">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Ara</button>
                     </form>
                     <div class="btn-group">

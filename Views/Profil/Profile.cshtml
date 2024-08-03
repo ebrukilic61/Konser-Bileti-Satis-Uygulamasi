@@ -201,11 +201,17 @@
                                                             <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png" alt="master" class="master">
                                                             <p class="text-white fw-bold">@item.SahipIsmi @item.SahipSoyismi</p>
                                                         </div>
-                                                        <div class="input">
-                                                            <button class="btn btn-outline-dark"><a>Düzenle</a></button>
-                                                        </div>
                                                     </div>
                                                 </label>
+                                                <form asp-action="KartDuzenle" method="post">
+                                                    <input type="hidden" name="kartID" value="@item.KartID" />
+                                                    <input type="hidden" name="kartNo" value="@item.KartNo" />
+                                                    <input type="hidden" name="cvv" value="@item.CVV" />
+                                                    <input type="hidden" name="skt" value="@item.SKT" />
+                                                    <input type="hidden" name="sahipIsmi" value="@item.SahipIsmi" />
+                                                    <input type="hidden" name="sahipSoyismi" value="@item.SahipSoyismi" />
+                                                    <button class="btn btn-outline-dark" style="height:30px">Düzenle</button>
+                                                </form>
                                                 <div class="mt-auto fw-bold d-flex align-items-center justify-content-between" style="color:white">
                                                     <div>
                                                         <label for="kartNo" class="d-block">Kart Numarası:</label>
@@ -214,6 +220,10 @@
                                                     <div>
                                                         <label for="skt" class="d-block">SKT:</label>
                                                         <p class="m-0" id="skt">@item.SKT</p>
+                                                    </div>
+                                                    <div>
+                                                        <label for="cvv" class="d-block">CVV:</label>
+                                                        <p class="m-0" id="cvv">@item.CVV</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,5 +281,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
