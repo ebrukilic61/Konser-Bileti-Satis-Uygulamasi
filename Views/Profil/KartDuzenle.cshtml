@@ -1,4 +1,4 @@
-﻿@model KartViewModel
+﻿@model MasterViewModel
 
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
@@ -58,33 +58,33 @@
                         <div class="card-body">
                             <form asp-controller="Profil" asp-action="KartDuzenle" method="post">
                                 <div class="mb-3">
-                                    <label asp-for="KartNo" class="form-label">Kart Numarası</label>
-                                    <input asp-for="KartNo" class="form-control" />
-                                    <span asp-validation-for="KartNo" class="text-danger"></span>
+                                    <label asp-for="Kart.KartNo" class="form-label">Kart Numarası</label>
+                                    <input asp-for="Kart.KartNo" class="form-control" />
+                                    <span asp-validation-for="Kart.KartNo" class="text-danger"></span>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label asp-for="SahipIsmi" class="form-label">Kart Sahibi İsmi</label>
-                                    <input asp-for="SahipIsmi" class="form-control" />
-                                    <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                    <label asp-for="Kart.SahipIsmi" class="form-label">Kart Sahibi İsmi</label>
+                                    <input asp-for="Kart.SahipIsmi" class="form-control" />
+                                    <span asp-validation-for="Kart.SahipIsmi" class="text-danger"></span>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label asp-for="SahipSoyismi" class="form-label">Kart Sahibi Soyismi</label>
-                                    <input asp-for="SahipSoyismi" class="form-control" />
-                                    <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                    <label asp-for="Kart.SahipSoyismi" class="form-label">Kart Sahibi Soyismi</label>
+                                    <input asp-for="Kart.SahipSoyismi" class="form-control" />
+                                    <span asp-validation-for="Kart.SahipSoyismi" class="text-danger"></span>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label asp-for="SKT" class="form-label">Son Kullanma Tarihi (MM/YY)</label>
-                                    <input asp-for="SKT" class="form-control" />
-                                    <span asp-validation-for="SKT" class="text-danger"></span>
+                                    <label asp-for="Kart.SKT" class="form-label">Son Kullanma Tarihi (MM/YY)</label>
+                                    <input asp-for="Kart.SKT" class="form-control" />
+                                    <span asp-validation-for="Kart.SKT" class="text-danger"></span>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label asp-for="CVV" class="form-label">CVV</label>
-                                    <input asp-for="CVV" class="form-control" />
-                                    <span asp-validation-for="CVV" class="text-danger"></span>
+                                    <label asp-for="Kart.CVV" class="form-label">CVV</label>
+                                    <input asp-for="Kart.CVV" class="form-control" />
+                                    <span asp-validation-for="Kart.CVV" class="text-danger"></span>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Kaydet</button>

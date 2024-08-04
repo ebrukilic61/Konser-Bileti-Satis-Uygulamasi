@@ -1,4 +1,4 @@
-﻿@model KonserBiletim.ViewModels.KonserEkleViewModel
+﻿@model MasterViewModel
 
 @{
     ViewBag.Title = "Konser Ekle";
@@ -16,81 +16,81 @@
 <form asp-action="KonserEkle" method="post">
     <div class="form-group">
         <label for="KonserName">Konser Adı</label>
-        <input type="text" class="form-control" asp-for="KonserName" required />
-        <span asp-validation-for="KonserName" class="text-danger"></span>
+        <input type="text" class="form-control" asp-for="KonserEkle.KonserName" required />
+        <span asp-validation-for="KonserEkle.KonserName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="KonserDate">Konser Tarihi</label>
-        <input type="date" class="form-control" asp-for="KonserDate" required />
-        <span asp-validation-for="KonserDate" class="text-danger"></span>
+        <input type="date" class="form-control" asp-for="KonserEkle.KonserDate" required />
+        <span asp-validation-for="KonserEkle.KonserDate" class="text-danger"></span>
     </div>  
 
     <div class="form-group">
         <label for="KonserLocId">Konser Alanı</label>
-        <select class="form-control" asp-for="KonserLocId">
+        <select class="form-control" asp-for="KonserEkle.KonserLocId">
             <option value="">Konser Alanı Seçiniz</option>
-            @if (Model.KonserAlanlari != null)
+            @if (Model.KonserEkle.KonserAlanlari != null)
             {
-                @foreach (var alan in Model.KonserAlanlari)
+                @foreach (var alan in Model.KonserEkle.KonserAlanlari)
                 {
                     <option value="@alan.konserLocId">@alan.alanName</option>
                 }
             }
         </select>
-        <span asp-validation-for="KonserLocId" class="text-danger"></span>
+        <span asp-validation-for="KonserEkle.KonserLocId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="SanatciId">Sanatçı</label>
-        <select class="form-control" asp-for="SanatciId">
+        <select class="form-control" asp-for="KonserEkle.SanatciId">
             <option value="">Sanatçı Seçiniz</option>
-            @if (Model.Sanatcilar != null)
+            @if (Model.KonserEkle.Sanatcilar != null)
             {
-                @foreach (var sanatci in Model.Sanatcilar)
+                @foreach (var sanatci in Model.KonserEkle.Sanatcilar)
                 {
                     <option value="@sanatci.sanatciID">@sanatci.sanatciName</option>
                 }
             }
         </select>
-        <span asp-validation-for="SanatciId" class="text-danger"></span>
+        <span asp-validation-for="KonserEkle.SanatciId" class="text-danger"></span>
     </div>
 
     <div class="form-floating w-100">
-        <select asp-for="KategoriAdi" class="form-control" style="background-color: #f2fff8;">
+        <select asp-for="KonserEkle.KategoriAdi" class="form-control" style="background-color: #f2fff8;">
             <option value="">Kategori Seçiniz</option>
             <option value="VIP">VIP</option>
             <option value="Standard">Standard</option>
         </select>
-        <span asp-validation-for="KategoriAdi" class="text-danger"></span>
+        <span asp-validation-for="KonserEkle.KategoriAdi" class="text-danger"></span>
     </div>
     <br />
     <div class="form-floating w-100">
-        <select asp-for="KonserDurum" class="form-control" style="background-color: #f2fff8;">
+        <select asp-for="KonserEkle.KonserDurum" class="form-control" style="background-color: #f2fff8;">
             <option value="">Konser Durumu</option>
             <option value="Planned">Devam Ediyor</option>
             <option value="Rescheduled">Tarihi Degistirildi</option>
             <option value="Cancelled">Ertelendi</option>
         </select>
-        <span asp-validation-for="KonserDurum" class="text-danger"></span>
+        <span asp-validation-for="KonserEkle.KonserDurum" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="Fiyat">Bilet Fiyatı</label>
-        <input type="number" step="0.01" class="form-control" asp-for="Fiyat" required />
-        <span asp-validation-for="Fiyat" class="text-danger"></span>
+        <input type="number" step="0.01" class="form-control" asp-for="KonserEkle.Fiyat" required />
+        <span asp-validation-for="KonserEkle.Fiyat" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="KisiSayisi">Kişi Sayısı</label>
-        <input type="number" class="form-control" asp-for="KisiSayisi" required />
-        <span asp-validation-for="KisiSayisi" class="text-danger"></span>
+        <input type="number" class="form-control" asp-for="KonserEkle.KisiSayisi" required />
+        <span asp-validation-for="KonserEkle.KisiSayisi" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="KonserTanim">Konser Tanımı</label>
-        <textarea class="form-control" asp-for="KonserTanim" rows="4"></textarea>
-        <span asp-validation-for="KonserTanim" class="text-danger"></span>
+        <textarea class="form-control" asp-for="KonserEkle.KonserTanim" rows="4"></textarea>
+        <span asp-validation-for="KonserEkle.KonserTanim" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Ekle</button>

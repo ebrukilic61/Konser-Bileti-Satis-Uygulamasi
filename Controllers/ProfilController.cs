@@ -16,14 +16,17 @@ namespace KonserBiletim.Controllers
 
         public async Task<IActionResult> Profile()
         {
-            var model = new ProfilViewModel
-            {
-                Kartlar = await GetKartlar() // Kartlar listesini buraya atayın
-            };
-
             string user_id = HttpContext.Session.GetString("UserID");
             int userID = Int32.Parse(user_id);
             string userRole = HttpContext.Session.GetString("UserRole");
+
+            var model = new MasterViewModel
+            {
+                Profil = new ProfilViewModel
+                {
+                    Kartlar = await GetKartlar() // Kartlar listesini buraya atayın
+                }
+            };
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -46,25 +49,26 @@ namespace KonserBiletim.Controllers
                     {
                         if (dreader.Read())
                         {
-                            model.UserID = userID;
-                            model.Name = dreader["Name"].ToString();
-                            model.Surname = dreader["Surname"].ToString();
-                            model.Email = dreader["Email"].ToString();
-                            model.TelNo = dreader["telNo"]?.ToString();
-                            model.ProfilFotoPath = dreader["profil_foto_path"]?.ToString();
+                            model.Profil.UserID = userID;
+                            model.Profil.Name = dreader["Name"].ToString();
+                            model.Profil.Surname = dreader["Surname"].ToString();
+                            model.Profil.Email = dreader["Email"].ToString();
+                            model.Profil.TelNo = dreader["telNo"]?.ToString();
+                            model.Profil.ProfilFotoPath = dreader["profil_foto_path"]?.ToString();
                         }
                     }
                 }
             }
 
             // Tam dosya yolunu oluşturma
-            if (!string.IsNullOrEmpty(model.ProfilFotoPath))
+            if (!string.IsNullOrEmpty(model.Profil.ProfilFotoPath))
             {
-                model.ProfilFotoPath = $"~/uploads/{model.ProfilFotoPath}";
+                model.Profil.ProfilFotoPath = $"~/uploads/{model.Profil.ProfilFotoPath}";
             }
 
             return View(model);
         }
+
 
         private async Task<IEnumerable<KartViewModel>> GetKartlar() // async olarak tanımla
         {

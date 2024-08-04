@@ -1,4 +1,4 @@
-﻿@model SepetViewModel
+﻿@model MasterViewModel  
 @{
     ViewData["Title"] = "Sepet Görüntüle";
     Layout = "_Layout2";
@@ -224,7 +224,7 @@
                 <h6>Fiyat</h6>
             </div>
         </div>
-        @if (!Model.SepetDetaylar.Any())
+        @if (!Model.Sepet.SepetDetaylar.Any())
         {
             <div class="row justify-content-center">
                 <p class="empty-cart-message">Sepetinizde ürün bulunmamaktadır.</p>
@@ -232,7 +232,7 @@
         }
         else
         {
-            @foreach (var item in Model.SepetDetaylar)
+            @foreach (var item in Model.Sepet.SepetDetaylar)
             {
                 <div class="row d-flex justify-content-center border-top">
                     <div class="col-5 col">
@@ -286,58 +286,58 @@
                             </div>
                         </div>
                         <form asp-action="OdemeYap" method="post" class="mt-4">
-                            <input type="hidden" name="sepetID" value="@Model.SepetID" />
-                            <input type="hidden" name="kart_id" value="@Model.KartID" />
-                            <input type="hidden" name="sahip_ismi" value="@Model.SahipIsmi" />
-                            <input type="hidden" name="sahip_soyismi" value="@Model.SahipSoyismi" />
-                            <input type="hidden" name="kart_no" value="@Model.KartNo" />
-                            <input type="hidden" name="skt" value="@Model.SKT" />
-                            <input type="hidden" name="cvv" value="@Model.CVV" />
+                            <input type="hidden" name="sepetID" value="@Model.Sepet.SepetID" />
+                            <input type="hidden" name="kart_id" value="@Model.Sepet.KartID" />
+                            <input type="hidden" name="sahip_ismi" value="@Model.Sepet.SahipIsmi" />
+                            <input type="hidden" name="sahip_soyismi" value="@Model.Sepet.SahipSoyismi" />
+                            <input type="hidden" name="kart_no" value="@Model.Sepet.KartNo" />
+                            <input type="hidden" name="skt" value="@Model.Sepet.SKT" />
+                            <input type="hidden" name="cvv" value="@Model.Sepet.CVV" />
                             <input type="hidden" id="totalPriceInput" name="totalPrice" />
 
                             <div class="col-lg-5">
                                 <div class="row px-2">
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label asp-for="SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
-                                            <input type="text" asp-for="SahipIsmi" placeholder="John" required>
-                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                            <label asp-for="Kart.SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
+                                            <input type="text" asp-for="Kart.SahipIsmi" placeholder="John" required>
+                                            <span asp-validation-for="Kart.SahipIsmi" class="text-danger"></span>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label asp-for="SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
-                                            <input type="text" asp-for="SahipSoyismi" placeholder="Doe" required>
-                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                            <label asp-for="Kart.SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
+                                            <input type="text" asp-for="Kart.SahipSoyismi" placeholder="Doe" required>
+                                            <span asp-validation-for="Kart.SahipSoyismi" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label asp-for="KartNo" class="form-control-label">Kart Numarası</label>
-                                        <input type="text" asp-for="KartNo" placeholder="1111 2222 3333 4444" required>
-                                        <span asp-validation-for="KartNo" class="text-danger"></span>
+                                        <label asp-for="Kart.KartNo" class="form-control-label">Kart Numarası</label>
+                                        <input type="text" asp-for="Kart.KartNo" placeholder="1111 2222 3333 4444" required>
+                                        <span asp-validation-for="Kart.KartNo" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row px-2">
                                     <div class="form-group col-md-6">
-                                        <label asp-for="SKT" class="form-control-label">Son Kullanma Tarihi:</label>
-                                        <input type="text" asp-for="SKT" placeholder="MM/YYYY" required pattern="(0[1-9]|1[0-2])\/20[2-9][0-9]" minlength="7" maxlength="7" title="Lütfen geçerli bir son kullanma tarihi giriniz (MM/YYYY)">
-                                        <span asp-validation-for="SKT" class="text-danger"></span>
+                                        <label asp-for="Kart.SKT" class="form-control-label">Son Kullanma Tarihi:</label>
+                                        <input type="text" asp-for="Kart.SKT" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/[2-9][0-9]" minlength="5" maxlength="5" title="Lütfen geçerli bir son kullanma tarihi giriniz (MM/YY)" id="expiryDate">
+                                        <span asp-validation-for="Kart.SKT" class="text-danger"></span>
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label asp-for="CVV" class="form-control-label">CVV</label>
-                                        <input type="text" asp-for="CVV" placeholder="***" required>
-                                        <span asp-validation-for="CVV" class="text-danger"></span>
+                                        <label asp-for="Kart.CVV" class="form-control-label">CVV</label>
+                                        <input type="text" asp-for="Kart.CVV" placeholder="***" required>
+                                        <span asp-validation-for="Kart.CVV" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4 mt-2">
                                 <div class="row d-flex justify-content-between px-4" id="tax">
-                                    <input type="hidden" name="ToplamFiyat" value="@Model.ToplamFiyat" />
-                                    <input type="hidden" name="FinalFiyat" value="@Model.FinalFiyat" />
+                                    <input type="hidden" name="ToplamFiyat" value="@Model.Sepet.ToplamFiyat" />
+                                    <input type="hidden" name="FinalFiyat" value="@Model.Sepet.FinalFiyat" />
                                     <p class="mb-1 text-left">Toplam: </p>
-                                    <h6 class="mb-1 text-left" id="toplamFiyat">@Model.ToplamFiyat.ToString("C")</h6>
+                                    <h6 class="mb-1 text-left" id="toplamFiyat">@Model.Sepet.ToplamFiyat.ToString("C")</h6>
                                     <p class="mb-1 text-left">İndirimli Fiyat: </p>
-                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.FinalFiyat.ToString("C")</h6> 
-                                <br />
+                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.Sepet.FinalFiyat.ToString("C")</h6>
+                                    <br />
                                 <button class="btn btn-dark">
                                     <span>
                                         <span id="checkout">Ödeme Yap</span>
@@ -351,6 +351,17 @@
             </div>
         </div>
     </div>
-    
+    <script>
+        document.getElementById('expiryDate').addEventListener('input', function (e) {
+            var value = e.target.value;
+            var pattern = /^(0[1-9]|1[0-2])\/[2-9][0-9]$/;
+
+            if (pattern.test(value)) {
+                e.target.setCustomValidity('');
+            } else {
+                e.target.setCustomValidity('Lütfen geçerli bir son kullanma tarihi giriniz (MM/YY)');
+            }
+        });
+    </script>
 </body>
 </html>

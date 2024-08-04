@@ -31,6 +31,7 @@ namespace KonserBiletim.Controllers
         public async Task<IActionResult> Anasayfa(string genre = null, string searchTerm = null)
         {
             IEnumerable<KonserViewModel> konserler;
+
             if (string.IsNullOrEmpty(genre))
             {
                 konserler = GetKonserler();
@@ -42,15 +43,19 @@ namespace KonserBiletim.Controllers
 
             var sanatcilar = GetSanatcilar();
 
-            var model = new KonserSanatciViewModel
+            var model = new MasterViewModel
             {
-                Konserler = konserler,
-                Sanatcilar = sanatcilar,
+                KonserSanatci = new KonserSanatciViewModel
+                {
+                    Konserler = konserler,
+                    Sanatcilar = sanatcilar
+                },
                 SearchTerm = searchTerm
             };
 
             return View(model);
         }
+
 
         private IEnumerable<KonserViewModel> GetKonserler()
         {

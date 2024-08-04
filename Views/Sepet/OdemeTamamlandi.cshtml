@@ -1,4 +1,4 @@
-﻿@model SepetViewModel
+﻿@model MasterViewModel
 @{
     ViewData["Title"] = "Sepet Görüntüle";
     Layout = "_Layout2";
@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    @foreach (var item in Model.SepetDetaylar)
+    @foreach (var item in Model.Sepet.SepetDetaylar)
     {
         <div class="row d-flex justify-content-center border-top">
             <div class="col-5">
@@ -231,56 +231,56 @@
                         </div>
                     </div>
                     <form asp-action="OdemeYap" method="post" class="mt-4">
-                        <input type="hidden" name="sepetID" value="@Model.SepetID" />
-                        <input type="hidden" name="kart_id" value="@Model.KartID" />
-                        <input type="hidden" name="sahip_ismi" value="@Model.SahipIsmi" />
-                        <input type="hidden" name="sahip_soyismi" value="@Model.SahipSoyismi" />
-                        <input type="hidden" name="kart_no" value="@Model.KartNo" />
-                        <input type="hidden" name="skt" value="@Model.SKT" />
-                        <input type="hidden" name="cvv" value="@Model.CVV" />
+                        <input type="hidden" name="sepetID" value="@Model.Sepet.SepetID" />
+                        <input type="hidden" name="kart_id" value="@Model.Sepet.KartID" />
+                        <input type="hidden" name="sahip_ismi" value="@Model.Sepet.SahipIsmi" />
+                        <input type="hidden" name="sahip_soyismi" value="@Model.Sepet.SahipSoyismi" />
+                        <input type="hidden" name="kart_no" value="@Model.Sepet.KartNo" />
+                        <input type="hidden" name="skt" value="@Model.Sepet.SKT" />
+                        <input type="hidden" name="cvv" value="@Model.Sepet.CVV" />
 
                         <div class="col-lg-5">
                             <div class="row px-2">
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label asp-for="SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
-                                            <input type="text" asp-for="SahipIsmi" placeholder="Johnny Doe" required>
-                                            <span asp-validation-for="SahipIsmi" class="text-danger"></span>
+                                            <label asp-for="Sepet.SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
+                                            <input type="text" asp-for="Sepet.SahipIsmi" placeholder="Johnny Doe" required>
+                                            <span asp-validation-for="Sepet.SahipIsmi" class="text-danger"></span>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label asp-for="SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
-                                            <input type="text" asp-for="SahipSoyismi" placeholder="Doe" required>
-                                            <span asp-validation-for="SahipSoyismi" class="text-danger"></span>
+                                            <label asp-for="Sepet.SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
+                                            <input type="text" asp-for="Sepet.SahipSoyismi" placeholder="Doe" required>
+                                            <span asp-validation-for="Sepet.SahipSoyismi" class="text-danger"></span>
                                         </div>
                                     </div>
                                 <div class="form-group col-md-6">
-                                    <label asp-for="KartNo" class="form-control-label">Kart Numarası</label>
-                                    <input type="text" asp-for="KartNo" placeholder="1111 2222 3333 4444" required>
-                                    <span asp-validation-for="KartNo" class="text-danger"></span>
+                                    <label asp-for="Sepet.KartNo" class="form-control-label">Kart Numarası</label>
+                                    <input type="text" asp-for="Sepet.KartNo" placeholder="1111 2222 3333 4444" required>
+                                    <span asp-validation-for="Sepet.KartNo" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row px-2">
                                 <div class="form-group col-md-6">
-                                    <label asp-for="SKT" class="form-control-label">Son Kullanma Tarihi:</label>
-                                    <input type="text" asp-for="SKT" placeholder="MM/YYYY" required>
-                                    <span asp-validation-for="SKT" class="text-danger"></span>
+                                    <label asp-for="Sepet.SKT" class="form-control-label">Son Kullanma Tarihi:</label>
+                                    <input type="text" asp-for="Sepet.SKT" placeholder="MM/YYYY" required>
+                                    <span asp-validation-for="Sepet.SKT" class="text-danger"></span>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label asp-for="CVV" class="form-control-label">CVV</label>
-                                    <input type="text" asp-for="CVV" placeholder="***" required>
-                                    <span asp-validation-for="CVV" class="text-danger"></span>
+                                    <label asp-for="Sepet.CVV" class="form-control-label">CVV</label>
+                                    <input type="text" asp-for="Sepet.CVV" placeholder="***" required>
+                                    <span asp-validation-for="Sepet.CVV" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-4 mt-2">
                             <div class="row d-flex justify-content-between px-4" id="tax">
                                 <p class="mb-1 text-left">Toplam (KDV dahil)</p>
-                                <h6 class="mb-1 text-right">@Model.ToplamFiyat.ToString("C")</h6>
+                                <h6 class="mb-1 text-right">@Model.Sepet.ToplamFiyat.ToString("C")</h6>
                             </div>
                             <button class="btn-block btn-secondary">
                                 <span>
                                     <span id="checkout">Ödeme Yap</span>
-                                    <span id="check-amt">@Model.ToplamFiyat.ToString("C")</span>
+                                    <span id="check-amt">@Model.Sepet.ToplamFiyat.ToString("C")</span>
                                 </span>
                             </button>
                         </div>

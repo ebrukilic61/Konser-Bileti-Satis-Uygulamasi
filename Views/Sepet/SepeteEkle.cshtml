@@ -1,4 +1,4 @@
-﻿@model SepetViewModel
+﻿@model MasterViewModel
 
 @{
     ViewData["Title"] = "Sepete Ekle";
@@ -7,21 +7,21 @@
 <h2>Sepete Ekle</h2>
 
 <form asp-action="SepetGoruntule" method="post">
-    <input type="hidden" asp-for="SepetID" value="@Model.SepetID"/>
-    <input type="hidden" asp-for="MusteriID" />
-    <input type="hidden" asp-for="KonserID" value="@Model.KonserID" />
+    <input type="hidden" asp-for="Sepet.SepetID" value="@Model.Sepet.SepetID" />
+    <input type="hidden" asp-for="Sepet.MusteriID" />
+    <input type="hidden" asp-for="Sepet.KonserID" value="@Model.Sepet.KonserID" />
 
     <div>
         <label for="KonserID">Konser ID:</label>
-        <input type="number" id="KonserID" name="KonserID" value="@Model.KonserID" required />
+        <input type="number" id="KonserID" name="KonserID" value="@Model.Sepet.KonserID" required />
     </div>
     <div>
         <label for="KategoriID">Kategori ID:</label>
-        <input type="number" id="KategoriID" name="SepetDetaylar[0].KategoriID" value="@Model.SepetDetaylar[0].KategoriID" required />
+        <input type="number" id="KategoriID" name="SepetDetaylar[0].KategoriID" value="@Model.Sepet.SepetDetaylar[0].KategoriID" required />
     </div>
     <div>
         <label for="Miktar">Miktar:</label>
-        <input type="number" id="Miktar" name="SepetDetaylar[0].Miktar" value="@Model.SepetDetaylar[0].Miktar" required />
+        <input type="number" id="Miktar" name="SepetDetaylar[0].Miktar" value="@Model.Sepet.SepetDetaylar[0].Miktar" required />
     </div>
     <button type="submit">Sepete Ekle</button>
 </form>

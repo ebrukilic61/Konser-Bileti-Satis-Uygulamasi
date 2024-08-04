@@ -185,7 +185,12 @@ namespace KonserBiletim.Controllers
                 return NotFound("Sepet bulunamadı.");
             }
 
-            SepetViewModel model = new SepetViewModel();
+            //SepetViewModel model = new SepetViewModel();
+
+            var model = new MasterViewModel
+            {
+                Sepet = new SepetViewModel()
+            };
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -200,8 +205,8 @@ namespace KonserBiletim.Controllers
 
                     if (reader.Read())
                     {
-                        model.SepetID = reader["sepetID"] != DBNull.Value ? (int)reader["sepetID"] : 0;
-                        model.MusteriID = reader["musteriID"] != DBNull.Value ? (int)reader["musteriID"] : 0;
+                        model.Sepet.SepetID = reader["sepetID"] != DBNull.Value ? (int)reader["sepetID"] : 0;
+                        model.Sepet.MusteriID = reader["musteriID"] != DBNull.Value ? (int)reader["musteriID"] : 0;
                     }
                     reader.Close();
                 }
@@ -213,10 +218,10 @@ namespace KonserBiletim.Controllers
                     cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    model.SepetDetaylar = new List<SepetDetay>();
+                    model.Sepet.SepetDetaylar = new List<SepetDetay>();
                     while (reader.Read())
                     {
-                        model.SepetDetaylar.Add(new SepetDetay
+                        model.Sepet.SepetDetaylar.Add(new SepetDetay
                         {
                             KonserID = reader["konserID"] != DBNull.Value ? (int)reader["konserID"] : 0,
                             KategoriID = reader["kategoriID"] != DBNull.Value ? (int)reader["kategoriID"] : 0,
@@ -230,15 +235,15 @@ namespace KonserBiletim.Controllers
                     }
                     reader.Close();
 
-                    model.ToplamFiyat = model.SepetDetaylar.Sum(sd => sd.Fiyat * sd.Miktar);
+                    model.Sepet.ToplamFiyat = model.Sepet.SepetDetaylar.Sum(sd => sd.Fiyat * sd.Miktar);
 
-                    if (!model.SepetDetaylar.Any())
+                    if (!model.Sepet.SepetDetaylar.Any())
                     {
-                        model.BosSepet = true; // Boş sepet olduğunu belirten bir bayrak ekleyin
+                        model.Sepet.BosSepet = true; // Boş sepet olduğunu belirten bir bayrak ekleyin
                     }
                     else
                     {
-                        model.KonserID = model.SepetDetaylar[0].KonserID;
+                        model.Sepet.KonserID = model.Sepet.SepetDetaylar[0].KonserID;
                     }
                 }
 
@@ -252,29 +257,28 @@ namespace KonserBiletim.Controllers
 
                 using (SqlCommand cmd = new SqlCommand(getNameQuery, con))
                 {
-                    cmd.Parameters.Add("SepetID", SqlDbType.Int).Value = model.SepetID;
+                    cmd.Parameters.Add("SepetID", SqlDbType.Int).Value = model.Sepet.SepetID;
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     if (reader.Read())
                     {
-                        model.KategoriAdi = reader["kategoriName"].ToString();
-                        model.KonserAdi = reader["konserName"].ToString();
-                        model.SanatciAdi = reader["sanatciName"].ToString();
-                        model.BiletGorselPath = reader["profilFotoPath"]?.ToString();
+                        model.Sepet.KategoriAdi = reader["kategoriName"].ToString();
+                        model.Sepet.KonserAdi = reader["konserName"].ToString();
+                        model.Sepet.SanatciAdi = reader["sanatciName"].ToString();
+                        model.Sepet.BiletGorselPath = reader["profilFotoPath"]?.ToString();
                     }
                     reader.Close();
                 }
 
             }
 
-            if (!string.IsNullOrEmpty(model.BiletGorselPath))
+            if (!string.IsNullOrEmpty(model.Sepet.BiletGorselPath))
             {
-                model.BiletGorselPath = $"~/images/singers/icons/{model.BiletGorselPath}";
+                model.Sepet.BiletGorselPath = $"~/images/singers/icons/{model.Sepet.BiletGorselPath}";
             }
 
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<JsonResult> UpdateBiletMiktar(int konserID, int miktar)
@@ -338,14 +342,14 @@ namespace KonserBiletim.Controllers
                 return 0;
             }
 
-            SepetViewModel model = GetSepetDetaylarFromDatabase(sepetID.Value);
+            var model = GetSepetDetaylarFromDatabase(sepetID.Value);
 
             decimal toplamFiyat = 0;
 
             // SepetDetaylar null değilse ve içinde eleman varsa fiyat hesapla
-            if (model.SepetDetaylar != null && model.SepetDetaylar.Any())
+            if (model.Sepet.SepetDetaylar != null && model.Sepet.SepetDetaylar.Any())
             {
-                foreach (var item in model.SepetDetaylar)
+                foreach (var item in model.Sepet.SepetDetaylar)
                 {
                     toplamFiyat += item.Fiyat * item.Miktar;
                 }
@@ -354,9 +358,14 @@ namespace KonserBiletim.Controllers
             return toplamFiyat;
         }
 
-        private SepetViewModel GetSepetDetaylarFromDatabase(int sepetID)
+        private MasterViewModel GetSepetDetaylarFromDatabase(int sepetID)
         {
-            SepetViewModel model = new SepetViewModel();
+            //SepetViewModel model = new SepetViewModel();
+
+            var model = new MasterViewModel
+            {
+                Sepet = new SepetViewModel()
+            };
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -370,10 +379,10 @@ namespace KonserBiletim.Controllers
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        model.SepetDetaylar = new List<SepetDetay>();
+                        model.Sepet.SepetDetaylar = new List<SepetDetay>();
                         while (reader.Read())
                         {
-                            model.SepetDetaylar.Add(new SepetDetay
+                            model.Sepet.SepetDetaylar.Add(new SepetDetay
                             {
                                 Fiyat = reader.GetDecimal(reader.GetOrdinal("fiyat")),
                                 Miktar = reader.GetInt32(reader.GetOrdinal("miktar"))
@@ -388,7 +397,7 @@ namespace KonserBiletim.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OdemeYap(SepetViewModel model, Dictionary<int, int> updatedQuantities)
+        public async Task<IActionResult> OdemeYap(MasterViewModel model, Dictionary<int, int> updatedQuantities)
         {
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
             if (sepetID == null)
@@ -420,7 +429,7 @@ namespace KonserBiletim.Controllers
                 toplamFiyat -= indirim;
 
                 //Ödeme bilgilerini ekle
-                int odemeID = await EkleOdemeBilgileriniAsync(musteriID, toplamFiyat, model.KartID, con);
+                int odemeID = await EkleOdemeBilgileriniAsync(musteriID, toplamFiyat, model.Sepet.KartID, con);
 
                 //Sepeti temizle
                 await SepetiTemizle(sepetID.Value, con);
@@ -439,7 +448,7 @@ namespace KonserBiletim.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private async Task<bool> KartBilgileriniDogrulaAsync(SepetViewModel model, SqlConnection con)
+        private async Task<bool> KartBilgileriniDogrulaAsync(MasterViewModel model, SqlConnection con)
         {
             string checkKartQuery = @"SELECT COUNT(*) FROM KartBilgileri 
                               WHERE kart_id = @KartId 
@@ -453,12 +462,12 @@ namespace KonserBiletim.Controllers
             using (SqlCommand cmd = new SqlCommand(checkKartQuery, con))
             {
                 cmd.Parameters.AddWithValue("@CustId", HttpContext.Session.GetString("UserID"));
-                cmd.Parameters.Add("@KartId", SqlDbType.Int).Value = model.KartID;
-                cmd.Parameters.Add("@SahipIsmi", SqlDbType.VarChar).Value = model.SahipIsmi;
-                cmd.Parameters.Add("@SahipSoyismi", SqlDbType.VarChar).Value = model.SahipSoyismi;
-                cmd.Parameters.Add("@KartNo", SqlDbType.VarChar).Value = model.KartNo;
-                cmd.Parameters.Add("@Cvv", SqlDbType.Int).Value = model.CVV;
-                cmd.Parameters.Add("@Skt", SqlDbType.Date).Value = model.SKT;
+                cmd.Parameters.Add("@KartId", SqlDbType.Int).Value = model.Sepet.KartID;
+                cmd.Parameters.Add("@SahipIsmi", SqlDbType.VarChar).Value = model.Sepet.SahipIsmi;
+                cmd.Parameters.Add("@SahipSoyismi", SqlDbType.VarChar).Value = model.Sepet.SahipSoyismi;
+                cmd.Parameters.Add("@KartNo", SqlDbType.VarChar).Value = model.Sepet.KartNo;
+                cmd.Parameters.Add("@Cvv", SqlDbType.Int).Value = model.Sepet.CVV;
+                cmd.Parameters.Add("@Skt", SqlDbType.Date).Value = model.Sepet.SKT;
 
                 int count = (int)await cmd.ExecuteScalarAsync();
                 return count > 0;
@@ -638,9 +647,6 @@ namespace KonserBiletim.Controllers
                 await cmd.ExecuteNonQueryAsync();
             }
         }
-
-
-
 
         /*
         // ödeme işlemi

@@ -1,4 +1,4 @@
-﻿@model ProfilViewModel
+﻿@model MasterViewModel
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
@@ -125,9 +125,9 @@
                             Profil
                         </div>
                         <div class="card-body text-center">
-                            <img src="@(Url.Content(Model.ProfilFotoPath ?? "~/images/profile_icon.jpg"))" alt="Profil Fotoğrafı" class="profile-img mb-3">
-                            <h4>@Model.Name @Model.Surname</h4>
-                            <p class="text-muted">@Model.Email</p>
+                            <img src="@(Url.Content(Model.Profil.ProfilFotoPath ?? "~/images/profile_icon.jpg"))" alt="Profil Fotoğrafı" class="profile-img mb-3">
+                            <h4>@Model.Profil.Name @Model.Profil.Surname</h4>
+                            <p class="text-muted">@Model.Profil.Email</p>
                         </div>
                     </div>
 
@@ -152,24 +152,24 @@
                         <div class="card-body">
                             <form asp-action="Edit" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label asp-for="Name" class="form-label">Ad</label>
-                                    <input asp-for="Name" class="form-control" />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                    <label asp-for="Profil.Name" class="form-label">Ad</label>
+                                    <input asp-for="Profil.Name" class="form-control" />
+                                    <span asp-validation-for="Profil.Name" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Surname" class="form-label">Soyad</label>
-                                    <input asp-for="Surname" class="form-control" />
-                                    <span asp-validation-for="Surname" class="text-danger"></span>
+                                    <label asp-for="Profil.Surname" class="form-label">Soyad</label>
+                                    <input asp-for="Profil.Surname" class="form-control" />
+                                    <span asp-validation-for="Profil.Surname" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">E-posta</label>
-                                    <input asp-for="Email" class="form-control" />
-                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                    <label asp-for="Profil.Email" class="form-label">E-posta</label>
+                                    <input asp-for="Profil.Email" class="form-control" />
+                                    <span asp-validation-for="Profil.Email" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="TelNo" class="form-label">Telefon</label>
-                                    <input asp-for="TelNo" class="form-control" />
-                                    <span asp-validation-for="TelNo" class="text-danger"></span>
+                                    <label asp-for="Profil.TelNo" class="form-label">Telefon</label>
+                                    <input asp-for="Profil.TelNo" class="form-control" />
+                                    <span asp-validation-for="Profil.TelNo" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 input-file">
                                     <input type="file" id="profilFoto" name="profilFoto" class="form-control" />
@@ -189,9 +189,9 @@
                                     <p class="text-muted"></p>
                                 </div>
 
-                                @if (Model.Kartlar != null && Model.Kartlar.Any())
+                                @if (Model.Profil.Kartlar != null && Model.Profil.Kartlar.Any())
                                 {
-                                    @foreach (var item in Model.Kartlar)
+                                    @foreach (var item in Model.Profil.Kartlar)
                                     {
                                         <div class="debit-card card-2 mb-4">
                                             <div class="d-flex flex-column h-100">

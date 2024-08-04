@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KonserViewModel>
+﻿@model KonserBiletim.ViewModels.MasterViewModel
 @{
     ViewData["Title"] = "Konser Listesi";
     Layout = "_Layout2";
@@ -49,7 +49,7 @@
 </head>
 
 <div class="row">
-    @foreach (var item in Model)
+    @foreach (var item in Model.KonserSanatci.Konserler)
     {
         <div class="col mb-5 d-flex justify-content-center">
             <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">

@@ -38,18 +38,6 @@ namespace KonserBiletim.Controllers
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                /*string query = @"
-                   SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                   d.yeni_tarih AS YeniTarih, bk.biletFiyati
-                   FROM Konser k 
-                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                   JOIN Genre g ON s.genreId = g.genre_id 
-                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                   JOIN KonserDurumu d ON k.konserID = d.konser_id
-                   JOIN BiletKategori bk ON k.konserID = bk.konser_ID";
-                */
 
                 string query = @"
                    SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
@@ -92,34 +80,35 @@ namespace KonserBiletim.Controllers
                 return NotFound();
             }
 
-            konser.ImageURL = _imageService.GetImageUrl(id);
+            konser.Konser.ImageURL = _imageService.GetImageUrl(id);
 
             return View(konser);
         }
 
-        public KonserViewModel GetKonserById(int konserId)
+        public MasterViewModel GetKonserById(int konserId)
         {
-            KonserViewModel konser = new KonserViewModel();
+            var masterModel = new MasterViewModel();
             using (var con = new SqlConnection(connectionString))
             {
                 con.Open();
 
                 var query1 = @"
                 SELECT k.konserID, k.konserName, k.konserDate, 
-                       l.alanName AS KonserLoc, s.sanatciName, s.description, s.profilFotoPath AS ImageURL, 
-                       g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                       d.yeni_tarih AS YeniTarih
-                       FROM Konser k 
-                       JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                       JOIN Genre g ON s.genreId = g.genre_id 
-                       JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                       JOIN KonserDurumu d ON k.konserID = d.konser_id
-                       WHERE k.konserID = @KonserID";
+                l.alanName AS KonserLoc, s.sanatciName, s.description, s.profilFotoPath AS ImageURL, 
+                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                d.yeni_tarih AS YeniTarih
+                FROM Konser k 
+                JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                JOIN Genre g ON s.genreId = g.genre_id 
+                JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                JOIN KonserDurumu d ON k.konserID = d.konser_id
+                WHERE k.konserID = @KonserID";
 
                 var query2 = @"SELECT bk.kategoriID, bk.kategoriName, bk.biletFiyati, bk.kisi_sayisi
-                                FROM BiletKategori bk
-                                WHERE bk.konser_ID = @KonserID";
+                       FROM BiletKategori bk
+                       WHERE bk.konser_ID = @KonserID";
 
+                var konser = new KonserViewModel();
                 using (SqlCommand cmd1 = new SqlCommand(query1, con))
                 {
                     cmd1.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserId;
@@ -160,8 +149,9 @@ namespace KonserBiletim.Controllers
                         }
                     }
                 }
+                masterModel.Konser = konser;
             }
-            return konser;
+            return masterModel;
         }
 
         [HttpGet]
@@ -207,7 +197,7 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public IActionResult KonserEkle()
         {
-            // Get lists for dropdowns
+
             var model = new KonserEkleViewModel
             {
                 //BiletKategorileri = new List<KonserEkleViewModel>(),
@@ -220,7 +210,7 @@ namespace KonserBiletim.Controllers
         }
 
         [HttpPost]
-        public IActionResult KonserEkle(KonserEkleViewModel model)
+        public IActionResult KonserEkle(MasterViewModel model)
         {
             try
             {
@@ -243,11 +233,11 @@ namespace KonserBiletim.Controllers
                                 int konserId;
                                 using (SqlCommand cmd1 = new SqlCommand(insertKonserQuery, con, transaction))
                                 {
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserName", model.KonserName));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserDate", model.KonserDate));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserLocId", model.KonserLocId));
-                                    cmd1.Parameters.Add(new SqlParameter("@SanatciId", model.SanatciId));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserTanim", model.KonserTanim));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserName", model.KonserEkle.KonserName));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserDate", model.KonserEkle.KonserDate));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserLocId", model.KonserEkle.KonserLocId));
+                                    cmd1.Parameters.Add(new SqlParameter("@SanatciId", model.KonserEkle.SanatciId));
+                                    cmd1.Parameters.Add(new SqlParameter("@KonserTanim", model.KonserEkle.KonserTanim));
 
                                     konserId = Convert.ToInt32(cmd1.ExecuteScalar()); //yeni eklenen konser id'si
                                 }
@@ -260,7 +250,7 @@ namespace KonserBiletim.Controllers
                                 using (SqlCommand cmd2 = new SqlCommand(insertDurumQuery, con, transaction))
                                 {
                                     cmd2.Parameters.AddWithValue("@KonserId", konserId);
-                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserDurum); 
+                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserEkle.KonserDurum); 
 
                                     cmd2.ExecuteNonQuery();
                                 }
@@ -272,9 +262,9 @@ namespace KonserBiletim.Controllers
                                 using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
                                 {
                                     cmd3.Parameters.Add(new SqlParameter("@KonserId", konserId));
-                                    cmd3.Parameters.Add(new SqlParameter("@KategoriAdi", model.KategoriAdi));
-                                    cmd3.Parameters.Add(new SqlParameter("@BiletFiyati", model.Fiyat));
-                                    cmd3.Parameters.Add(new SqlParameter("@KisiSayisi", model.KisiSayisi));
+                                    cmd3.Parameters.Add(new SqlParameter("@KategoriAdi", model.KonserEkle.KategoriAdi));
+                                    cmd3.Parameters.Add(new SqlParameter("@BiletFiyati", model.KonserEkle.Fiyat));
+                                    cmd3.Parameters.Add(new SqlParameter("@KisiSayisi", model.KonserEkle.KisiSayisi));
                                     cmd3.ExecuteNonQuery();
                                 }
 
@@ -297,8 +287,8 @@ namespace KonserBiletim.Controllers
                 }
 
                 //model.BiletKategorileri = GetBiletKategorileri();
-                model.Sanatcilar = GetSanatcilar();
-                model.KonserAlanlari = GetKonserAlanlari();
+                model.KonserEkle.Sanatcilar = GetSanatcilar();
+                model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
                 //model.KonserDurumlari = GetKonserDurumlari();
                 return View(model);
             }
@@ -318,10 +308,13 @@ namespace KonserBiletim.Controllers
                 return Unauthorized();
             }
 
-            KonserEkleViewModel model = new KonserEkleViewModel
+            MasterViewModel model = new MasterViewModel
             {
-                Sanatcilar = GetSanatcilar(),
-                KonserAlanlari = GetKonserAlanlari(),
+                KonserEkle = new KonserEkleViewModel
+                {
+                    Sanatcilar = GetSanatcilar(),
+                    KonserAlanlari = GetKonserAlanlari(),
+                }
             };
 
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -335,12 +328,12 @@ namespace KonserBiletim.Controllers
 
                     if (reader1.Read())
                     {
-                        model.KonserID = (int)reader1["konserID"];
-                        model.KonserName = (string)reader1["konserName"];
-                        model.KonserDate = (DateTime)reader1["konserDate"];
-                        model.KonserLocId = (int)reader1["konserLocId"];
-                        model.SanatciId = (int)reader1["sanatciId"];
-                        model.KonserTanim = reader1.IsDBNull(reader1.GetOrdinal("konserTanim")) ? string.Empty : (string)reader1["konserTanim"];
+                        model.KonserEkle.KonserID = (int)reader1["konserID"];
+                        model.KonserEkle.KonserName = (string)reader1["konserName"];
+                        model.KonserEkle.KonserDate = (DateTime)reader1["konserDate"];
+                        model.KonserEkle.KonserLocId = (int)reader1["konserLocId"];
+                        model.KonserEkle.SanatciId = (int)reader1["sanatciId"];
+                        model.KonserEkle.KonserTanim = reader1.IsDBNull(reader1.GetOrdinal("konserTanim")) ? string.Empty : (string)reader1["konserTanim"];
                     }
                     reader1.Close();
                 }
@@ -353,9 +346,9 @@ namespace KonserBiletim.Controllers
 
                     if (reader3.Read())
                     {
-                        model.KategoriAdi = (string)reader3["kategoriName"];
-                        model.Fiyat = (decimal)reader3["biletFiyati"];
-                        model.KisiSayisi = (int)reader3["kisi_sayisi"];
+                        model.KonserEkle.KategoriAdi = (string)reader3["kategoriName"];
+                        model.KonserEkle.Fiyat = (decimal)reader3["biletFiyati"];
+                        model.KonserEkle.KisiSayisi = (int)reader3["kisi_sayisi"];
                     }
                     reader3.Close();
                 }
@@ -368,23 +361,22 @@ namespace KonserBiletim.Controllers
 
                     if (reader2.Read())
                     {
-                        model.KonserDurum = reader2.IsDBNull(reader2.GetOrdinal("konser_durumu")) ? string.Empty : (string)reader2["konser_durumu"];
+                        model.KonserEkle.KonserDurum = reader2.IsDBNull(reader2.GetOrdinal("konser_durumu")) ? string.Empty : (string)reader2["konser_durumu"];
                     }
                     reader2.Close();
                 }
             }
-
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult KonserDuzenle(KonserEkleViewModel model)
+        public IActionResult KonserDuzenle(MasterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (model.KonserID == 0)
+                    if (model.KonserEkle.KonserID == 0)
                     {
                         TempData["ErrorMessage"] = "Geçersiz Konser ID.";
                         return RedirectToAction("Index");
@@ -405,12 +397,12 @@ namespace KonserBiletim.Controllers
 
                             using (SqlCommand cmd = new SqlCommand(updateKonserQuery, con, transaction))
                             {
-                                cmd.Parameters.AddWithValue("@KonserName", (object)model.KonserName ?? DBNull.Value);
-                                cmd.Parameters.AddWithValue("@KonserDate", model.KonserDate);
-                                cmd.Parameters.AddWithValue("@KonserLocId", model.KonserLocId);
-                                cmd.Parameters.AddWithValue("@SanatciId", model.SanatciId);
-                                cmd.Parameters.AddWithValue("@KonserTanim", (object)model.KonserTanim ?? DBNull.Value);
-                                cmd.Parameters.AddWithValue("@KonserID", model.KonserID);
+                                cmd.Parameters.AddWithValue("@KonserName", (object)model.KonserEkle.KonserName ?? DBNull.Value);
+                                cmd.Parameters.AddWithValue("@KonserDate", model.KonserEkle.KonserDate);
+                                cmd.Parameters.AddWithValue("@KonserLocId", model.KonserEkle.KonserLocId);
+                                cmd.Parameters.AddWithValue("@SanatciId", model.KonserEkle.SanatciId);
+                                cmd.Parameters.AddWithValue("@KonserTanim", (object)model.KonserEkle.KonserTanim ?? DBNull.Value);
+                                cmd.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
 
                                 cmd.ExecuteNonQuery();
                             }
@@ -422,10 +414,10 @@ namespace KonserBiletim.Controllers
 
                             using (SqlCommand cmd2 = new SqlCommand(updateBiletKategoriQuery, con, transaction))
                             {
-                                cmd2.Parameters.AddWithValue("@BiletFiyati", model.Fiyat);
-                                cmd2.Parameters.AddWithValue("@KisiSayisi", model.KisiSayisi);
-                                cmd2.Parameters.AddWithValue("@KategoriAdi", model.KategoriAdi);
-                                cmd2.Parameters.AddWithValue("@KonserID", model.KonserID);
+                                cmd2.Parameters.AddWithValue("@BiletFiyati", model.KonserEkle.Fiyat);
+                                cmd2.Parameters.AddWithValue("@KisiSayisi", model.KonserEkle.KisiSayisi);
+                                cmd2.Parameters.AddWithValue("@KategoriAdi", model.KonserEkle.KategoriAdi);
+                                cmd2.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
 
                                 cmd2.ExecuteNonQuery();
                             }
@@ -437,8 +429,8 @@ namespace KonserBiletim.Controllers
 
                             using (SqlCommand cmd3 = new SqlCommand(updateKonserDurumQuery, con, transaction))
                             {
-                                cmd3.Parameters.AddWithValue("@KonserDurum", model.KonserDurum);
-                                cmd3.Parameters.AddWithValue("@KonserID", model.KonserID);
+                                cmd3.Parameters.AddWithValue("@KonserDurum", model.KonserEkle.KonserDurum);
+                                cmd3.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
 
                                 cmd3.ExecuteNonQuery();
                             }
@@ -456,8 +448,8 @@ namespace KonserBiletim.Controllers
                 }
             }
 
-            model.Sanatcilar = GetSanatcilar();
-            model.KonserAlanlari = GetKonserAlanlari();
+            model.KonserEkle.Sanatcilar = GetSanatcilar();
+            model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
             return View(model);
         }
 
