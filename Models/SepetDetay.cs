@@ -7,17 +7,17 @@ namespace KonserBiletim.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int SepetDetayID { get; set; }
+        public int sepetDetayID { get; set; }
 
         [ForeignKey("Sepet")]
-        public int SepetID { get; set; }
+        public int sepetID { get; set; }
 
         [ForeignKey("Konser")]
-        public int KonserID { get; set; }
+        public int konserID { get; set; }
 
-        public int KategoriID { get; set; }
-        public int Miktar { get; set; }
-        public decimal Fiyat { get; set; }
+        public int kategoriID { get; set; }
+        public int miktar { get; set; }
+        public decimal fiyat { get; set; }
         public string BiletGorselPath {  get; set; }
         public string KategoriAdi {  get; set; }
         public string KonserAdi {  get; set; }

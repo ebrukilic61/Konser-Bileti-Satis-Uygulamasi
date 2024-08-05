@@ -193,39 +193,52 @@
                                 {
                                     @foreach (var item in Model.Profil.Kartlar)
                                     {
-                                        <div class="debit-card card-2 mb-4">
-                                            <div class="d-flex flex-column h-100">
-                                                <label class="d-block">
-                                                    <div class="d-flex position-relative">
-                                                        <div>
-                                                            <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png" alt="master" class="master">
-                                                            <p class="text-white fw-bold">@item.SahipIsmi @item.SahipSoyismi</p>
+                                        <div class="row mb-4">
+                                            <div class="col-md-10">
+                                                <div class="debit-card card-2">
+                                                    <div class="d-flex flex-column h-100">
+                                                        <label class="d-block">
+                                                            <div class="d-flex position-relative">
+                                                                <div>
+                                                                    <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png" alt="master" class="master">
+                                                                    <p class="text-white fw-bold">@item.SahipIsmi @item.SahipSoyismi</p>
+                                                                </div>
+                                                            </div>
+                                                        </label>
+                                                        <form asp-action="KartDuzenle" method="post">
+                                                            <input type="hidden" name="kartID" value="@item.KartID" />
+                                                            <input type="hidden" name="kartNo" value="@item.KartNo" />
+                                                            <input type="hidden" name="cvv" value="@item.CVV" />
+                                                            <input type="hidden" name="skt" value="@item.SKT" />
+                                                            <input type="hidden" name="sahipIsmi" value="@item.SahipIsmi" />
+                                                            <input type="hidden" name="sahipSoyismi" value="@item.SahipSoyismi" />
+                                                            <button class="btn btn-outline-dark" style="height:30px">Düzenle</button>
+                                                        </form>
+                                                        <div class="mt-auto fw-bold d-flex align-items-center justify-content-between" style="color:white">
+                                                            <div>
+                                                                <label for="kartNo" class="d-block">Kart Numarası:</label>
+                                                                <p class="m-0" id="kartNo">@item.KartNo</p>
+                                                            </div>
+                                                            <div>
+                                                                <label for="skt" class="d-block">SKT:</label>
+                                                                <p class="m-0" id="skt">@item.SKT</p>
+                                                            </div>
+                                                            <div>
+                                                                <label for="cvv" class="d-block">CVV:</label>
+                                                                <p class="m-0" id="cvv">@item.CVV</p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </label>
-                                                <form asp-action="KartDuzenle" method="post">
-                                                    <input type="hidden" name="kartID" value="@item.KartID" />
-                                                    <input type="hidden" name="kartNo" value="@item.KartNo" />
-                                                    <input type="hidden" name="cvv" value="@item.CVV" />
-                                                    <input type="hidden" name="skt" value="@item.SKT" />
-                                                    <input type="hidden" name="sahipIsmi" value="@item.SahipIsmi" />
-                                                    <input type="hidden" name="sahipSoyismi" value="@item.SahipSoyismi" />
-                                                    <button class="btn btn-outline-dark" style="height:30px">Düzenle</button>
-                                                </form>
-                                                <div class="mt-auto fw-bold d-flex align-items-center justify-content-between" style="color:white">
-                                                    <div>
-                                                        <label for="kartNo" class="d-block">Kart Numarası:</label>
-                                                        <p class="m-0" id="kartNo">@item.KartNo</p>
-                                                    </div>
-                                                    <div>
-                                                        <label for="skt" class="d-block">SKT:</label>
-                                                        <p class="m-0" id="skt">@item.SKT</p>
-                                                    </div>
-                                                    <div>
-                                                        <label for="cvv" class="d-block">CVV:</label>
-                                                        <p class="m-0" id="cvv">@item.CVV</p>
-                                                    </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-md-2 text-right d-flex align-items-center justify-content-end">
+                                                <form asp-action="KartSil" method="post" onsubmit="return confirmDelete();">
+                                                    <input type="hidden" name="kart_no" value="@item.KartNo" />
+                                                    <input type="hidden" name="cust_id" value="@item.CustID" />
+                                                    <button class="delete-button btn btn-link p-0">
+                                                        <img src="~/images/trash-2.svg" alt="sil-buton" />
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     }
@@ -281,6 +294,10 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        function confirmDelete() {
+            return confirm('Silmek istediğinize emin misiniz?');
+        }
+    </script>
 </body>
 </html>

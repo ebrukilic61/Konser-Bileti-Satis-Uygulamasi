@@ -1,4 +1,4 @@
-﻿@model MasterViewModel  
+﻿@model MasterViewModel
 @{
     ViewData["Title"] = "Sepet Görüntüle";
     Layout = "_Layout2";
@@ -250,22 +250,22 @@
                         <div class="row">
                             <div class="col-2 d-flex justify-content-end align-items-center">
                                 <div class="plus-minus">
-                                    <span class="vsm-text plus" data-konserid="@item.KonserID">+</span>
-                                    <p class="mb-0" id="cnt1">@item.Miktar</p>
-                                    <span class="vsm-text minus" data-konserid="@item.KonserID">-</span>
+                                    <span class="vsm-text plus" data-konserid="@item.konserID">+</span>
+                                    <p class="mb-0" id="cnt1">@item.miktar</p>
+                                    <span class="vsm-text minus" data-konserid="@item.konserID">-</span>
                                 </div>
                                 <div class="col-9 text-left">
                                     <p class="mob-text">@item.KategoriAdi</p>
                                 </div>
                             </div>
                             <div class="col-4 text-right">
-                                <h6 class="mob-text">@item.Fiyat.ToString("C")</h6>
+                                <h6 class="mob-text">@item.fiyat.ToString("C")</h6>
                             </div>
                         </div>
                         <div class="col-2 text-right">
                             <form asp-action="BiletSil" method="post">
-                                <input type="hidden" name="konserID" value="@item.KonserID" />
-                                <input type="hidden" name="kategoriID" value="@item.KategoriID" />
+                                <input type="hidden" name="konserID" value="@item.konserID" />
+                                <input type="hidden" name="kategoriID" value="@item.kategoriID" />
                                 <button class="delete-button">
                                     <img src="~/images/trash-2.svg" alt="sil-buton" />
                                 </button>
@@ -275,84 +275,65 @@
                 </div>
             }
         }
+        <!-- Fiyat Bilgileri -->
+        <div class="col-lg-4 mt-2">
+            <div class="row d-flex justify-content-between px-4" id="tax">
+                <input type="hidden" name="ToplamFiyat" value="@Model.Sepet.ToplamFiyat" />
+                <input type="hidden" name="FinalFiyat" value="@Model.Sepet.FinalFiyat" />
+                <p class="mb-1 text-left">Toplam: </p>
+                <h6 class="mb-1 text-left" id="toplamFiyat">@Model.Sepet.ToplamFiyat.ToString("C")</h6>
+                <p class="mb-1 text-left">İndirim: </p>
+                <h6 class="mb-1 text-left" id="finalFiyat">@Model.Sepet.FinalFiyat.ToString("C")</h6>
+            </div>
+        </div>
+        @if (ViewBag.mesaj != null)
+        {
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>@ViewBag.mesaj</strong>
+            </div>
+        }
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="row">
-                        <div class="col-lg-3 radio-group">
-                            <div class="row d-flex px-3 radio">
-                                <img class="pay" src="https://i.imgur.com/WIAP9Ku.jpg">
-                                <p class="my-auto">Kredi Kartı</p>
-                            </div>
-                        </div>
-                        <form asp-action="OdemeYap" method="post" class="mt-4">
-                            <input type="hidden" name="sepetID" value="@Model.Sepet.SepetID" />
-                            <input type="hidden" name="kart_id" value="@Model.Sepet.KartID" />
-                            <input type="hidden" name="sahip_ismi" value="@Model.Sepet.SahipIsmi" />
-                            <input type="hidden" name="sahip_soyismi" value="@Model.Sepet.SahipSoyismi" />
-                            <input type="hidden" name="kart_no" value="@Model.Sepet.KartNo" />
-                            <input type="hidden" name="skt" value="@Model.Sepet.SKT" />
-                            <input type="hidden" name="cvv" value="@Model.Sepet.CVV" />
-                            <input type="hidden" id="totalPriceInput" name="totalPrice" />
+                        <form asp-action="OdemeYap" method="post">
+                            <input type="hidden" asp-for="UserID" />
 
-                            <div class="col-lg-5">
-                                <div class="row px-2">
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label asp-for="Kart.SahipIsmi" class="form-control-label">Kart Üzerindeki İsim</label>
-                                            <input type="text" asp-for="Kart.SahipIsmi" placeholder="John" required>
-                                            <span asp-validation-for="Kart.SahipIsmi" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label asp-for="Kart.SahipSoyismi" class="form-control-label">Kart Üzerindeki Soyisim</label>
-                                            <input type="text" asp-for="Kart.SahipSoyismi" placeholder="Doe" required>
-                                            <span asp-validation-for="Kart.SahipSoyismi" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label asp-for="Kart.KartNo" class="form-control-label">Kart Numarası</label>
-                                        <input type="text" asp-for="Kart.KartNo" placeholder="1111 2222 3333 4444" required>
-                                        <span asp-validation-for="Kart.KartNo" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="row px-2">
-                                    <div class="form-group col-md-6">
-                                        <label asp-for="Kart.SKT" class="form-control-label">Son Kullanma Tarihi:</label>
-                                        <input type="text" asp-for="Kart.SKT" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/[2-9][0-9]" minlength="5" maxlength="5" title="Lütfen geçerli bir son kullanma tarihi giriniz (MM/YY)" id="expiryDate">
-                                        <span asp-validation-for="Kart.SKT" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="form-group col-md-6">
-                                        <label asp-for="Kart.CVV" class="form-control-label">CVV</label>
-                                        <input type="text" asp-for="Kart.CVV" placeholder="***" required>
-                                        <span asp-validation-for="Kart.CVV" class="text-danger"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 mt-2">
-                                <div class="row d-flex justify-content-between px-4" id="tax">
-                                    <input type="hidden" name="ToplamFiyat" value="@Model.Sepet.ToplamFiyat" />
-                                    <input type="hidden" name="FinalFiyat" value="@Model.Sepet.FinalFiyat" />
-                                    <p class="mb-1 text-left">Toplam: </p>
-                                    <h6 class="mb-1 text-left" id="toplamFiyat">@Model.Sepet.ToplamFiyat.ToString("C")</h6>
-                                    <p class="mb-1 text-left">İndirimli Fiyat: </p>
-                                    <h6 class="mb-1 text-left" id="finalFiyat">@Model.Sepet.FinalFiyat.ToString("C")</h6>
-                                    <br />
-                                <button class="btn btn-dark">
-                                    <span>
-                                        <span id="checkout">Ödeme Yap</span>
-                                    </span>
-                                </button>
+                            <div class="form-group">
+                                <label for="SahipIsmi">Kart Sahibi Adı</label>
+                                <input type="text" class="form-control" id="SahipIsmi" name="Sepet.SahipIsmi" asp-for="Sepet.SahipIsmi" required />
                             </div>
 
+                            <div class="form-group">
+                                <label for="SahipSoyismi">Kart Sahibi Soyadı</label>
+                                <input type="text" class="form-control" id="SahipSoyismi" name="Sepet.SahipSoyismi" asp-for="Sepet.SahipSoyismi" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="KartNo">Kart Numarası</label>
+                                <input type="text" class="form-control" id="KartNo" name="Sepet.KartNo" asp-for="Sepet.KartNo" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="CVV">CVV</label>
+                                <input type="number" class="form-control" id="CVV" name="Sepet.CVV" asp-for="Sepet.CVV" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="SKT">Son Kullanma Tarihi (MM/YY)</label>
+                                <input type="text" class="form-control" id="SKT" name="Sepet.SKT" asp-for="Sepet.SKT" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Ödeme Yap</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
     <script>
-        document.getElementById('expiryDate').addEventListener('input', function (e) {
+        document.getElementById('skt').addEventListener('input', function (e) {
             var value = e.target.value;
             var pattern = /^(0[1-9]|1[0-2])\/[2-9][0-9]$/;
 

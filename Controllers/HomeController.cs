@@ -30,6 +30,8 @@ namespace KonserBiletim.Controllers
 
         public async Task<IActionResult> Anasayfa(string genre = null, string searchTerm = null)
         {
+            int? sepetId = HttpContext.Session.GetInt32("SepetID");
+
             IEnumerable<KonserViewModel> konserler;
 
             if (string.IsNullOrEmpty(genre))
@@ -52,6 +54,18 @@ namespace KonserBiletim.Controllers
                 },
                 SearchTerm = searchTerm
             };
+
+            await Sepet();
+
+            if (sepetId.HasValue) //bir seyler eksik
+            {
+
+                model.CartItemCount = await CountCartItems(sepetId.Value);
+            }
+            else
+            {
+                model.CartItemCount = 0;
+            }
 
             return View(model);
         }
@@ -86,7 +100,7 @@ namespace KonserBiletim.Controllers
                 foreach (var result in results)
                 {
                     result.ImageURL = fileName + result.ImageURL;
-                    // Loglama
+
                     Console.WriteLine($"ID: {result.KonserID}, ImageURL: {result.ImageURL}");
                 }
 
@@ -101,17 +115,17 @@ namespace KonserBiletim.Controllers
                 con.Open();
 
                 string query = @"
-            SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                   d.yeni_tarih AS YeniTarih
-            FROM Konser k 
-            JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-            JOIN Genre g ON s.genreId = g.genre_id 
-            JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-            JOIN KonserDurumu d ON k.konserID = d.konser_id
-            WHERE (@genre IS NULL OR g.genre_name = @genre)
-              AND (@searchTerm IS NULL OR k.konserName LIKE '%' + @searchTerm + '%' OR k.konserTanim LIKE '%' + @searchTerm + '%')";
+                 SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                 l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                 g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                 d.yeni_tarih AS YeniTarih
+                 FROM Konser k 
+                 JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                 JOIN Genre g ON s.genreId = g.genre_id 
+                 JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                 JOIN KonserDurumu d ON k.konserID = d.konser_id
+                 WHERE (@genre IS NULL OR g.genre_name = @genre)
+                 AND (@searchTerm IS NULL OR k.konserName LIKE '%' + @searchTerm + '%' OR k.konserTanim LIKE '%' + @searchTerm + '%')";
 
                 var parameters = new
                 {
@@ -135,6 +149,25 @@ namespace KonserBiletim.Controllers
                 }
 
                 return results;
+            }
+        }
+
+        public async Task<int> CountCartItems(int sepetId)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.OpenAsync();
+
+                string query = @"SELECT SUM(miktar) FROM SepetDetay WHERE sepetID = @SepetID GROUP BY sepetDetayID";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetId;
+                    var result = await cmd.ExecuteScalarAsync();
+
+                    return result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                }
+
             }
         }
 

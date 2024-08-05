@@ -20,13 +20,12 @@ namespace KonserBiletim.ViewModels
         public List<SepetDetay> SepetDetaylar { get; set; }
         //public List<SepetViewModel> SepetDetaylar { get; set; }
         public decimal ToplamFiyat { get; set; }
-        public decimal BonusPuan {  get; set; }
         public int KartID {  get; set; }
         public string KartNo { get; set; }
 
         [Range(100, 999, ErrorMessage = "CVV alanı 3 rakamdan oluşmalıdır.")]
         [System.ComponentModel.DataAnnotations.Required]
-        public int? CVV { get; set; }
+        public int CVV { get; set; }
 
         [System.ComponentModel.DataAnnotations.Required]
         public string SKT { get; set; }

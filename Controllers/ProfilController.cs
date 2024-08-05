@@ -24,9 +24,10 @@ namespace KonserBiletim.Controllers
             {
                 Profil = new ProfilViewModel
                 {
-                    Kartlar = await GetKartlar() // Kartlar listesini buraya atayın
+                    Kartlar = new List<KartViewModel>()
                 }
             };
+            model.Profil.Kartlar = await GetKartlar();
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -114,73 +115,102 @@ namespace KonserBiletim.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> KartEkle(KartViewModel model)
+        public async Task<IActionResult> KartEkle(string KartNo, string SahipIsmi, string SahipSoyismi, string SKT, string CVV)
         {
+            string userID = HttpContext.Session.GetString("UserID");
+
+            if (userID == null)
+            {
+                ModelState.AddModelError(string.Empty, "Kullanıcı kimliği bulunamadı.");
+                return View("Profile","Profil");
+            }
+
+            if (!IsValidKartNo(KartNo)) //bunu sonradan ekledim kart numarasını kontrol edebilmek icin, ama duzgun caalismiyor
+            {
+                ModelState.AddModelError(string.Empty, "Kart numarası geçersiz. Kart numaranız 16 rakam içermelidir.");
+                return View("Profile","Profil");
+            }
+
             if (ModelState.IsValid)
             {
-                string user_id = HttpContext.Session.GetString("UserID");
-                int userID = Int32.Parse(user_id);
-
-                try
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    bool kartVarMi = false;
-                    using (SqlConnection con = new SqlConnection(connectionString))
+                    await connection.OpenAsync();
+
+                    var query = "INSERT INTO KartBilgileri (cust_id, kart_no, cvv, skt, sahip_ismi, sahip_soyismi) VALUES (@CustID, @KartNo, @CVV, @SKT, @SahipIsmi, @SahipSoyismi)";
+
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        await con.OpenAsync();
-                        string checkQuery = @"SELECT COUNT(1) FROM KartBilgileri WHERE cust_id = @CustID AND kart_no = @KartNo";
-                        using (SqlCommand checkCmd = new SqlCommand(checkQuery, con))
+                        command.Parameters.AddWithValue("@CustID", int.Parse(userID));
+                        command.Parameters.AddWithValue("@KartNo", KartNo);
+                        command.Parameters.AddWithValue("@CVV", CVV);
+                        command.Parameters.AddWithValue("@SKT", SKT);
+                        command.Parameters.AddWithValue("@SahipIsmi", SahipIsmi);
+                        command.Parameters.AddWithValue("@SahipSoyismi", SahipSoyismi);
+
+                        try
                         {
-                            checkCmd.Parameters.AddWithValue("@CustID", userID);
-                            checkCmd.Parameters.AddWithValue("@KartNo", model.KartNo);
-                            kartVarMi = (int)await checkCmd.ExecuteScalarAsync() > 0;
+                            await command.ExecuteNonQueryAsync();
+                            TempData["Message"] = "Kart başarıyla eklendi!";
+                        }
+                        catch (Exception ex)
+                        {
+                            TempData["Error"] = $"Bir hata oluştu: {ex.Message}";
                         }
                     }
-
-                    if (kartVarMi)
-                    {
-                        ViewBag.Message = "Bu kart sistemde kayıtlıdır";
-                    }
-                    else
-                    {
-                        using (SqlConnection con = new SqlConnection(connectionString))
-                        {
-                            await con.OpenAsync();
-                            string query = @"INSERT INTO KartBilgileri (cust_id, kart_no, cvv, skt, sahip_ismi, sahip_soyismi)
-                                    VALUES (@CustID, @KartNo, @CVV, @SKT, @SahipIsmi, @SahipSoyismi)";
-
-                            using (SqlCommand cmd = new SqlCommand(query, con))
-                            {
-                                cmd.Parameters.AddWithValue("@CustID", userID);
-                                cmd.Parameters.AddWithValue("@KartNo", model.KartNo);
-                                cmd.Parameters.AddWithValue("@CVV", model.CVV);
-                                cmd.Parameters.AddWithValue("@SKT", model.SKT);
-                                cmd.Parameters.AddWithValue("@SahipIsmi", model.SahipIsmi);
-                                cmd.Parameters.AddWithValue("@SahipSoyismi", model.SahipSoyismi);
-
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-
-                        ViewBag.Message = "Kart başarıyla kaydedildi!";
-                    }
                 }
-                catch (Exception ex)
-                {
-                    ViewBag.Message = $"Bir hata oluştu: {ex.Message}";
-                }
+                return RedirectToAction("Profile","Profil");
+            }
+            return View("Profile","Profil");
+        }
+
+        private bool IsValidKartNo(string kartNo)
+        {
+            if (string.IsNullOrEmpty(kartNo))
+            {
+                return false;
+            }
+
+            string temizlenmisKartNo = kartNo.Replace(" ", "");
+
+            return temizlenmisKartNo.Length == 16 && temizlenmisKartNo.All(char.IsDigit);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> KartSil(string kart_no, int cust_id)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                await con.OpenAsync();
+                await KartSil(kart_no, con);
             }
 
             return RedirectToAction("Profile", "Profil");
         }
 
+        private async Task KartSil(string kart_no, SqlConnection con)
+        {
+            string userID = HttpContext.Session.GetString("UserID");
+
+            string query = @"DELETE FROM KartBilgileri WHERE kart_no = @KartNo AND cust_id = @CustID";
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.Add("@KartNo", SqlDbType.VarChar).Value = kart_no;
+                cmd.Parameters.Add("@CustID", SqlDbType.Int).Value = int.Parse(userID);
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
 
         [HttpPost]
-        public ActionResult Edit(ProfilViewModel model, IFormFile profilFoto)
+        public ActionResult Edit(MasterViewModel model, IFormFile profilFoto)
         {
             string userID = HttpContext.Session.GetString("UserID");
             string userRole = HttpContext.Session.GetString("UserRole");
 
-            var previousFotoPath = model.ProfilFotoPath; // Önceki dosya yolunu saklayın
+            var profilModel = model.Profil; // ProfilViewModel'i al
+            var previousFotoPath = profilModel?.ProfilFotoPath; // Önceki dosya yolunu saklayın
             var fotoPath = previousFotoPath;
 
             if (profilFoto != null && profilFoto.Length > 0)
@@ -205,9 +235,9 @@ namespace KonserBiletim.Controllers
                     updateQuery = "UPDATE Musteri SET musteriAdi = @Name, musteriSoyadi = @Surname, musteriMail = @Email WHERE musteri_id = @UserID";
                     using (SqlCommand cmd = new SqlCommand(updateQuery, con))
                     {
-                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = model.Name;
-                        cmd.Parameters.Add("@Surname", SqlDbType.NVarChar).Value = model.Surname;
-                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = model.Email;
+                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = profilModel?.Name ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Surname", SqlDbType.NVarChar).Value = profilModel?.Surname ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = profilModel?.Email ?? (object)DBNull.Value;
                         cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = int.Parse(userID);
                         cmd.ExecuteNonQuery();
                     }
@@ -215,16 +245,16 @@ namespace KonserBiletim.Controllers
                     updateQuery = "IF EXISTS (SELECT 1 FROM Profil WHERE userID = @UserID) " +
                                   "UPDATE Profil SET telNo = @TelNo, profil_foto_path = @ProfilFotoPath WHERE userID = @UserID " +
                                   "ELSE " +
-                                  "INSERT INTO Profil (telNo, profil_foto_path) VALUES (@TelNo, @ProfilFotoPath)";
+                                  "INSERT INTO Profil (userID, telNo, profil_foto_path) VALUES (@UserID, @TelNo, @ProfilFotoPath)";
                 }
                 else if (userRole == "Organizator")
                 {
                     updateQuery = "UPDATE Organizator SET orgName = @Name, orgSurname = @Surname, orgMail = @Email WHERE orgID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(updateQuery, con))
                     {
-                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = model.Name;
-                        cmd.Parameters.Add("@Surname", SqlDbType.NVarChar).Value = model.Surname;
-                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = model.Email;
+                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = profilModel?.Name ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Surname", SqlDbType.NVarChar).Value = profilModel?.Surname ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = profilModel?.Email ?? (object)DBNull.Value;
                         cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = int.Parse(userID);
                         cmd.ExecuteNonQuery();
                     }
@@ -232,24 +262,26 @@ namespace KonserBiletim.Controllers
                     updateQuery = "IF EXISTS (SELECT 1 FROM ProfilOrg WHERE userID = @UserID) " +
                                   "UPDATE ProfilOrg SET telNo = @TelNo, profil_foto_path = @ProfilFotoPath WHERE userID = @UserID " +
                                   "ELSE " +
-                                  "INSERT INTO ProfilOrg (telNo, profil_foto_path) VALUES (@TelNo, @ProfilFotoPath)";
+                                  "INSERT INTO ProfilOrg (userID, telNo, profil_foto_path) VALUES (@UserID, @TelNo, @ProfilFotoPath)";
                 }
 
                 using (SqlCommand cmd = new SqlCommand(updateQuery, con))
                 {
                     cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = int.Parse(userID);
-                    cmd.Parameters.Add("@TelNo", SqlDbType.NVarChar).Value = (object)model.TelNo ?? DBNull.Value;
+                    cmd.Parameters.Add("@TelNo", SqlDbType.NVarChar).Value = (object)profilModel?.TelNo ?? DBNull.Value;
                     cmd.Parameters.Add("@ProfilFotoPath", SqlDbType.NVarChar).Value = (object)fotoPath ?? DBNull.Value;
                     cmd.ExecuteNonQuery();
                 }
 
-                if (!string.IsNullOrEmpty(model.ProfilFotoPath))
+                if (!string.IsNullOrEmpty(profilModel?.ProfilFotoPath))
                 {
-                    model.ProfilFotoPath = $"~/uploads/{model.ProfilFotoPath}";
+                    profilModel.ProfilFotoPath = $"~/uploads/{profilModel.ProfilFotoPath}";
                 }
             }
+
             return RedirectToAction("Profile", "Profil");
         }
+
 
         private string SaveUploadedFile(IFormFile file)
         {

@@ -156,62 +156,6 @@
 
 </head>
 <body>
-<div class="container px-4 py-5 mx-auto">
-    <div class="row d-flex justify-content-center">
-        <div class="col-5">
-            <h4 class="heading">Sepetim</h4>
-        </div>
-        <div class="col-7">
-            <div class="row text-right">
-                <div class="col-4">
-                    <h6 class="mt-2">Konser</h6>
-                </div>
-                <div class="col-4">
-                    <h6 class="mt-2">Miktar</h6>
-                </div>
-                <div class="col-4">
-                    <h6 class="mt-2">Fiyat</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @foreach (var item in Model.Sepet.SepetDetaylar)
-    {
-        <div class="row d-flex justify-content-center border-top">
-            <div class="col-5">
-                <div class="row d-flex">
-                    <div class="book">
-                        <img src="@item.BiletGorselPath" class="bilet-img" alt="Sanatçı Fotoğrafı">
-                    </div>
-                    <div class="my-auto flex-column d-flex pad-left">
-                        <h6 class="mob-text">@item.KonserAdi</h6>
-                        <p class="mob-text">@item.SanatciAdi</p>
-                    </div>
-                </div>
-            </div>
-            <div class="my-auto col-7">
-                <div class="row text-right">
-                    <div class="col-4">
-                        <p class="mob-text">@item.KategoriAdi</p>
-                    </div>
-                    <div class="col-4">
-                        <div class="row d-flex justify-content-end px-3">
-                            <p class="mb-0" id="cnt1">@item.miktar</p>
-                            <div class="d-flex flex-column plus-minus">
-                                <span class="vsm-text plus">+</span>
-                                <span class="vsm-text minus">-</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <h6 class="mob-text">@item.fiyat.ToString("C")</h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card">
@@ -232,7 +176,6 @@
                     </div>
                     <form asp-action="OdemeYap" method="post" class="mt-4">
                         <input type="hidden" name="sepetID" value="@Model.Sepet.SepetID" />
-                        <input type="hidden" name="kart_id" value="@Model.Sepet.KartID" />
                         <input type="hidden" name="sahip_ismi" value="@Model.Sepet.SahipIsmi" />
                         <input type="hidden" name="sahip_soyismi" value="@Model.Sepet.SahipSoyismi" />
                         <input type="hidden" name="kart_no" value="@Model.Sepet.KartNo" />
@@ -273,10 +216,6 @@
                             </div>
                         </div>
                         <div class="col-lg-4 mt-2">
-                            <div class="row d-flex justify-content-between px-4" id="tax">
-                                <p class="mb-1 text-left">Toplam (KDV dahil)</p>
-                                <h6 class="mb-1 text-right">@Model.Sepet.ToplamFiyat.ToString("C")</h6>
-                            </div>
                             <button class="btn-block btn-secondary">
                                 <span>
                                     <span id="checkout">Ödeme Yap</span>
@@ -290,33 +229,6 @@
         </div>
     </div>
 </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const plusButtons = document.querySelectorAll('.plus');
-            const minusButtons = document.querySelectorAll('.minus');
 
-            plusButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('#cnt1');
-                    let quantity = parseInt(quantityElement.textContent);
-                    quantityElement.textContent = quantity + 1;
-                });
-            });
-
-            minusButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const quantityElement = this.closest('.row').querySelector('#cnt1');
-                    let quantity = parseInt(quantityElement.textContent);
-                    if (quantity > 0) {
-                        quantityElement.textContent = quantity - 1;
-                    }
-                });
-            });
-        });
-        document.querySelector('form').addEventListener('submit', function (e) {
-            var sepetID = document.querySelector('input[name="sepetID"]').value;
-            console.log('Gönderilen sepetID:', sepetID);
-        });
-    </script>
 </body>
 </html>
