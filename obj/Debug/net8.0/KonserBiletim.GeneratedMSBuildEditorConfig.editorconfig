@@ -26,6 +26,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Lenovo\source\repos\KonserBiletim\KonserBiletim
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Bilet/Biletim.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsZXRcQmlsZXRpbS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Lenovo/source/repos/KonserBiletim/KonserBiletim/Views/Home/Anasayfa.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBbmFzYXlmYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

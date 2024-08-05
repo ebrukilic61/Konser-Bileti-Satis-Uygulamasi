@@ -17,6 +17,8 @@ namespace KonserBiletim.ViewModels
         public string KonserDurumu { get; set; }
         public DateTime? YeniTarih { get; set; }
         public string KonserLoc { get; set; }
+        public int Capacity {  get; set; }
+        public string CapacityName { get; set; }   
         public string ImageURL { get; set; }
         public string ProfilFotoPath { get; set; }
         public decimal BiletFiyati { get; set; }

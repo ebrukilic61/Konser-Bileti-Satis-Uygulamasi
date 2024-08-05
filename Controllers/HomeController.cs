@@ -78,8 +78,25 @@ namespace KonserBiletim.Controllers
                 con.Open();
 
                 string query = @"
+                SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName AS KonserLoc, 
+                SUM(bk.kisi_sayisi) AS Capacity,
+                s.sanatciName, s.profilFotoPath AS ImageURL, 
+                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                d.yeni_tarih AS YeniTarih
+                FROM Konser k 
+                JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                JOIN KonserAlani l ON k.konserLocId = l.konserLocID
+                JOIN BiletKategori bk ON k.konserID = bk.konser_ID
+                JOIN Genre g ON s.genreId = g.genre_id 
+                JOIN KonserDurumu d ON k.konserID = d.konser_id
+                GROUP BY k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName, s.sanatciName, s.profilFotoPath, g.genre_name, 
+                d.konser_durumu, d.yeni_tarih";
+                /*
+                string query = @"
                    SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                   l.alanName AS KonserLoc, bk.kisi_sayisi AS Capacity, s.sanatciName, s.profilFotoPath AS ImageURL, 
                    g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
                    d.yeni_tarih AS YeniTarih
                    FROM Konser k 
@@ -87,6 +104,7 @@ namespace KonserBiletim.Controllers
                    JOIN Genre g ON s.genreId = g.genre_id 
                    JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
                    JOIN KonserDurumu d ON k.konserID = d.konser_id";
+                */
 
                 var results = con.Query<KonserViewModel>(query).ToList();
 
@@ -115,17 +133,22 @@ namespace KonserBiletim.Controllers
                 con.Open();
 
                 string query = @"
-                 SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                 l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                 g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                 d.yeni_tarih AS YeniTarih
-                 FROM Konser k 
-                 JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                 JOIN Genre g ON s.genreId = g.genre_id 
-                 JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                 JOIN KonserDurumu d ON k.konserID = d.konser_id
-                 WHERE (@genre IS NULL OR g.genre_name = @genre)
-                 AND (@searchTerm IS NULL OR k.konserName LIKE '%' + @searchTerm + '%' OR k.konserTanim LIKE '%' + @searchTerm + '%')";
+                SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName AS KonserLoc, SUM(bk.kisi_sayisi) AS Capacity, s.sanatciName, s.profilFotoPath AS ImageURL, 
+                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                d.yeni_tarih AS YeniTarih
+                FROM Konser k
+                JOIN Sanatci s ON k.sanatciId = s.sanatciID
+                JOIN KonserAlani l ON k.konserLocId = l.konserLocID
+                JOIN BiletKategori bk ON k.konserID = bk.konser_ID
+                JOIN Genre g ON s.genreId = g.genre_id
+                JOIN KonserDurumu d ON k.konserID = d.konser_id
+                GROUP BY k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                         l.alanName, s.sanatciName, s.profilFotoPath, g.genre_name, 
+                         d.konser_durumu, d.yeni_tarih
+                HAVING (@genre IS NULL OR g.genre_name = @genre)
+                   AND (@searchTerm IS NULL OR k.konserName LIKE '%' + @searchTerm + '%' 
+                       OR k.konserTanim LIKE '%' + @searchTerm + '%')";
 
                 var parameters = new
                 {
@@ -177,18 +200,40 @@ namespace KonserBiletim.Controllers
             {
                 con.Open();
 
-                string query = @"SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                d.yeni_tarih AS YeniTarih
+                string query = @"
+                SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                       l.alanName AS KonserLoc, SUM(bk.kisi_sayisi) AS Capacity, 
+                       s.sanatciName, s.profilFotoPath AS ImageURL, 
+                       g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                       d.yeni_tarih AS YeniTarih
                 FROM Konser k 
                 JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                JOIN Genre g ON s.genreId = g.genre_id 
                 JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
+                JOIN BiletKategori bk ON k.konserID = bk.konser_ID
+                JOIN Genre g ON s.genreId = g.genre_id 
                 JOIN KonserDurumu d ON k.konserID = d.konser_id
-                WHERE g.genre_name = @GenreName";
+                WHERE g.genre_name = @GenreName
+                GROUP BY k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                         l.alanName, s.sanatciName, s.profilFotoPath, g.genre_name, 
+                         d.konser_durumu, d.yeni_tarih";
 
-                return con.Query<KonserViewModel>(query, new { GenreName = genreName }).ToList();
+                var results = con.Query<KonserViewModel>(query, new { GenreName = genreName }).ToList();
+
+                if (results.Count == 0)
+                {
+                    return Enumerable.Empty<KonserViewModel>();
+                }
+
+                string fileName = "/images/singers/icons/";
+
+                foreach (var result in results)
+                {
+                    result.ImageURL = fileName + result.ImageURL;
+                    // Loglama
+                    Console.WriteLine($"ID: {result.KonserID}, ImageURL: {result.ImageURL}");
+                }
+
+                return results;
             }
         }
 

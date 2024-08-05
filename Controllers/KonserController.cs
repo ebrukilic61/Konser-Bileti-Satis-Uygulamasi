@@ -40,15 +40,21 @@ namespace KonserBiletim.Controllers
                 con.Open();
 
                 string query = @"
-                   SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                   l.alanName AS KonserLoc, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                   d.yeni_tarih AS YeniTarih
-                   FROM Konser k 
-                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                   JOIN Genre g ON s.genreId = g.genre_id 
-                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                   JOIN KonserDurumu d ON k.konserID = d.konser_id";
+                SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName AS KonserLoc, 
+                SUM(bk.kisi_sayisi) AS Capacity,
+                s.sanatciName, s.profilFotoPath AS ImageURL, 
+                g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
+                d.yeni_tarih AS YeniTarih
+                FROM Konser k 
+                JOIN Sanatci s ON k.sanatciId = s.sanatciID 
+                JOIN KonserAlani l ON k.konserLocId = l.konserLocID
+                JOIN BiletKategori bk ON k.konserID = bk.konser_ID
+                JOIN Genre g ON s.genreId = g.genre_id 
+                JOIN KonserDurumu d ON k.konserID = d.konser_id
+                GROUP BY k.konserID, k.konserName, k.konserTanim, k.konserDate, 
+                l.alanName, s.sanatciName, s.profilFotoPath, g.genre_name, 
+                d.konser_durumu, d.yeni_tarih";
 
                 var results = con.Query<KonserViewModel>(query).ToList();
 

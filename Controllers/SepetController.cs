@@ -51,7 +51,6 @@ namespace KonserBiletim.Controllers
                     }
                 }
 
-
                 string konserQuery = @"SELECT konser_ID FROM BiletKategori WHERE kategoriID = @KategoriID";
                 using (SqlCommand cmd = new SqlCommand(konserQuery, con))
                 {
@@ -407,12 +406,30 @@ namespace KonserBiletim.Controllers
             if (!kartGecerli)
             {
                 ViewBag.mesaj = "Geçersiz kart bilgileri.";
+                return View("SepetGoruntule", model); // Kart bilgileri geçersizse sepete geri dön
             }
 
+            //toplam fiyat:
+            decimal toplamFiyat = await HesaplaToplamFiyatAsync();
+
+            //ödeme bilgisi:
+            await OdemeBilgileriniEkle(user_id, toplamFiyat);
+
+            //biletim:
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                await con.OpenAsync();
+                await BiletOlustur(model);
+            }
+
+            //sepeti temizle:
+            await SepetiTemizle();
+
+            //islem basarılı mesajı:
             ViewBag.mesaj = "Ödemeniz başarıyla gerçekleştirildi.";
-            SepetiTemizle();
-            return RedirectToAction("SepetGoruntule","Sepet",model);
+            return RedirectToAction("SepetGoruntule", "Sepet", model);
         }
+
 
         private async Task<bool> KartBilgileriniDogrulaAsync(SepetViewModel sepetModel, int custID)
         {
@@ -461,25 +478,6 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        /*
-        private async Task GuncelleSepetiAsync(int sepetID, Dictionary<int, int> updatedQuantities, SqlConnection con)
-        {
-            foreach (var kvp in updatedQuantities)
-            {
-                string updateQuery = @"UPDATE SepetDetay 
-                               SET miktar = @Miktar 
-                               WHERE sepetID = @SepetID AND kategoriID = @KategoriID";
-                using (SqlCommand cmd = new SqlCommand(updateQuery, con))
-                {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
-                    cmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kvp.Key;
-                    cmd.Parameters.Add("@Miktar", SqlDbType.Int).Value = kvp.Value;
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-        }
-        */
-
         private async Task<decimal> HesaplaToplamFiyatAsync()
         {
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
@@ -500,95 +498,87 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        private async Task<decimal> HesaplaIndirimliToplamFiyatAsync()
+        private async Task BiletOlustur(MasterViewModel model)
         {
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
-            var musteriID = HttpContext.Session.GetString("UserID");
+            string userID = HttpContext.Session.GetString("UserID");
 
-            using (SqlConnection con = new SqlConnection(connectionString)) 
+            if (!sepetID.HasValue)
             {
-                con.Open();
+                throw new Exception("SepetID bulunamadı.");
+            }
 
-                string query = @"
-                SELECT SUM(sd.miktar * bk.biletFiyati) AS ToplamFiyat
-                FROM SepetDetay sd
-                JOIN BiletKategori bk ON sd.kategoriID = bk.kategoriID
-                JOIN Bilet b ON sd.biletID = b.bilet_id
-                WHERE sd.sepetID = @SepetID AND b.indirimKullanildi = 0";
+            if (string.IsNullOrEmpty(userID))
+            {
+                throw new Exception("UserID bulunamadı.");
+            }
 
-                using (SqlCommand cmd = new SqlCommand(query, con))
+            int custID = Convert.ToInt32(userID);
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                await con.OpenAsync();
+
+                //sepetteki konserIDyi almak icin:
+                int konserID;
+                string selectKonserIDQuery = "SELECT DISTINCT konserID FROM SepetDetay WHERE SepetID = @SepetID";
+
+                using (SqlCommand selectCmd = new SqlCommand(selectKonserIDQuery, con))
                 {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
-                    decimal toplamFiyat = (decimal)await cmd.ExecuteScalarAsync();
+                    selectCmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
 
-                    //kullanıcı puanı:
-                    int kullaniciPuan = await GetKullaniciPuanAsync(musteriID);
+                    var result = await selectCmd.ExecuteScalarAsync();
+                    if (result == null || !int.TryParse(result.ToString(), out konserID))
+                    {
+                        throw new Exception("KonserID bulunamadı.");
+                    }
+                }
 
-                    decimal indirim = HesaplaIndirim(kullaniciPuan);
-                    toplamFiyat -= indirim;
+                //bilettm:
+                string insertQuery = @"INSERT INTO Biletim (musteriID, biletTuru, konserID, satinAlmaTarihi, biletDurumu)
+                               SELECT @CustID, sd.KategoriAdi, sd.konserID, GETDATE(), 'Gecerli'
+                               FROM SepetDetay sd
+                               WHERE sd.sepetID = @SepetID";
 
-                    return toplamFiyat;
+                using (SqlCommand insertCmd = new SqlCommand(insertQuery, con))
+                {
+                    insertCmd.Parameters.Add("@CustID", SqlDbType.Int).Value = custID;
+                    insertCmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+
+                    await insertCmd.ExecuteNonQueryAsync();
+                }
+
+                //kalan biletlerin sayısını güncellemek icin:
+                string updateBiletSayisiQuery = @"UPDATE bk
+                                          SET bk.kisi_sayisi = bk.kisi_sayisi - COALESCE(sd.TotalMiktar, 0)
+                                          FROM BiletKategori bk
+                                          LEFT JOIN (
+                                              SELECT kategoriID, SUM(miktar) AS TotalMiktar
+                                              FROM SepetDetay
+                                              WHERE SepetID = @SepetID
+                                              GROUP BY kategoriID
+                                          ) sd ON bk.kategoriID = sd.kategoriID
+                                          WHERE bk.konser_ID = @KonserID";
+
+                using (SqlCommand updateCmd = new SqlCommand(updateBiletSayisiQuery, con))
+                {
+                    updateCmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+                    updateCmd.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserID;
+
+                    await updateCmd.ExecuteNonQueryAsync();
                 }
             }
         }
 
 
-        private async Task<int> GetKullaniciPuanAsync(string musteriID)
+        private async Task OdemeBilgileriniEkle(int musteriID, decimal toplamFiyat)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             {
-                con.Open();
+                con.Open();  //kart id'yi çıkardım
 
-                string query = @"SELECT Puan FROM Musteri WHERE musteri_id = @MusteriID";
-
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add("@MusteriID", SqlDbType.Int).Value = musteriID;
-                    var result = await cmd.ExecuteScalarAsync();
-                    return result != null && result != DBNull.Value ? (int)result : 0;
-                }
-            }
-        }
-
-        private decimal HesaplaIndirim(int kullaniciPuan)
-        {
-            decimal indirim = 0;
-            if (kullaniciPuan >= 100) //indirim yapılabilmesi için puan en az 100 olmalı
-            {
-                indirim = (kullaniciPuan / 100) * 5; //puanın yüzde 5'i kadar indirim uygulanacak
-                kullaniciPuan = 0;
-            }
-            return indirim;
-        }
-
-        private async Task IndirimKullanildiBiletleriGuncelleAsync()
-        {
-            int? sepetID = HttpContext.Session.GetInt32("SepetID");
-
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-
-                string query = @"UPDATE Bilet SET indirimKullanildi = 1
-                WHERE bilet_id IN (SELECT biletID FROM SepetDetay WHERE sepetID = @SepetID)";
-
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        private async Task<int> EkleOdemeBilgileriniAsync(string musteriID, decimal toplamFiyat, int kartID)
-        {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-
-                string query = @"INSERT INTO Odeme (musteriID, toplamFiyat, odemeTarihi, odemeDurumu, kartId)
-                     OUTPUT INSERTED.odemeID
-                     VALUES (@MusteriID, @ToplamFiyat, @OdemeTarihi, @OdemeDurumu, @KartId)";
+                string query = @"INSERT INTO Odeme (musteriID, toplamFiyat, odemeTarihi, odemeDurumu) 
+                         VALUES (@MusteriID, @ToplamFiyat, @OdemeTarihi, @OdemeDurumu)";
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
@@ -596,13 +586,11 @@ namespace KonserBiletim.Controllers
                     cmd.Parameters.Add("@ToplamFiyat", SqlDbType.Decimal).Value = toplamFiyat;
                     cmd.Parameters.Add("@OdemeTarihi", SqlDbType.DateTime).Value = DateTime.UtcNow;
                     cmd.Parameters.Add("@OdemeDurumu", SqlDbType.Bit).Value = true;
-                    cmd.Parameters.Add("@KartId", SqlDbType.Int).Value = kartID;
 
-                    return (int)await cmd.ExecuteScalarAsync();
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> BiletSil(int kategoriID, int konserID)
@@ -626,36 +614,6 @@ namespace KonserBiletim.Controllers
                 cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
                 cmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kategoriID;
                 cmd.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserID;
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        private async Task GuncellePuanAsync(string musteriID, int yeniPuan, SqlConnection con)
-        {
-            string query = @"UPDATE Musteri SET puan = @YeniPuan WHERE musteri_id = @MusteriID";
-            using (SqlCommand cmd = new SqlCommand(query, con))
-            {
-                cmd.Parameters.Add("@YeniPuan", SqlDbType.Int).Value = yeniPuan;
-                cmd.Parameters.Add("@MusteriID", SqlDbType.Int).Value = musteriID;
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        private async Task OlusturBiletAsync(int sepetID, int odemeID, SqlConnection con)
-        {
-            string cust_id = HttpContext.Session.GetString("UserID");
-            int custID = Convert.ToInt32("cust_id");
-            string query = @"INSERT INTO Biletim (musteriID, odemeID, biletTuru, konserID, satinAlmaTarihi, biletDurumu, indirimKullanildi)
-                     SELECT @CustID, @OdemeID, SepetDetay.KategoriAdi, SepetDetay.konserID, GETDATE(), 'Gecerli', 0
-                     FROM Sepet
-                     INNER JOIN SepetDetay ON Sepet.SepetID = SepetDetay.SepetID
-                     WHERE Sepet.SepetID = @SepetID";
-            using (SqlCommand cmd = new SqlCommand(query, con))
-            {
-                cmd.Parameters.Add("@CustID",SqlDbType.Int).Value = custID;
-                cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
-                cmd.Parameters.Add("@OdemeID", SqlDbType.Int).Value = odemeID;
-
                 await cmd.ExecuteNonQueryAsync();
             }
         }
