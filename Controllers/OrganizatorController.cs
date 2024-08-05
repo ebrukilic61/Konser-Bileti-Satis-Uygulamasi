@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using KonserBiletim.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KonserBiletim.Controllers
@@ -13,6 +14,7 @@ namespace KonserBiletim.Controllers
 
         public ActionResult Dashboard()
         {
+
             return View();
         }
     }

@@ -63,7 +63,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession(); // Session kullanımını ekleyin
+app.UseSession(); 
 
 app.UseAuthentication();
 app.UseAuthorization();

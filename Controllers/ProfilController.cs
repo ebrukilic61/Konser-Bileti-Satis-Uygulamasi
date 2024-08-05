@@ -87,8 +87,7 @@ namespace KonserBiletim.Controllers
                     return kartListesi;
                 }
 
-                string query = @"SELECT kart_no, cvv, skt, sahip_ismi, sahip_soyismi FROM KartBilgileri
-        WHERE cust_id = @CustID";
+                string query = @"SELECT kart_no, cvv, skt, sahip_ismi, sahip_soyismi FROM KartBilgileri WHERE cust_id = @CustID";
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {

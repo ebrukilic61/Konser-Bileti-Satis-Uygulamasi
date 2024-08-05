@@ -556,8 +556,7 @@ namespace KonserBiletim.Controllers
                                               SELECT kategoriID, SUM(miktar) AS TotalMiktar
                                               FROM SepetDetay
                                               WHERE SepetID = @SepetID
-                                              GROUP BY kategoriID
-                                          ) sd ON bk.kategoriID = sd.kategoriID
+                                              GROUP BY kategoriID) sd ON bk.kategoriID = sd.kategoriID
                                           WHERE bk.konser_ID = @KonserID";
 
                 using (SqlCommand updateCmd = new SqlCommand(updateBiletSayisiQuery, con))

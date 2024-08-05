@@ -1,6 +1,4 @@
-﻿@model MasterViewModel
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -56,10 +54,7 @@
                             </ul>
                         </div>
                     </ul>
-                    <form class="d-flex m-lg-auto" method="get" action="@Url.Action("Anasayfa", "Home")">
-                        <input class="form-control me-sm-2" type="search" name="searchTerm" placeholder="Konser Ara" value="@(Model?.SearchTerm ?? string.Empty)">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Ara</button>
-                    </form>
+
                     <div class="btn-group">
                         <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Kayıt Ol

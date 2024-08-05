@@ -34,6 +34,7 @@ namespace KonserBiletim.Models
 
         [StringLength(255)]
         public string profilFotoPath {  get; set; }
+        public int puan {  get; set; }  
     }
 
 }

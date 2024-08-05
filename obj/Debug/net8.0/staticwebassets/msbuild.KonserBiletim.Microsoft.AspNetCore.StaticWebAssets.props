@@ -2288,6 +2288,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\4090db2d-8601-40d9-933f-3db7834a7d25_FUhC5KUWIAQXmxW.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>KonserBiletim</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/KonserBiletim</BasePath>
+      <RelativePath>uploads/4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\4adc1d03-4174-469d-b28d-3f1b2dd05f61_tumblr_07260d89622c0adddb579c22ed062ff7_10957619_2048.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>KonserBiletim</SourceId>

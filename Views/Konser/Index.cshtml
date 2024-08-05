@@ -1,4 +1,4 @@
-﻿@model KonserBiletim.ViewModels.MasterViewModel
+﻿@model MasterViewModel
 @{
     ViewData["Title"] = "Konser Listesi";
     Layout = "_Layout2";
@@ -49,49 +49,56 @@
 </head>
 
 <div class="row">
-    @foreach (var item in Model.KonserSanatci.Konserler)
+    @if (Model.KonserSanatci != null && Model.KonserSanatci.Konserler != null)
     {
-        <div class="col mb-5 d-flex justify-content-center">
-            <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
-                <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="text-decoration-none">
-                    <div class="card h-100">
-                        <!-- Konser image-->
-                        <img src="@Url.Content(item.ImageURL)" alt="@item.SanatciName" class="card-img-top" />
-                        <!-- Konser details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <h4 class="fw-bolder">@item.KonserName</h4>
-                                <h5 class="card-subtitle mb-2 text-muted">@item.SanatciName</h5>
-                                <div class="d-flex flex-column small text-warning mb-2">
-                                    <p class="card-text">@item.KonserTanim</p>
-                                    <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
-                                    <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
-                                    <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
-                                    <p class="card-text"><strong>Bilet Sayısı:</strong> @item.Capacity</p>
-                                    @if (item.YeniTarih.HasValue)
+        foreach (var item in Model.KonserSanatci.Konserler)
+        {
+            <div class="col mb-5 d-flex justify-content-center">
+                <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
+                    <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="text-decoration-none">
+                        <div class="card h-100">
+                            <!-- Konser image-->
+                            <img src="@Url.Content(item.ImageURL)" alt="@item.SanatciName" class="card-img-top" />
+                            <!-- Konser details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h4 class="fw-bolder">@item.KonserName</h4>
+                                    <h5 class="card-subtitle mb-2 text-muted">@item.SanatciName</h5>
+                                    <div class="d-flex flex-column small text-warning mb-2">
+                                        <p class="card-text">@item.KonserTanim</p>
+                                        <p class="card-text"><strong>Date:</strong> @item.KonserDate.ToString("yyyy-MM-dd")</p>
+                                        <p class="card-text"><strong>Location:</strong> @item.KonserLoc</p>
+                                        <p class="card-text"><strong>Status:</strong> @item.KonserDurumu</p>
+                                        <p class="card-text"><strong>Bilet Sayısı:</strong> @item.Capacity</p>
+                                        @if (item.YeniTarih.HasValue)
+                                        {
+                                            <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- butonlar -->
+                            <div class="card-footer p-4 border-top-0 bg-transparent">
+                                <div>
+                                    <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
+
+                                    @if (User.IsInRole("Organizator"))
                                     {
-                                        <p class="card-text"><strong>New Date:</strong> @item.YeniTarih.Value.ToString("yyyy-MM-dd")</p>
+                                        <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
+                                        <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                     }
                                 </div>
                             </div>
                         </div>
-                        <!-- butonlar -->
-                        <div class="card-footer p-4 border-top-0 bg-transparent">
-                            <div>
-                                <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
-
-                                @if (User.IsInRole("Organizator"))
-                                {
-                                    <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
-                                    <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </form>
-        </div>
+                    </a>
+                </form>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Konser bilgisi mevcut değil.</p>
     }
 </div>

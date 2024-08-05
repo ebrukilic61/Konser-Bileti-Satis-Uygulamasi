@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ULsSfmr3RlD4GccOCRYoVHV7Z7Ve47aJnFj2MeFcLVc=",
+  "Hash": "Hq+aXEhNfQnZdL5u6JUltM0PB0KHOX0/vGIevLk8jXM=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -3891,6 +3891,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\4090db2d-8601-40d9-933f-3db7834a7d25_FUhC5KUWIAQXmxW.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "uploads/4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\4159092a-e507-43c9-b7f4-c3e8c157494d_ts2.jpg"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4adc1d03-4174-469d-b28d-3f1b2dd05f61_tumblr_07260d89622c0adddb579c22ed062ff7_10957619_2048.jpg",

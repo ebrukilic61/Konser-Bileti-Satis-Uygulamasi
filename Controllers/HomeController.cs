@@ -1,4 +1,4 @@
-using KonserBiletim.Models;
+ï»¿using KonserBiletim.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using KonserBiletim.ViewModels;
@@ -56,7 +56,7 @@ namespace KonserBiletim.Controllers
             };
 
             await Sepet();
-
+            /*
             if (sepetId.HasValue) //bir seyler eksik
             {
 
@@ -66,6 +66,7 @@ namespace KonserBiletim.Controllers
             {
                 model.CartItemCount = 0;
             }
+            */
 
             return View(model);
         }
@@ -175,6 +176,7 @@ namespace KonserBiletim.Controllers
             }
         }
 
+        /*
         public async Task<int> CountCartItems(int sepetId)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -193,6 +195,7 @@ namespace KonserBiletim.Controllers
 
             }
         }
+        */
 
         private IEnumerable<KonserViewModel> GetConcertsByGenre(string genreName)
         {
@@ -259,12 +262,12 @@ namespace KonserBiletim.Controllers
 
         public async Task<IActionResult> Sepet()
         {
-            // Müþteri ID'sini string olarak aldýnýz, bunu int'e dönüþtürmelisiniz
+            // MÃ¼Ã¾teri ID'sini string olarak aldÃ½nÃ½z, bunu int'e dÃ¶nÃ¼Ã¾tÃ¼rmelisiniz
             var musteriIDString = HttpContext.Session.GetString("UserID");
             if (string.IsNullOrEmpty(musteriIDString) || !int.TryParse(musteriIDString, out int musteriID))
             {
-                // Müþteri ID'si oturumda yoksa ya da geçersizse hata döndür
-                return BadRequest("Müþteri ID'si bulunamadý.");
+                // MÃ¼Ã¾teri ID'si oturumda yoksa ya da geÃ§ersizse hata dÃ¶ndÃ¼r
+                return BadRequest("MÃ¼Ã¾teri ID'si bulunamadÃ½.");
             }
 
             int sepetID;
@@ -273,7 +276,7 @@ namespace KonserBiletim.Controllers
             {
                 await con.OpenAsync();
 
-                // Sepet var mý kontrol et
+                // Sepet var mÃ½ kontrol et
                 string checkSepetQuery = @"SELECT sepetID FROM Sepet WHERE musteriID = @MusteriID";
                 using (SqlCommand cmd = new SqlCommand(checkSepetQuery, con))
                 {
@@ -286,7 +289,7 @@ namespace KonserBiletim.Controllers
                     }
                     else
                     {
-                        // Müþteriye ait sepet yoksa sepet oluþturuyorum
+                        // MÃ¼Ã¾teriye ait sepet yoksa sepet oluÃ¾turuyorum
                         string createSepetQuery = @"INSERT INTO Sepet (musteriID) OUTPUT INSERTED.SepetID VALUES (@MusteriID)";
                         using (SqlCommand createCmd = new SqlCommand(createSepetQuery, con))
                         {
@@ -300,8 +303,8 @@ namespace KonserBiletim.Controllers
                 }
             }
 
-            // Sepet sayfasýna yönlendir
-            return RedirectToAction("SepetGoruntule","Sepet");
+            // Sepet sayfasÃ½na yÃ¶nlendir
+            return RedirectToAction("SepetGoruntule", "Sepet");
         }
 
         private IEnumerable<Sanatci> GetSanatcilar()
@@ -318,7 +321,7 @@ namespace KonserBiletim.Controllers
                     return Enumerable.Empty<Sanatci>();
                 }
 
-                // Profil fotoðraflarýnýn yolu
+                // Profil fotoÃ°raflarÃ½nÃ½n yolu
                 string fileName = "/images/singers/icons/";
 
                 foreach (var result in results)

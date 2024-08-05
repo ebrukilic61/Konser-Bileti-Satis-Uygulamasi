@@ -29,9 +29,21 @@ namespace KonserBiletim.Controllers
         // Konser listesini getirir
         public IActionResult Index()
         {
-            var konserler = GetKonserler();
-            return View(konserler);
+            var konserler = GetKonserler(); // Konserleri getiren metodunuz
+            var konserSanatciViewModel = new KonserSanatciViewModel
+            {
+                Konserler = konserler // Konserleri modelinize ekleyin
+            };
+
+            var model = new MasterViewModel
+            {
+                KonserSanatci = konserSanatciViewModel,
+
+            };
+
+            return View(model);
         }
+
 
         private IEnumerable<KonserViewModel> GetKonserler()
         {
@@ -203,24 +215,21 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public IActionResult KonserEkle()
         {
-
             var model = new KonserEkleViewModel
             {
-                //BiletKategorileri = new List<KonserEkleViewModel>(),
                 Sanatcilar = GetSanatcilar(),
-                KonserAlanlari = GetKonserAlanlari(),
-                //KonserDurumlari = GetKonserDurumlari()
+                KonserAlanlari = GetKonserAlanlari()
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult KonserEkle(MasterViewModel model)
+        public IActionResult KonserEkle(KonserEkleViewModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
                     using (SqlConnection con = new SqlConnection(connectionString))
                     {
@@ -239,13 +248,13 @@ namespace KonserBiletim.Controllers
                                 int konserId;
                                 using (SqlCommand cmd1 = new SqlCommand(insertKonserQuery, con, transaction))
                                 {
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserName", model.KonserEkle.KonserName));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserDate", model.KonserEkle.KonserDate));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserLocId", model.KonserEkle.KonserLocId));
-                                    cmd1.Parameters.Add(new SqlParameter("@SanatciId", model.KonserEkle.SanatciId));
-                                    cmd1.Parameters.Add(new SqlParameter("@KonserTanim", model.KonserEkle.KonserTanim));
+                                    cmd1.Parameters.AddWithValue("@KonserName", model.KonserName);
+                                    cmd1.Parameters.AddWithValue("@KonserDate", model.KonserDate);
+                                    cmd1.Parameters.AddWithValue("@KonserLocId", model.KonserLocId);
+                                    cmd1.Parameters.AddWithValue("@SanatciId", model.SanatciId);
+                                    cmd1.Parameters.AddWithValue("@KonserTanim", model.KonserTanim);
 
-                                    konserId = Convert.ToInt32(cmd1.ExecuteScalar()); //yeni eklenen konser id'si
+                                    konserId = Convert.ToInt32(cmd1.ExecuteScalar());
                                 }
 
                                 // Insert konser durumu
@@ -256,54 +265,50 @@ namespace KonserBiletim.Controllers
                                 using (SqlCommand cmd2 = new SqlCommand(insertDurumQuery, con, transaction))
                                 {
                                     cmd2.Parameters.AddWithValue("@KonserId", konserId);
-                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserEkle.KonserDurum); 
+                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserDurum);
 
                                     cmd2.ExecuteNonQuery();
                                 }
 
+                                // Insert bilet kategorisi
                                 string insertBiletQuery = @"
                                 INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
                                 VALUES (@KonserId, @KategoriAdi, @BiletFiyati, @KisiSayisi)";
 
                                 using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
                                 {
-                                    cmd3.Parameters.Add(new SqlParameter("@KonserId", konserId));
-                                    cmd3.Parameters.Add(new SqlParameter("@KategoriAdi", model.KonserEkle.KategoriAdi));
-                                    cmd3.Parameters.Add(new SqlParameter("@BiletFiyati", model.KonserEkle.Fiyat));
-                                    cmd3.Parameters.Add(new SqlParameter("@KisiSayisi", model.KonserEkle.KisiSayisi));
+                                    cmd3.Parameters.AddWithValue("@KonserId", konserId);
+                                    cmd3.Parameters.AddWithValue("@KategoriAdi", model.KategoriAdi);
+                                    cmd3.Parameters.AddWithValue("@BiletFiyati", model.Fiyat);
+                                    cmd3.Parameters.AddWithValue("@KisiSayisi", model.KisiSayisi);
                                     cmd3.ExecuteNonQuery();
                                 }
 
                                 transaction.Commit();
+                                TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
+                                return RedirectToAction("Index");
                             }
                             catch (Exception ex)
                             {
                                 transaction.Rollback();
-                                throw ex;
+                                TempData["ErrorMessage"] = "Bir hata oluştu: " + ex.Message;
                             }
                         }
                     }
-
-                    TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
-                    return RedirectToAction("Index");
                 }
-                else {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors);
-                
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin. " + ex.Message;
                 }
-
-                //model.BiletKategorileri = GetBiletKategorileri();
-                model.KonserEkle.Sanatcilar = GetSanatcilar();
-                model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
-                //model.KonserDurumlari = GetKonserDurumlari();
-                return View(model);
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Error: {ex.Message}");
-                TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin.";
-                return View(model);
+                // ModelState hatalarını kullanıcıya göstermek için form verilerini tekrar yükle
+                model.Sanatcilar = GetSanatcilar();
+                model.KonserAlanlari = GetKonserAlanlari();
             }
+
+            return View(model);
         }
 
         [HttpGet]
