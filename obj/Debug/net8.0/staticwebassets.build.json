@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Vo397ugnyjEKCQmVYETTOCAEuDOElCZTdnjigIaoXy4=",
+  "Hash": "fY8lqRr+F9DN25JryxVXCINGWDj8c8Qx9A3xkr9zM5A=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -4083,6 +4083,25 @@
       "OriginalItemSpec": "wwwroot\\uploads\\8936834d-6d28-4308-95ac-d02e62284846_tsicon.jpg"
     },
     {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\8db90062-c8c6-48c3-af84-c1073881c3c8_wendy.png",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "uploads/8db90062-c8c6-48c3-af84-c1073881c3c8_wendy.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\8db90062-c8c6-48c3-af84-c1073881c3c8_wendy.png"
+    },
+    {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\933381bd-2f21-43a0-95f6-6ebf963445c4_tsicon.jpg",
       "SourceId": "KonserBiletim",
       "SourceType": "Discovered",
@@ -4176,6 +4195,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\a99b65a3-73f1-4046-9d82-183d5fb93e84_profile_icon.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\b29068e3-600d-4d42-9a5b-2ee552b43df0_wendy.png",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "uploads/b29068e3-600d-4d42-9a5b-2ee552b43df0_wendy.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\b29068e3-600d-4d42-9a5b-2ee552b43df0_wendy.png"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\b5910f3e-57cf-4e8c-b42b-aa10c81da461_TSCHAMPION.jpg",

@@ -58,7 +58,7 @@ namespace KonserBiletim.Controllers
                     if (existingUser != null)
                     {
                         ViewBag.Message = "Bu email adresi adına bir hesap bulunmaktadır. Başka bir email adresi kullanınız.";
-                        return View(model);
+                        return RedirectToAction("Index", "Register");
                     }
                     else
                     {
@@ -125,7 +125,7 @@ namespace KonserBiletim.Controllers
                         else
                         {
                             ViewBag.Message = "Girdiğiniz şifreler eşleşmiyor. Şifreleri dikkatle giriniz.";
-                            return View(model);
+                            return RedirectToAction("Index","Register");
                         }
                     }
                 }

@@ -12,6 +12,7 @@ namespace KonserBiletim.ViewModels
         public KonserEkleViewModel KonserEkle { get; set; }
         public IEnumerable<KonserViewModel> Konserler { get; set; }
         public BiletKategoriViewModel Bilet {  get; set; }
+        public BiletViewModel Biletim {  get; set; }
         public KartViewModel Kart { get; set; }
         public string SearchTerm { get; set; }
         public KartBilgileri KartModel { get; set; }

@@ -16,7 +16,13 @@ namespace KonserBiletim.Controllers
         // GET: Login
         public IActionResult Log()
         {
-            ViewBag.mesaj = null;
+            var masterViewModel = new MasterViewModel
+            {
+                SearchTerm = "" // veya mevcut bir değer
+            };
+
+            // MasterViewModel'i ViewBag veya ViewData ile view'e aktarma
+            ViewBag.MasterViewModel = masterViewModel;
             return View();
         }
 

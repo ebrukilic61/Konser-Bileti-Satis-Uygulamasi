@@ -125,13 +125,13 @@ namespace KonserBiletim.Controllers
             if (userID == null)
             {
                 ModelState.AddModelError(string.Empty, "Kullanıcı kimliği bulunamadı.");
-                return View("Profile","Profil");
+                return View("Profile", "Profil");
             }
 
             if (!IsValidKartNo(KartNo)) //bunu sonradan ekledim kart numarasını kontrol edebilmek icin, ama duzgun caalismiyor
             {
                 ModelState.AddModelError(string.Empty, "Kart numarası geçersiz. Kart numaranız 16 rakam içermelidir.");
-                return View("Profile","Profil");
+                return View("Profile", "Profil");
             }
 
             if (ModelState.IsValid)
@@ -162,9 +162,9 @@ namespace KonserBiletim.Controllers
                         }
                     }
                 }
-                return RedirectToAction("Profile","Profil");
+                return RedirectToAction("Profile", "Profil");
             }
-            return View("Profile","Profil");
+            return View("Profile", "Profil");
         }
 
         private bool IsValidKartNo(string kartNo)
@@ -218,12 +218,6 @@ namespace KonserBiletim.Controllers
 
             if (profilFoto != null && profilFoto.Length > 0)
             {
-                // Yeni dosya yüklendiğinde eski dosyayı sil
-                if (!string.IsNullOrEmpty(previousFotoPath))
-                {
-                    DeleteFile(previousFotoPath);
-                }
-
                 // Dosya Yükleme ve Sadece Dosya Adının Dönmesi
                 fotoPath = SaveUploadedFile(profilFoto);
             }

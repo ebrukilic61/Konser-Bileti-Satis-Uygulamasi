@@ -1,4 +1,5 @@
-﻿@{
+﻿@model MasterViewModel
+@{
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -169,38 +170,33 @@
 
 <body>
     <section class="container">
-        <h1>Biletlerim</h1>
         <div class="row">
-            <article class="card fl-left">
-                <section class="date">
-                    <time datetime="2024-08-05">
-                        <span>05</span><span>Ağu</span>
-                    </time>
-                </section>
-                <section class="card-cont">
-                    <small>DJ Khaled</small>
-                    <h3>Live in Sydney</h3>
-                    <div class="even-date">
-                        <i class="fa fa-calendar"></i>
-                        <time>
-                            <span>Çarşamba, 28 Aralık 2024</span>
-                            <span>20:55 - 00:00</span>
+            <h1>Biletlerim</h1>
+            @foreach (var item in Model.Biletim.Biletler)
+            {
+                <article class="card fl-left">
+                    <section class="date">
+                        <time datetime="@item.KonserTarihi.ToString("yyyy-MM-dd")">
+                            <span>@item.KonserTarihi.ToString("dd")</span>
+                            <span>@item.KonserTarihi.ToString("MMM")</span>
+                            <br />
+                            <span>@item.KonserTarihi.ToString("yyyy")</span>
                         </time>
-                    </div>
-                    <div class="even-info">
-                        <i class="fa fa-map-marker"></i>
-                        <p>Nexen Square, Sydney, Avustralya</p>
-                    </div>
-                    <div class="bilet-info">
-                        <p><strong>Kategori:</strong> VIP</p>
-                        <p><strong>Fiyat:</strong> 500 TL</p>
-                        <p><strong>Bilet ID:</strong> 123456789</p>
-                    </div>
-                    <a href="#">Detaylar</a>
-                </section>
-            </article>
+                    </section>
+                    <section class="card-cont">
+                        <small>@item.KategoriAdi</small>
+                        <h3>@item.KonserAdi</h3>
+                        <h4>@item.SanatciAdi</h4>
+                        <div class="even-info">
+                            <p><strong>Bilet Turu:</strong> @item.BiletTuru</p>
+                            <p><strong>Fiyat:</strong> @item.Fiyat TL</p>
+                            <p><strong>Bilet ID:</strong> @item.MusteriBiletID</p>
+                        </div>
+                        <a style="background-color:lightgreen" href="#">Booked</a>
+                    </section>
+                </article>
+            }
         </div>
     </section>
-
 </body>
 </html>
