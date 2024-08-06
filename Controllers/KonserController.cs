@@ -26,18 +26,19 @@ namespace KonserBiletim.Controllers
             return HttpContext.Session.GetString("UserRole") ?? "Misafir";
         }
 
-        // Konser listesini getirir
+        //konser listesini getirir
         public IActionResult Index()
         {
-            var konserler = GetKonserler(); // Konserleri getiren metodunuz
+            var konserler = GetKonserler(); 
             var konserSanatciViewModel = new KonserSanatciViewModel
             {
-                Konserler = konserler // Konserleri modelinize ekleyin
+                Konserler = konserler //konserleri modele ekledim
             };
 
             var model = new MasterViewModel
             {
                 KonserSanatci = konserSanatciViewModel,
+
 
             };
 
@@ -215,106 +216,165 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public IActionResult KonserEkle()
         {
-            var model = new KonserEkleViewModel
+            var konserEkleViewModel = new KonserEkleViewModel
             {
                 Sanatcilar = GetSanatcilar(),
                 KonserAlanlari = GetKonserAlanlari()
+            };
+
+            var model = new MasterViewModel
+            {
+                KonserEkle = konserEkleViewModel,
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult KonserEkle(KonserEkleViewModel model)
+        public IActionResult KonserEkle(MasterViewModel masterModel)
         {
-            if (ModelState.IsValid)
+            var model = masterModel.KonserEkle;
+            try
             {
-                try
+                using (SqlConnection con = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection con = new SqlConnection(connectionString))
-                    {
-                        con.Open();
+                    con.Open();
 
-                        using (var transaction = con.BeginTransaction())
+                    using (var transaction = con.BeginTransaction())
+                    {
+                        try
                         {
-                            try
-                            {
-                                // Insert konser
-                                string insertKonserQuery = @"
+                            // Insert konser
+                            string insertKonserQuery = @"
                                 INSERT INTO Konser (konserName, konserDate, konserLocId, sanatciId, konserTanim) 
                                 VALUES (@KonserName, @KonserDate, @KonserLocId, @SanatciId, @KonserTanim);
                                 SELECT SCOPE_IDENTITY();";
 
-                                int konserId;
-                                using (SqlCommand cmd1 = new SqlCommand(insertKonserQuery, con, transaction))
-                                {
-                                    cmd1.Parameters.AddWithValue("@KonserName", model.KonserName);
-                                    cmd1.Parameters.AddWithValue("@KonserDate", model.KonserDate);
-                                    cmd1.Parameters.AddWithValue("@KonserLocId", model.KonserLocId);
-                                    cmd1.Parameters.AddWithValue("@SanatciId", model.SanatciId);
-                                    cmd1.Parameters.AddWithValue("@KonserTanim", model.KonserTanim);
+                            int konserId;
+                            using (SqlCommand cmd1 = new SqlCommand(insertKonserQuery, con, transaction))
+                            {
+                                cmd1.Parameters.AddWithValue("@KonserName", model.KonserName);
+                                cmd1.Parameters.AddWithValue("@KonserDate", model.KonserDate);
+                                cmd1.Parameters.AddWithValue("@KonserLocId", model.KonserLocId);
+                                cmd1.Parameters.AddWithValue("@SanatciId", model.SanatciId);
+                                cmd1.Parameters.AddWithValue("@KonserTanim", model.KonserTanim);
 
-                                    konserId = Convert.ToInt32(cmd1.ExecuteScalar());
-                                }
+                                konserId = Convert.ToInt32(cmd1.ExecuteScalar());
+                            }
 
-                                // Insert konser durumu
-                                string insertDurumQuery = @"
+                            // Insert konser durumu
+                            string insertDurumQuery = @"
                                 INSERT INTO KonserDurumu (konser_id, konser_durumu) 
                                 VALUES (@KonserId, @KonserDurum)";
 
-                                using (SqlCommand cmd2 = new SqlCommand(insertDurumQuery, con, transaction))
-                                {
-                                    cmd2.Parameters.AddWithValue("@KonserId", konserId);
-                                    cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserDurum);
+                            using (SqlCommand cmd2 = new SqlCommand(insertDurumQuery, con, transaction))
+                            {
+                                cmd2.Parameters.AddWithValue("@KonserId", konserId);
+                                cmd2.Parameters.AddWithValue("@KonserDurum", model.KonserDurum);
 
-                                    cmd2.ExecuteNonQuery();
-                                }
+                                cmd2.ExecuteNonQuery();
+                            }
 
-                                // Insert bilet kategorisi
-                                string insertBiletQuery = @"
+                            // Insert bilet kategorisi
+                            string insertBiletQuery = @"
                                 INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
                                 VALUES (@KonserId, @KategoriAdi, @BiletFiyati, @KisiSayisi)";
 
-                                using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
-                                {
-                                    cmd3.Parameters.AddWithValue("@KonserId", konserId);
-                                    cmd3.Parameters.AddWithValue("@KategoriAdi", model.KategoriAdi);
-                                    cmd3.Parameters.AddWithValue("@BiletFiyati", model.Fiyat);
-                                    cmd3.Parameters.AddWithValue("@KisiSayisi", model.KisiSayisi);
-                                    cmd3.ExecuteNonQuery();
-                                }
-
-                                transaction.Commit();
-                                TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
-                                return RedirectToAction("Index");
-                            }
-                            catch (Exception ex)
+                            using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
                             {
-                                transaction.Rollback();
-                                TempData["ErrorMessage"] = "Bir hata oluştu: " + ex.Message;
+                                cmd3.Parameters.AddWithValue("@KonserId", konserId);
+                                cmd3.Parameters.AddWithValue("@KategoriAdi", model.KategoriAdi);
+                                cmd3.Parameters.AddWithValue("@BiletFiyati", model.Fiyat);
+                                cmd3.Parameters.AddWithValue("@KisiSayisi", model.KisiSayisi);
+                                cmd3.ExecuteNonQuery();
                             }
+
+                            transaction.Commit();
+                            TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
+                            return RedirectToAction("Index");
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            TempData["ErrorMessage"] = "Bir hata oluştu: " + ex.Message;
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin. " + ex.Message;
-                }
             }
-            else
+            catch (Exception ex)
             {
-                // ModelState hatalarını kullanıcıya göstermek için form verilerini tekrar yükle
-                model.Sanatcilar = GetSanatcilar();
-                model.KonserAlanlari = GetKonserAlanlari();
+                TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin. " + ex.Message;
             }
-
             return View(model);
         }
+
+        [HttpPost]
+        public IActionResult KonserSil(int konserId, int kategoriId)
+        {
+            if (GetUserRole() != "Organizator")
+            {
+                return Unauthorized();
+            }
+
+            MasterViewModel model = new MasterViewModel
+            {
+                KonserEkle = new KonserEkleViewModel
+                {
+                    Sanatcilar = GetSanatcilar(),
+                    KonserAlanlari = GetKonserAlanlari(),
+                }
+            };
+
+            using(SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                using (SqlTransaction transaction = con.BeginTransaction())
+                {
+                    try
+                    {
+                        // Sorgular
+                        string query = @"DELETE FROM Konser WHERE konserID = @KonserID";
+                        string query2 = @"DELETE FROM BiletKategori WHERE kategoriID = @KategoriID AND konser_ID = @KonserID";
+                        string query3 = @"DELETE FROM KonserDurumu WHERE konser_id = @KonserID";
+
+                        // Komutları oluşturma ve parametreleri ekleme
+                        using (SqlCommand command = new SqlCommand(query, con, transaction))
+                        {
+                            command.Parameters.AddWithValue("@KonserID", konserId);
+                            command.ExecuteNonQuery();
+                        }
+
+                        using (SqlCommand command2 = new SqlCommand(query2, con, transaction))
+                        {
+                            command2.Parameters.AddWithValue("@KategoriID", kategoriId);
+                            command2.Parameters.AddWithValue("@KonserID", konserId);
+                            command2.ExecuteNonQuery();
+                        }
+
+                        using (SqlCommand command3 = new SqlCommand(query3, con, transaction))
+                        {
+                            command3.Parameters.AddWithValue("@KonserID", konserId);
+                            command3.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+            return RedirectToAction("Index","Konser");
+        }
+
 
         [HttpGet]
         public IActionResult KonserDuzenle(int id)
         {
-            if (GetUserRole() != "Organizator") //bunu sonradan ekledim, hata yaratıyor mu diye kontrol et!
+            if (GetUserRole() != "Organizator") //bunu sonradan ekledim, hata yaratıyor mu diye kontrol et! -> calısıyor
             {
                 return Unauthorized();
             }
@@ -383,103 +443,82 @@ namespace KonserBiletim.Controllers
         [HttpPost]
         public IActionResult KonserDuzenle(MasterViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (model.KonserEkle.KonserID == 0)
                 {
-                    if (model.KonserEkle.KonserID == 0)
-                    {
-                        TempData["ErrorMessage"] = "Geçersiz Konser ID.";
-                        return RedirectToAction("Index");
-                    }
-
-                    using (SqlConnection con = new SqlConnection(connectionString))
-                    {
-                        con.Open();
-
-                        using (var transaction = con.BeginTransaction())
-                        {
-                            // Konser bilgilerini güncelle
-                            string updateKonserQuery = @"UPDATE Konser 
-                                                  SET konserName = @KonserName, konserDate = @KonserDate, 
-                                                      konserLocId = @KonserLocId, sanatciId = @SanatciId, 
-                                                      konserTanim = @KonserTanim 
-                                                  WHERE konserID = @KonserID";
-
-                            using (SqlCommand cmd = new SqlCommand(updateKonserQuery, con, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@KonserName", (object)model.KonserEkle.KonserName ?? DBNull.Value);
-                                cmd.Parameters.AddWithValue("@KonserDate", model.KonserEkle.KonserDate);
-                                cmd.Parameters.AddWithValue("@KonserLocId", model.KonserEkle.KonserLocId);
-                                cmd.Parameters.AddWithValue("@SanatciId", model.KonserEkle.SanatciId);
-                                cmd.Parameters.AddWithValue("@KonserTanim", (object)model.KonserEkle.KonserTanim ?? DBNull.Value);
-                                cmd.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
-
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            //bilet Kategorileri
-                            string updateBiletKategoriQuery = @"UPDATE BiletKategori
-                                                        SET biletFiyati = @BiletFiyati, kisi_sayisi = @KisiSayisi
-                                                        WHERE konser_ID = @KonserID AND kategoriName = @KategoriAdi";
-
-                            using (SqlCommand cmd2 = new SqlCommand(updateBiletKategoriQuery, con, transaction))
-                            {
-                                cmd2.Parameters.AddWithValue("@BiletFiyati", model.KonserEkle.Fiyat);
-                                cmd2.Parameters.AddWithValue("@KisiSayisi", model.KonserEkle.KisiSayisi);
-                                cmd2.Parameters.AddWithValue("@KategoriAdi", model.KonserEkle.KategoriAdi);
-                                cmd2.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
-
-                                cmd2.ExecuteNonQuery();
-                            }
-
-                            //KonserDurumu
-                            string updateKonserDurumQuery = @"UPDATE KonserDurumu
-                                                        SET konser_durumu = @KonserDurum
-                                                        WHERE konser_id = @KonserID";
-
-                            using (SqlCommand cmd3 = new SqlCommand(updateKonserDurumQuery, con, transaction))
-                            {
-                                cmd3.Parameters.AddWithValue("@KonserDurum", model.KonserEkle.KonserDurum);
-                                cmd3.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
-
-                                cmd3.ExecuteNonQuery();
-                            }
-
-                            transaction.Commit();
-                        }
-                    }
-
-                    TempData["SuccessMessage"] = "Konser başarıyla güncellendi!";
+                    TempData["ErrorMessage"] = "Geçersiz Konser ID.";
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+
+                using (SqlConnection con = new SqlConnection(connectionString))
                 {
-                    TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin.";
+                    con.Open();
+
+                    using (var transaction = con.BeginTransaction())
+                    {
+                        // Konser bilgilerini güncelle
+                        string updateKonserQuery = @"UPDATE Konser 
+                                                SET konserName = @KonserName, konserDate = @KonserDate, 
+                                                    konserLocId = @KonserLocId, sanatciId = @SanatciId, 
+                                                    konserTanim = @KonserTanim 
+                                                WHERE konserID = @KonserID";
+
+                        using (SqlCommand cmd = new SqlCommand(updateKonserQuery, con, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@KonserName", (object)model.KonserEkle.KonserName ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@KonserDate", model.KonserEkle.KonserDate);
+                            cmd.Parameters.AddWithValue("@KonserLocId", model.KonserEkle.KonserLocId);
+                            cmd.Parameters.AddWithValue("@SanatciId", model.KonserEkle.SanatciId);
+                            cmd.Parameters.AddWithValue("@KonserTanim", (object)model.KonserEkle.KonserTanim ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
+
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        //bilet Kategorileri
+                        string updateBiletKategoriQuery = @"UPDATE BiletKategori
+                                                    SET biletFiyati = @BiletFiyati, kisi_sayisi = @KisiSayisi
+                                                    WHERE konser_ID = @KonserID AND kategoriName = @KategoriAdi";
+
+                        using (SqlCommand cmd2 = new SqlCommand(updateBiletKategoriQuery, con, transaction))
+                        {
+                            cmd2.Parameters.AddWithValue("@BiletFiyati", model.KonserEkle.Fiyat);
+                            cmd2.Parameters.AddWithValue("@KisiSayisi", model.KonserEkle.KisiSayisi);
+                            cmd2.Parameters.AddWithValue("@KategoriAdi", model.KonserEkle.KategoriAdi);
+                            cmd2.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
+
+                            cmd2.ExecuteNonQuery();
+                        }
+
+                        //KonserDurumu
+                        string updateKonserDurumQuery = @"UPDATE KonserDurumu
+                                                    SET konser_durumu = @KonserDurum
+                                                    WHERE konser_id = @KonserID";
+
+                        using (SqlCommand cmd3 = new SqlCommand(updateKonserDurumQuery, con, transaction))
+                        {
+                            cmd3.Parameters.AddWithValue("@KonserDurum", model.KonserEkle.KonserDurum);
+                            cmd3.Parameters.AddWithValue("@KonserID", model.KonserEkle.KonserID);
+
+                            cmd3.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
                 }
+
+                TempData["SuccessMessage"] = "Konser başarıyla güncellendi!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Bir hata oluştu, lütfen tekrar deneyin.";
             }
 
             model.KonserEkle.Sanatcilar = GetSanatcilar();
             model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
             return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult KonserSil(int id) //buna bilet kategori ve konser durumu da eklemem lazım, konser tablosundan silmek yerine konseri bilet durumundan cancelled olarak gösterebilirim...
-        {
-            if (GetUserRole() != "Organizatör")
-            {
-                return Unauthorized();
-            }
-
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                var query = "DELETE FROM Konser WHERE konserID = @KonserID";
-                con.Execute(query, new { KonserID = id });
-            }
-
-            return RedirectToAction("Index");
         }
 
     }

@@ -18,19 +18,38 @@ namespace KonserBiletim.Controllers
 
         public IActionResult Index()
         {
-            var model = new ProfilViewModel();
-            string user_id = HttpContext.Session.GetString("UserID");
+            string userId = HttpContext.Session.GetString("UserID");
             string userRole = HttpContext.Session.GetString("UserRole");
+
+            var sanatcilar = GetSanatcilar();
+            var konserler = GetKonserler(); // Varsayılan olarak tüm konserleri al
+
+            var profilModel = new ProfilViewModel(); // Profil bilgilerini al
+
+            var model = new MasterViewModel
+            {
+                KonserSanatci = new KonserSanatciViewModel
+                {
+                    Konserler = konserler,
+                    Sanatcilar = sanatcilar
+                },
+                SearchTerm = null, // İhtiyaç varsa buraya bir değer atanabilir
+                Profil = profilModel // Profil modelini ekle
+            };
+
             if (userRole == "Organizator")
             {
                 return RedirectToAction("Dashboard", "Organizator");
             }
-            return View();
+
+            return View(model); // Modeli view'a gönder
         }
 
         public async Task<IActionResult> Anasayfa(string genre = null, string searchTerm = null)
         {
             int? sepetId = HttpContext.Session.GetInt32("SepetID");
+            string userId = HttpContext.Session.GetString("UserID");
+            string userRole = HttpContext.Session.GetString("UserRole");
 
             IEnumerable<KonserViewModel> konserler;
 
@@ -56,17 +75,11 @@ namespace KonserBiletim.Controllers
             };
 
             await Sepet();
-            /*
-            if (sepetId.HasValue) //bir seyler eksik
-            {
 
-                model.CartItemCount = await CountCartItems(sepetId.Value);
-            }
-            else
+            if (userRole == "Organizator")
             {
-                model.CartItemCount = 0;
+                return RedirectToAction("Dashboard", "Organizator");
             }
-            */
 
             return View(model);
         }
@@ -334,7 +347,13 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        public IActionResult Privacy()
+        public IActionResult Iletisim()
+        {
+
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }

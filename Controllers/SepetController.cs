@@ -99,6 +99,24 @@ namespace KonserBiletim.Controllers
                     fotoUrl = (result != null && result != DBNull.Value) ? (string)result : fotoUrl;
                 }
 
+                //bilet sayısı kontrol islemi:
+                string checkBiletMiktarQuery = @"SELECT kisi_sayisi FROM BiletKategori WHERE kategoriID = @KategoriID";
+                using (SqlCommand checkBiletCmd = new SqlCommand(checkBiletMiktarQuery, con))
+                {
+                    checkBiletCmd.Parameters.Add("@KategoriID", SqlDbType.Int).Value = kategoriID;
+                    var mevcutMiktarResult = await checkBiletCmd.ExecuteScalarAsync();
+                    int mevcutMiktar = (mevcutMiktarResult != null && mevcutMiktarResult != DBNull.Value) ? (int)mevcutMiktarResult : 0;
+
+                    if (mevcutMiktar <= 0)
+                    {
+                        return Json(new { success = false, message = "Bilet tükendi." });
+                    }
+                    else if (mevcutMiktar < biletSayisi)
+                    {
+                        return Json(new { success = false, message = "Seçtiğiniz miktarda bilet yok." });
+                    }
+                }
+
                 //bileti sepete ekleme islemleri:
                 string checkSepetDetayQuery = @"SELECT miktar FROM SepetDetay WHERE sepetID = @SepetID AND kategoriID = @KategoriID";
 
@@ -174,7 +192,7 @@ namespace KonserBiletim.Controllers
             return RedirectToAction("SepetGoruntule", new { sepetID = sepetID });
         }
 
-        // Sepeti görüntüle
+        //sepeti görüntüle
         [HttpGet]
         public async Task<IActionResult> SepetGoruntule()
         {
@@ -195,7 +213,7 @@ namespace KonserBiletim.Controllers
             {
                 await con.OpenAsync();
 
-                // Sepet detaylarını al
+                //sepet detaylarını al
                 string getSepetQuery = @"SELECT * FROM Sepet WHERE sepetID = @SepetID";
                 using (SqlCommand cmd = new SqlCommand(getSepetQuery, con))
                 {
@@ -210,7 +228,7 @@ namespace KonserBiletim.Controllers
                     reader.Close();
                 }
 
-                // Sepet detaylarını al
+                //sepet detaylarını al
                 string getSepetDetayQuery = @"SELECT * FROM SepetDetay WHERE sepetID = @SepetID";
                 using (SqlCommand cmd = new SqlCommand(getSepetDetayQuery, con))
                 {
@@ -246,9 +264,7 @@ namespace KonserBiletim.Controllers
                     }
                 }
 
-                string getNameQuery = @"
-                SELECT bk.kategoriName, k.konserName, s.sanatciName, s.profilFotoPath
-                FROM SepetDetay sd
+                string getNameQuery = @"SELECT bk.kategoriName, k.konserName, s.sanatciName, s.profilFotoPath FROM SepetDetay sd
                 JOIN BiletKategori bk ON sd.kategoriID = bk.kategoriID
                 JOIN Konser k ON sd.konserID = k.konserID
                 JOIN Sanatci s ON k.sanatciID = s.sanatciID
@@ -295,9 +311,8 @@ namespace KonserBiletim.Controllers
                     }
 
 
-                    string updateQuery = @"UPDATE SepetDetay
-                                   SET miktar = @Miktar
-                                   WHERE konserID = @KonserID AND sepetID = @SepetID";
+                    string updateQuery = "UPDATE SepetDetay SET miktar = @Miktar WHERE konserID = @KonserID AND sepetID = @SepetID";
+
                     using (SqlCommand cmd = new SqlCommand(updateQuery, con))
                     {
                         cmd.Parameters.Add("@Miktar", SqlDbType.Int).Value = miktar;
@@ -485,10 +500,8 @@ namespace KonserBiletim.Controllers
             {
                 con.Open();
 
-                string query = @"SELECT SUM(sd.miktar * bk.biletFiyati) 
-                     FROM SepetDetay sd
-                     JOIN BiletKategori bk ON sd.kategoriID = bk.kategoriID
-                     WHERE sd.sepetID = @SepetID";
+                string query = @"SELECT SUM(sd.miktar * bk.biletFiyati) FROM SepetDetay sd JOIN BiletKategori bk ON sd.kategoriID = bk.kategoriID
+                WHERE sd.sepetID = @SepetID";
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {

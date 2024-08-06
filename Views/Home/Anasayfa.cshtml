@@ -1,9 +1,7 @@
 ﻿@model MasterViewModel
 @{
     ViewData["Title"] = "Ana Sayfa";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +72,7 @@
 
         .card.concert-item {
             width: 1250px;
-            height: 350px;
+            height: 400px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -116,6 +114,18 @@
             flex-direction: column;
             margin-bottom:100px;
             margin-left:100px;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            text-align: center;
+            color: aliceblue; 
+            background-color: transparent;
+            padding: 20px; 
+            border-radius: 10px; 
         }
 
         .artist-carousel {
@@ -169,9 +179,8 @@
                         <img class="d-block w-100" src="/images/yelllow.png" alt="First slide">
                         <div class="container">
                             <div class="carousel-caption d-md-block" style="align-content:start">
-                                <h1 style="color:aliceblue">"Konser Biletim aracılığı ile haftanın konserleri bir tık uzağında"</h1>
+                                <h1 style="color:aliceblue">"Konser Biletim aracılığı ile konserler bir tık uzağında"</h1>
                                 <p></p>
-                                <p><a class="btn btn-lg btn-primary" href="#" role="button">Şimdi Tıkla</a></p>
                             </div>
                         </div>
                     </div>
@@ -233,6 +242,7 @@
                 {
                     <div class="col-12 mb-4">
                         <div class="card concert-item">
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Konser Biletim</div>
                             <form asp-controller="Sepet" asp-action="SepeteEkle" method="post">
                                 <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="text-decoration-none d-flex flex-row">
                                     <div class="concert-details">

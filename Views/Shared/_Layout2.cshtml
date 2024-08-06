@@ -26,6 +26,15 @@
             margin-top: 50px;
         }
 
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
         .btn:hover {
             background-color: #78C2AD;
             color: black;
@@ -49,8 +58,7 @@
                     <ul class="nav nav-pills">
                         <li class="nav-item">@Html.ActionLink("Ana Sayfa", "Anasayfa", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Hakkımızda", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("İletişim", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Sanatçılar", "Artist", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("İletişim", "Iletisim", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                             <ul class="navbar-nav">
                                 <li class="nav-item dropdown">
@@ -85,9 +93,11 @@
                             <li><a class="dropdown-item" href="~/Profil/Profile">Profilim</a></li>
                             <li><a class="dropdown-item" href="~/Bilet/Biletim">Biletlerim</a></li>
                             <li>
-                                <form asp-controller="Login" asp-action="Logout" method="post">
+                                <form asp-controller="Login" asp-action="Logout" method="post" class="form-inline">
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="dropdown-item">Çıkış Yap</button>
                                 </form>
+
                             </li>
                         </ul>
                     </div>

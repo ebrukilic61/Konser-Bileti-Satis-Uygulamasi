@@ -77,28 +77,33 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- butonlar -->
-                            <div class="card-footer p-4 border-top-0 bg-transparent">
-                                <div>
-                                    <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
-
-                                    @if (User.IsInRole("Organizator"))
-                                    {
-                                        <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
-                                        <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    }
-                                </div>
-                            </div>
+                           
                         </div>
                     </a>
                 </form>
+                <!-- butonlar -->
+                <div class="card-footer p-4 border-top-0 bg-transparent">
+                    <div>
+                        <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
+
+                        @if (User.IsInRole("Organizator"))
+                        {
+                            <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
+                            <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block mb-2">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+
+                            <form asp-action="KonserSil" method="post" onsubmit="return confirm('Bu konseri silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="konserId" value="@item.KonserID" />
+                                <input type="hidden" name="kategoriId" value="@item.KategoriID" />
+                                <button type="submit" class="btn btn-dark d-block mb-2">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
             </div>
         }
-    }
-    else
-    {
-        <p>Konser bilgisi mevcut değil.</p>
     }
 </div>

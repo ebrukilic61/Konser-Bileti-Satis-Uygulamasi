@@ -277,12 +277,20 @@
       "PackagePath": "staticwebassets\\images\\singers\\icons\\green_day.jpg"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\ist_orkestra.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\ist_orkestra.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\julia_fischer.jpg",
       "PackagePath": "staticwebassets\\images\\singers\\icons\\julia_fischer.jpg"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\paramore_icon.jpg",
       "PackagePath": "staticwebassets\\images\\singers\\icons\\paramore_icon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\sezen_aksu.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\icons\\sezen_aksu.jpg"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\icons\\top_icon.jpg",

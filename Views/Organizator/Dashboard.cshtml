@@ -17,12 +17,11 @@
 
     <!-- Bootstrap core CSS -->
     <link href="~/css/bootstrap.mint.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
     <link href="dashboard.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
 
     <style>
-
         .sidebar {
             position: fixed;
             top: 51px;
@@ -30,15 +29,29 @@
             left: 0;
             z-index: 1000;
             display: block;
-            padding: 20px;
+            padding: 10px;
             overflow-x: hidden;
             overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
             background-color: #f5f5f5;
             border-right: 1px solid #eee;
+            width: 250px;
         }
 
-    </style>
+        .main-content {
+            margin-left: 250px; /* Sidebar genişliğine göre ayarla */
+            padding: 20px;
+        }
 
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            width: 100%;
+            margin-top: 100px;
+            margin-left:200px;
+        }
+    </style>
 </head>
 
 <body>
@@ -65,7 +78,6 @@
                                 Konser Ekle
                             </a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <span data-feather="headphones"></span>
@@ -91,24 +103,10 @@
                 </div>
             </nav>
 
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group mr-2">
-                            <button class="btn btn-sm btn-outline-secondary">Share</button>
-                            <button class="btn btn-sm btn-outline-secondary">Export</button>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                            <span data-feather="calendar"></span>
-                            This week
-                        </button>
-                    </div>
+            <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div class="chart-container">
+                    <canvas class="my-4 w-100" id="biletChart" width="800" height="380"></canvas>
                 </div>
-
-                <canvas class="my-4 w-100" id="myChart" width="800" height="380"></canvas>
-
-              
             </main>
         </div>
     </div>
@@ -124,36 +122,107 @@
         feather.replace()
     </script>
 
-    <!-- Graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
     <script>
-        var ctx = document.getElementById("myChart");
-        var myChart = new Chart(ctx, {
+        var ctx = document.getElementById('biletChart').getContext('2d');
+
+        var today = new Date();
+        var oneWeekAgo = new Date();
+        oneWeekAgo.setDate(today.getDate() - 7);
+
+        var labels = @Html.Raw(Json.Serialize(Model.BiletSatisVerileri.Select(x => x.Tarih.ToString("yyyy-MM-dd"))));
+        var data = @Html.Raw(Json.Serialize(Model.BiletSatisVerileri.Select(x => x.BiletSayisi)));
+
+        // Filter data for the last week
+        var filteredData = {};
+        for (var i = 0; i < labels.length; i++) {
+            var date = new Date(labels[i]);
+            if (date >= oneWeekAgo && date <= today) {
+                var dateString = labels[i];
+                if (!filteredData[dateString]) {
+                    filteredData[dateString] = 0;
+                }
+                filteredData[dateString] += data[i];
+            }
+        }
+
+        // Ensure the labels include all dates within the range
+        var allDates = [];
+        var allData = [];
+        for (var d = new Date(oneWeekAgo); d <= today; d.setDate(d.getDate() + 1)) {
+            var dateString = d.toISOString().split('T')[0];
+            allDates.push(dateString);
+            allData.push(filteredData[dateString] || 0); // Use zero if no data for that date
+        }
+
+        var biletChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                labels: allDates,
                 datasets: [{
-                    data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-                    lineTension: 0,
-                    backgroundColor: 'transparent',
+                    label: 'Satılan Biletler',
+                    data: allData,
                     borderColor: '#007bff',
-                    borderWidth: 4,
-                    pointBackgroundColor: '#007bff'
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#007bff',
+                    lineTension: 0.1
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            tooltipFormat: 'll'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tarih'
+                        },
+                        grid: {
+                            display: false
                         }
-                    }]
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Satılan Bilet Sayısı'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        grid: {
+                            borderDash: [2, 2]
+                        }
+                    }
                 },
-                legend: {
-                    display: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + ' bilet';
+                                }
+                                return label;
+                            }
+                        }
+                    }
                 }
             }
         });
     </script>
+
 </body>
 </html>

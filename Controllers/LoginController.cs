@@ -16,6 +16,7 @@ namespace KonserBiletim.Controllers
         // GET: Login
         public IActionResult Log()
         {
+            ViewBag.mesaj = null;
             return View();
         }
 
@@ -70,20 +71,24 @@ namespace KonserBiletim.Controllers
 
                             if (model.Role == "Musteri")
                             {
+                                HttpContext.Session.SetString("UserLoggedIn", "true");
                                 return RedirectToAction("Anasayfa", "Home");
                             }
                             else if (model.Role == "Organizator")
                             {
+                                HttpContext.Session.SetString("UserLoggedIn", "true");
                                 return RedirectToAction("Dashboard", "Organizator");
                             }
                             else if (model.Role == "Admin")
                             {
+                                HttpContext.Session.SetString("UserLoggedIn", "true");
                                 return RedirectToAction("Index", "Admin");
                             }
                         }
                         else
                         {
                             ViewBag.mesaj = "Geçersiz email veya şifre girdiniz.";
+                            return RedirectToAction("Log");
                         }
                     }
                 }
@@ -91,117 +96,23 @@ namespace KonserBiletim.Controllers
 
             return View(model);
         }
-        
-        /*
 
         [HttpPost]
-        public async Task<IActionResult> Log(MasterViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            // Ensure the model state is valid
-            if (!ModelState.IsValid)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return View(model);
-            }
-
-            // Prepare the query based on the role
-            string query = "";
-            if (model.Login.Role == "Musteri")
-            {
-                query = "SELECT * FROM Musteri WHERE musteriMail = @Email AND musteriPsw = @Password";
-            }
-            else if (model.Login.Role == "Organizator")
-            {
-                query = "SELECT * FROM Organizator WHERE orgMail = @Email AND orgPassword = @Password";
-            }
-            else if (model.Login.Role == "Admin")
-            {
-                query = "SELECT * FROM Admin WHERE admin_mail = @Email AND adminPsw = @Password";
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                TempData["Message"] = "Başarıyla çıkış yaptınız.";
+                HttpContext.Session.Remove("UserLoggedIn");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                // Handle the case where the role is not valid
-                ViewBag.mesaj = "Geçersiz rol seçimi.";
-                return View(model);
+                TempData["Message"] = "Oturum zaten kapatılmış.";
             }
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    // Add parameters to prevent SQL injection
-                    cmd.Parameters.AddWithValue("@Email", model.Login.Email);
-                    cmd.Parameters.AddWithValue("@Password", model.Login.Password);
-
-                    try
-                    {
-                        using (SqlDataReader dreader = cmd.ExecuteReader())
-                        {
-                            if (dreader.Read())
-                            {
-                                // Get user ID from the query result
-                                string userID = dreader[0].ToString();
-
-                                // Store UserID and UserRole in session
-                                HttpContext.Session.SetString("UserID", userID);
-                                HttpContext.Session.SetString("UserRole", model.Login.Role);
-
-                                // Create user claims
-                                var claims = new List<Claim>
-                                {
-                                    new Claim(ClaimTypes.Name, model.Login.Email),
-                                    new Claim(ClaimTypes.Role, model.Login.Role)
-                                };
-
-                                // Create claims identity
-                                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                                // Set authentication properties (persistent login)
-                                var authProperties = new AuthenticationProperties { IsPersistent = true };
-
-                                // Sign in the user
-                                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                                // Redirect based on user role
-                                if (model.Login.Role == "Musteri")
-                                {
-                                    return RedirectToAction("Anasayfa", "Home");
-                                }
-                                else if (model.Login.Role == "Organizator")
-                                {
-                                    return RedirectToAction("Dashboard", "Organizator");
-                                }
-                                else if (model.Login.Role == "Admin")
-                                {
-                                    return RedirectToAction("Index", "Admin");
-                                }
-                            }
-                            else
-                            {
-                                // Handle case where login fails
-                                ViewBag.mesaj = "Geçersiz email veya şifre girdiniz.";
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log the exception and show a generic error message
-                        // For production, avoid showing the exact error to the user
-                        ViewBag.mesaj = "Bir hata oluştu. Lütfen tekrar deneyiniz.";
-                        // Log the error (ex) here
-                    }
-                }
-            }
-
-            // Return the view with the model if login fails
-            return View(model);
-        }
-        */
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Log", "Login");
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -213,7 +124,6 @@ namespace KonserBiletim.Controllers
         [HttpPost]
         public IActionResult ResetPassword(string email)
         {
-            // Şifre sıfırlama işlemi burada yapılacak
             return View();
         }
 

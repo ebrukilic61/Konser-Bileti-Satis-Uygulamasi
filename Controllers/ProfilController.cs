@@ -70,6 +70,10 @@ namespace KonserBiletim.Controllers
             return View(model);
         }
 
+        private string GetUserRole()
+        {
+            return HttpContext.Session.GetString("UserRole") ?? "Misafir";
+        }
 
         private async Task<IEnumerable<KartViewModel>> GetKartlar() // async olarak tanımla
         {
@@ -279,6 +283,100 @@ namespace KonserBiletim.Controllers
             }
 
             return RedirectToAction("Profile", "Profil");
+        }
+
+        [HttpGet]
+        public IActionResult KartDuzenle(int id)
+        {
+            if (GetUserRole() != "Kullanici")
+            {
+                return Unauthorized();
+            }
+
+            var model = new MasterViewModel
+            {
+                Kart = new KartViewModel()
+            };
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                string query = "SELECT * FROM KartBilgileri WHERE kartID = @KartID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@KartID", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        model.Kart.KartID = (int)reader["kartID"];
+                        model.Kart.KartNo = (string)reader["kartNo"];
+                        model.Kart.SahipIsmi = (string)reader["sahipIsmi"];
+                        model.Kart.SahipSoyismi = (string)reader["sahipSoyismi"];
+                        model.Kart.SKT = (string)reader["skt"];
+                        model.Kart.CVV = (int)reader["cvv"];
+                    }
+                    reader.Close();
+                }
+            }
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> KartDuzenle(MasterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string userID = HttpContext.Session.GetString("UserID");
+
+            if (userID == null)
+            {
+                ModelState.AddModelError(string.Empty, "Kullanıcı kimliği bulunamadı.");
+                return RedirectToAction("Profile");
+            }
+
+            model = new MasterViewModel();
+            model.Kart = new KartViewModel();
+
+            if (!IsValidKartNo(model.Kart.KartNo))
+            {
+                ModelState.AddModelError(string.Empty, "Kart numarası geçersiz. Kart numaranız 16 rakam içermelidir.");
+                return View(model);
+            }
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                var query = "UPDATE KartBilgileri SET cvv = @CVV, skt = @SKT, sahip_ismi = @SahipIsmi, sahip_soyismi = @SahipSoyismi WHERE kart_no = @KartNo AND cust_id = @CustID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustID", int.Parse(userID));
+                    command.Parameters.AddWithValue("@KartNo", model.Kart.KartNo);
+                    command.Parameters.AddWithValue("@CVV", model.Kart.CVV);
+                    command.Parameters.AddWithValue("@SKT", model.Kart.SKT);
+                    command.Parameters.AddWithValue("@SahipIsmi", model.Kart.SahipIsmi);
+                    command.Parameters.AddWithValue("@SahipSoyismi", model.Kart.SahipSoyismi);
+
+                    try
+                    {
+                        await command.ExecuteNonQueryAsync();
+                        TempData["Message"] = "Kart başarıyla güncellendi!";
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["Error"] = $"Bir hata oluştu: {ex.Message}";
+                    }
+                }
+            }
+
+            return RedirectToAction("Profile");
         }
 
 

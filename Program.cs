@@ -19,9 +19,11 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login/Log";
-        options.LogoutPath = "/Login/Logout";
+        options.LoginPath = "/Login/Log"; 
+        options.LogoutPath = "/Login/Logout"; 
         options.AccessDeniedPath = "/Shared/AccessDenied";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
 builder.Services.AddAuthorization(options =>
