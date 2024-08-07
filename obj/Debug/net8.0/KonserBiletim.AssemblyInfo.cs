@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KonserBiletim")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d42f7340537534bf7598a3e9ca04c98717291280")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61c9df3700cd5cd73738792bbc64a27ece3d8b9f")]
 [assembly: System.Reflection.AssemblyProductAttribute("KonserBiletim")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KonserBiletim")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

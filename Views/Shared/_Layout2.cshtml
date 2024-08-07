@@ -84,24 +84,21 @@
                         <span class="badge bg-dark text-white ms-1 rounded-pill"></span>
                     </a>
                 </form>
-                <form class="d-flex m-lg-auto">
-                    <div class="dropdown">
-                        <a class="dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @await Component.InvokeAsync("ProfilPhoto")
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                            <li><a class="dropdown-item" href="~/Profil/Profile">Profilim</a></li>
-                            <li><a class="dropdown-item" href="~/Bilet/Biletim">Biletlerim</a></li>
-                            <li>
-                                <form asp-controller="Login" asp-action="Logout" method="post" class="form-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="dropdown-item">Çıkış Yap</button>
-                                </form>
-
-                            </li>
-                        </ul>
-                    </div>
-                </form>
+                <div class="dropdown">
+                    <a class="dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @await Component.InvokeAsync("ProfilPhoto")
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <li><a class="dropdown-item" href="~/Profil/Profile">Profilim</a></li>
+                        <li><a class="dropdown-item" href="~/Bilet/Biletim">Biletlerim</a></li>
+                        <li>
+                            <form asp-controller="Login" asp-action="Logout" method="post" class="form-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="dropdown-item">Çıkış Yap</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>

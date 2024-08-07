@@ -104,20 +104,9 @@ namespace KonserBiletim.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                TempData["Message"] = "Başarıyla çıkış yaptınız.";
-                HttpContext.Session.Remove("UserLoggedIn");
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                TempData["Message"] = "Oturum zaten kapatılmış.";
-            }
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
 
