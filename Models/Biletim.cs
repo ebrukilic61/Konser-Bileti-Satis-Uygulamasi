@@ -9,6 +9,7 @@
         public int konserID { get; set; }
         public string biletDurumu { get; set; } // Örneğin: "Aktif", "İptal"
         public DateTime satinAlmaTarihi { get; set; }
+        public int biletMiktar {  get; set; }
 
         // Navigation properties
         public Musteri Musteri { get; set; }

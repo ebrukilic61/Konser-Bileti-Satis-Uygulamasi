@@ -22,9 +22,9 @@ namespace KonserBiletim.Controllers
             string userRole = HttpContext.Session.GetString("UserRole");
 
             var sanatcilar = GetSanatcilar();
-            var konserler = GetKonserler(); // Varsayılan olarak tüm konserleri al
+            var konserler = GetKonserler(); //varsayılan olarak tüm konserleri alıyorum
 
-            var profilModel = new ProfilViewModel(); // Profil bilgilerini al
+            var profilModel = new ProfilViewModel();
 
             var model = new MasterViewModel
             {
@@ -33,8 +33,8 @@ namespace KonserBiletim.Controllers
                     Konserler = konserler,
                     Sanatcilar = sanatcilar
                 },
-                SearchTerm = null, // İhtiyaç varsa buraya bir değer atanabilir
-                Profil = profilModel // Profil modelini ekle
+                SearchTerm = null, 
+                Profil = profilModel //profil modeli
             };
 
             if (userRole == "Organizator")
@@ -46,7 +46,7 @@ namespace KonserBiletim.Controllers
                 return RedirectToAction("Index","Admin");
             }
 
-            return View(model); // Modeli view'a gönder
+            return View(model); 
         }
 
         public async Task<IActionResult> Anasayfa(string genre = null, string searchTerm = null)
@@ -115,18 +115,6 @@ namespace KonserBiletim.Controllers
                 GROUP BY k.konserID, k.konserName, k.konserTanim, k.konserDate, 
                 l.alanName, s.sanatciName, s.profilFotoPath, g.genre_name, 
                 d.konser_durumu, d.yeni_tarih";
-                /*
-                string query = @"
-                   SELECT k.konserID, k.konserName, k.konserTanim, k.konserDate, 
-                   l.alanName AS KonserLoc, bk.kisi_sayisi AS Capacity, s.sanatciName, s.profilFotoPath AS ImageURL, 
-                   g.genre_name AS GenreName, d.konser_durumu AS KonserDurumu, 
-                   d.yeni_tarih AS YeniTarih
-                   FROM Konser k 
-                   JOIN Sanatci s ON k.sanatciId = s.sanatciID 
-                   JOIN Genre g ON s.genreId = g.genre_id 
-                   JOIN KonserAlani l ON k.konserLocId = l.konserLocID 
-                   JOIN KonserDurumu d ON k.konserID = d.konser_id";
-                */
 
                 var results = con.Query<KonserViewModel>(query).ToList();
 
@@ -197,27 +185,6 @@ namespace KonserBiletim.Controllers
             }
         }
 
-        /*
-        public async Task<int> CountCartItems(int sepetId)
-        {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.OpenAsync();
-
-                string query = @"SELECT SUM(miktar) FROM SepetDetay WHERE sepetID = @SepetID GROUP BY sepetDetayID";
-
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetId;
-                    var result = await cmd.ExecuteScalarAsync();
-
-                    return result != DBNull.Value ? Convert.ToInt32(result) : 0;
-                }
-
-            }
-        }
-        */
-
         private IEnumerable<KonserViewModel> GetConcertsByGenre(string genreName)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -283,11 +250,11 @@ namespace KonserBiletim.Controllers
 
         public async Task<IActionResult> Sepet()
         {
-            // Müþteri ID'sini string olarak aldýnýz, bunu int'e dönüþtürmelisiniz
+            //Müsteri ID'sini string olarak aldýnýz, bunu int'e dönüþtürmelisiniz
             var musteriIDString = HttpContext.Session.GetString("UserID");
             if (string.IsNullOrEmpty(musteriIDString) || !int.TryParse(musteriIDString, out int musteriID))
             {
-                // Müþteri ID'si oturumda yoksa ya da geçersizse hata döndür
+                //Müsteri ID'si oturumda yoksa ya da geçersizse hata döndür
                 return BadRequest("Müþteri ID'si bulunamadý.");
             }
 
@@ -310,7 +277,7 @@ namespace KonserBiletim.Controllers
                     }
                     else
                     {
-                        // Müþteriye ait sepet yoksa sepet oluþturuyorum
+                        //Müsteriye ait sepet yoksa sepet oluþturuyorum
                         string createSepetQuery = @"INSERT INTO Sepet (musteriID) OUTPUT INSERTED.SepetID VALUES (@MusteriID)";
                         using (SqlCommand createCmd = new SqlCommand(createSepetQuery, con))
                         {
@@ -324,7 +291,7 @@ namespace KonserBiletim.Controllers
                 }
             }
 
-            // Sepet sayfasýna yönlendir
+            // Sepet sayfasina yönlendir
             return RedirectToAction("SepetGoruntule", "Sepet");
         }
 
@@ -342,7 +309,7 @@ namespace KonserBiletim.Controllers
                     return Enumerable.Empty<Sanatci>();
                 }
 
-                // Profil fotoðraflarýnýn yolu
+                // Profil fotograflarinin yolu
                 string fileName = "/images/singers/icons/";
 
                 foreach (var result in results)

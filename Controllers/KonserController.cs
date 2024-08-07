@@ -276,18 +276,23 @@ namespace KonserBiletim.Controllers
                             }
 
                             // Insert bilet kategorisi
-                            string insertBiletQuery = @"
-                                INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
-                                VALUES (@KonserId, @KategoriAdi, @BiletFiyati, @KisiSayisi)";
-
-                            using (SqlCommand cmd3 = new SqlCommand(insertBiletQuery, con, transaction))
+                            foreach (var kategori in model.BiletKategorileri)
                             {
-                                cmd3.Parameters.AddWithValue("@KonserId", konserId);
-                                cmd3.Parameters.AddWithValue("@KategoriAdi", model.KategoriAdi);
-                                cmd3.Parameters.AddWithValue("@BiletFiyati", model.Fiyat);
-                                cmd3.Parameters.AddWithValue("@KisiSayisi", model.KisiSayisi);
-                                cmd3.ExecuteNonQuery();
+                                string insertKategoriQuery = @"
+                            INSERT INTO BiletKategori (konser_ID, kategoriName, biletFiyati, kisi_sayisi) 
+                            VALUES (@KonserId, @KategoriAdi, @BiletFiyati, @KisiSayisi)";
+
+                                using (SqlCommand cmd3 = new SqlCommand(insertKategoriQuery, con, transaction))
+                                {
+                                    cmd3.Parameters.AddWithValue("@KonserId", konserId);
+                                    cmd3.Parameters.AddWithValue("@KategoriAdi", kategori.KategoriAdi);
+                                    cmd3.Parameters.AddWithValue("@BiletFiyati", kategori.Fiyat);
+                                    cmd3.Parameters.AddWithValue("@KisiSayisi", kategori.KisiSayisi);
+
+                                    cmd3.ExecuteNonQuery();
+                                }
                             }
+
 
                             transaction.Commit();
                             TempData["SuccessMessage"] = "Konser başarıyla eklendi!";
@@ -475,7 +480,7 @@ namespace KonserBiletim.Controllers
 
                             cmd.ExecuteNonQuery();
                         }
-
+                        
                         //bilet Kategorileri
                         string updateBiletKategoriQuery = @"UPDATE BiletKategori
                                                     SET biletFiyati = @BiletFiyati, kisi_sayisi = @KisiSayisi
@@ -490,6 +495,7 @@ namespace KonserBiletim.Controllers
 
                             cmd2.ExecuteNonQuery();
                         }
+                        
 
                         //KonserDurumu
                         string updateKonserDurumQuery = @"UPDATE KonserDurumu

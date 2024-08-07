@@ -43,6 +43,7 @@ namespace KonserBiletim.ViewModels
         public int KisiSayisi { get; set; }
 
         public List<KonserAlani> KonserAlanlari { get; set; } = new List<KonserAlani>();
+        public List<BiletKategoriViewModel> BiletKategorileri { get; set; } = new List<BiletKategoriViewModel>();
         public List<Sanatci> Sanatcilar { get; set; } = new List<Sanatci>();
         public List<Genre> Genres { get; set; } = new List<Genre>();
         //public List<KonserDurumu> KonserDurumlari { get; set; } = new List<KonserDurumu>();

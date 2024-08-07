@@ -18,6 +18,7 @@ namespace KonserBiletim.ViewModels
         public KartBilgileri KartModel { get; set; }
         public Sepet SepetModel { get; set; }
         public IEnumerable<BiletimViewModel> BiletSatisVerileri { get; set; }
+        public IEnumerable<BiletimFiyatViewModel> BiletFiyatVerileri { get; set; }
         public LoginViewModel Login { get; set; } = new LoginViewModel();
         public RegisterViewModel Register { get; set; } = new RegisterViewModel();
         public AdminViewModel Admin { get; set; }

@@ -11,27 +11,38 @@ namespace KonserBiletim.Controllers
     {
         private readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Lenovo\\Documents\\BiletSistemiDB.mdf;Integrated Security=True;Connect Timeout=30";
 
-        public IActionResult Index()
+        public ActionResult Index()
         {
             IEnumerable<BiletimViewModel> biletSatisVerileri;
+            IEnumerable<BiletimFiyatViewModel> biletFiyatVerileri;
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
 
-                string query = "SELECT satinAlmaTarihi AS Tarih, COUNT(*) AS BiletSayisi FROM Biletim GROUP BY satinAlmaTarihi ORDER BY Tarih";
+                string query = "SELECT satinAlmaTarihi AS Tarih, SUM(biletMiktar) AS BiletSayisi FROM Biletim GROUP BY satinAlmaTarihi ORDER BY Tarih";
 
-                biletSatisVerileri = con.Query<BiletimViewModel>(query);
+                biletSatisVerileri = con.Query<BiletimViewModel>(query) ?? new List<BiletimViewModel>();
+
+                string query2 = @"SELECT k.konserName, SUM(COALESCE(bk.biletFiyati, 0) * COALESCE(b.biletMiktar, 1)) AS ToplamBiletFiyati
+                FROM Biletim b
+                JOIN Konser k ON b.konserID = k.konserID
+                JOIN BiletKategori bk ON b.konserID = bk.konser_ID
+                GROUP BY k.konserName";
+
+                biletFiyatVerileri = con.Query<BiletimFiyatViewModel>(query2) ?? new List<BiletimFiyatViewModel>();
 
             }
 
             var model = new MasterViewModel
             {
-                BiletSatisVerileri = biletSatisVerileri
+                BiletSatisVerileri = biletSatisVerileri,
+                BiletFiyatVerileri = biletFiyatVerileri
             };
 
             return View(model);
         }
+
 
         public IActionResult AdminOnay()
         {

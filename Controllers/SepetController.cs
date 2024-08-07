@@ -547,9 +547,9 @@ namespace KonserBiletim.Controllers
                     }
                 }
 
-                //bilettm:
-                string insertQuery = @"INSERT INTO Biletim (musteriID, biletTuru, konserID, satinAlmaTarihi, biletDurumu)
-                               SELECT @CustID, sd.KategoriAdi, sd.konserID, GETDATE(), 'Gecerli'
+                //biletim:
+                string insertQuery = @"INSERT INTO Biletim (musteriID, biletTuru, konserID, satinAlmaTarihi, biletDurumu, biletMiktar)
+                               SELECT @CustID, sd.KategoriAdi, sd.konserID, GETDATE(), 'Gecerli', sd.miktar
                                FROM SepetDetay sd
                                WHERE sd.sepetID = @SepetID";
 
@@ -565,7 +565,7 @@ namespace KonserBiletim.Controllers
                 string updateBiletSayisiQuery = @"UPDATE bk
                                           SET bk.kisi_sayisi = bk.kisi_sayisi - COALESCE(sd.TotalMiktar, 0)
                                           FROM BiletKategori bk
-                                          LEFT JOIN (
+                                          INNER JOIN (
                                               SELECT kategoriID, SUM(miktar) AS TotalMiktar
                                               FROM SepetDetay
                                               WHERE SepetID = @SepetID

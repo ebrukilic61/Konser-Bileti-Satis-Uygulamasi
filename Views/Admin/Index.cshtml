@@ -46,9 +46,20 @@
             align-items: center;
             height: 400px;
             width: 100%;
-            margin-top: 100px;
+            margin-top: 80px;
             margin-left: 200px;
-            background-color:aliceblue;
+            background-color: aliceblue;
+        }
+
+        .chart-container-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            width: 100%;
+            margin-top: 30px;
+            margin-left: 200px;
+            background-color: aliceblue;
         }
     </style>
 </head>
@@ -100,6 +111,10 @@
                 <div class="chart-container">
                     <canvas class="my-4 w-100" id="biletChart" width="800" height="380"></canvas>
                 </div>
+
+                <div class="chart-container-bar">
+                    <canvas class="my-4 w-100" id="biletFiyatChart" width="800" height="380"></canvas>
+                </div>
             </main>
         </div>
     </div>
@@ -115,12 +130,14 @@
     </script>
 
     <script>
-        var ctx = document.getElementById('biletChart').getContext('2d');
+        var ctxBilet = document.getElementById('biletChart').getContext('2d');
+        var ctxFiyat = document.getElementById('biletFiyatChart').getContext('2d');
 
         var today = new Date();
         var oneWeekAgo = new Date();
         oneWeekAgo.setDate(today.getDate() - 7);
 
+        //Satış Verileri
         var labels = @Html.Raw(Json.Serialize(Model.BiletSatisVerileri.Select(x => x.Tarih.ToString("yyyy-MM-dd"))));
         var data = @Html.Raw(Json.Serialize(Model.BiletSatisVerileri.Select(x => x.BiletSayisi)));
 
@@ -140,10 +157,11 @@
         for (var d = new Date(oneWeekAgo); d <= today; d.setDate(d.getDate() + 1)) {
             var dateString = d.toISOString().split('T')[0];
             allDates.push(dateString);
-            allData.push(filteredData[dateString] || 0); 
+            allData.push(filteredData[dateString] || 0);
         }
 
-        var biletChart = new Chart(ctx, {
+        //Bilet Satış Chart
+        var biletChart = new Chart(ctxBilet, {
             type: 'line',
             data: {
                 labels: allDates,
@@ -211,7 +229,87 @@
                 }
             }
         });
-    </script>
 
+        var fiyatLabels = @Html.Raw(Json.Serialize(Model.BiletFiyatVerileri.Select(x => x.KonserName)));
+        var fiyatData = @Html.Raw(Json.Serialize(Model.BiletFiyatVerileri.Select(x => x.ToplamBiletFiyati)));
+
+        //Bilet Fiyat Chart
+        var renkPaleti = [
+            'rgba(255, 99, 132, 0.2)', // Kırmızı
+            'rgba(54, 162, 235, 0.2)', // Mavi
+            'rgba(255, 206, 86, 0.2)', // Sarı
+            'rgba(75, 192, 192, 0.2)', // Yeşil
+            'rgba(153, 102, 255, 0.2)', // Mor
+            'rgba(255, 159, 64, 0.2)'  // Turuncu
+        ];
+
+        var konserler = @Html.Raw(Json.Serialize(Model.BiletFiyatVerileri.Select(x => x.KonserName)));
+        var fiyatlar = @Html.Raw(Json.Serialize(Model.BiletFiyatVerileri.Select(x => x.ToplamBiletFiyati)));
+
+        //renk paleti ile bar chartta dinamik renk olusturmak icin:
+        var renkler = konserler.map((_, i) => renkPaleti[i % renkPaleti.length]);
+
+        var ctxFiyat = document.getElementById('biletFiyatChart').getContext('2d');
+        var biletFiyatChart = new Chart(ctxFiyat, {
+            type: 'bar',
+            data: {
+                labels: konserler,
+                datasets: [{
+                    label: 'Toplam Bilet Fiyatları',
+                    data: fiyatlar,
+                    backgroundColor: renkler,
+                    borderColor: renkler.map(color => color.replace('0.2', '1')), // Kenarlık rengini aynı yapalım
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Konserler'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Toplam Bilet Fiyatı (TL)'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        grid: {
+                            borderDash: [2, 2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + ' TL';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
