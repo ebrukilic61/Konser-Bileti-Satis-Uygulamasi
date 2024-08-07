@@ -189,7 +189,9 @@ namespace KonserBiletim.Controllers
                     }
                 }
             }
+            //TempData["sepet"] = "Bilet sepete eklendi.";
             return RedirectToAction("SepetGoruntule", new { sepetID = sepetID });
+            //return RedirectToAction("Details","Konser", new {konserId = konserId});
         }
 
         //sepeti görüntüle
@@ -441,7 +443,7 @@ namespace KonserBiletim.Controllers
             await SepetiTemizle();
 
             //islem basarılı mesajı:
-            ViewBag.mesaj = "Ödemeniz başarıyla gerçekleştirildi.";
+            TempData["odeme"] = "Ödeme işleminiz başarıyla gerçekleştirildi.";
             return RedirectToAction("SepetGoruntule", "Sepet", model);
         }
 

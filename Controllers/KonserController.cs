@@ -146,6 +146,18 @@ namespace KonserBiletim.Controllers
                             konser.GenreName = reader1.GetString(reader1.GetOrdinal("GenreName"));
                             konser.KonserDurumu = reader1.GetString(reader1.GetOrdinal("KonserDurumu"));
                             konser.YeniTarih = reader1.IsDBNull(reader1.GetOrdinal("YeniTarih")) ? (DateTime?)null : reader1.GetDateTime(reader1.GetOrdinal("YeniTarih"));
+
+                            if(konser.KonserDate <= DateTime.Now)
+                            {
+                                string updateKonserDurumQuery = @"UPDATE KonserDurumu SET konser_durumu = 'Sona Erdi' WHERE konser_id = @KonserID";
+
+                                using(SqlCommand cmd = new SqlCommand(updateKonserDurumQuery,con)) 
+                                {
+                                    cmd.Parameters.AddWithValue("@KonserID", konserId);
+                                    cmd.ExecuteNonQueryAsync();
+                                }
+                                konser.KonserDurumu = "Sona Erdi";
+                            }
                         }
                     }
                 }
@@ -462,7 +474,7 @@ namespace KonserBiletim.Controllers
 
                     using (var transaction = con.BeginTransaction())
                     {
-                        // Konser bilgilerini güncelle
+                        //konser bilgilerini güncelle
                         string updateKonserQuery = @"UPDATE Konser 
                                                 SET konserName = @KonserName, konserDate = @KonserDate, 
                                                     konserLocId = @KonserLocId, sanatciId = @SanatciId, 
@@ -526,8 +538,5 @@ namespace KonserBiletim.Controllers
             model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
             return View(model);
         }
-
-     //konser bilet fiyat grafiğini count ile yapabilirim
-
     }
 }
