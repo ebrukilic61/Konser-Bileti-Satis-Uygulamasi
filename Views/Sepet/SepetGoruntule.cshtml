@@ -206,6 +206,36 @@
         .fa-trash {
             font-size: 24px;
         }
+
+        .card .master {
+            width: 50px;
+            height: 50px;
+            object-fit: fill;
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; 
+        }
+
+        .debit-card {
+            width: 100%;
+            max-width: 350px;
+            height: 200px;
+            padding: 20px;
+            background-color: #0093E9;
+            background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 3px 3px 5px #0000001a;
+            transition: all 0.3s ease-in;
+            cursor: pointer;
+        }
+
+            .debit-card:hover {
+                box-shadow: 5px 3px 5px #000000a2;
+            }
+
     </style>
 
 </head>
@@ -291,6 +321,47 @@
                 <strong>@TempData["odeme"]</strong><a href="#" class="alert-link"></a>.
             </div>
         }
+        <div class="form-group">
+
+            <label for="kartSecim">Kart Seçiniz</label>
+            <div class="debit-card-container">
+                @if (Model.Sepet.Kartlar != null && Model.Sepet.Kartlar.Any())
+                {
+                    <div class="card-container">
+                    @foreach (var item in Model.Sepet.Kartlar)
+                    {
+                        <div class="debit-card">
+                                <input type="radio" id="card_@item.KartNo" name="selectedCard" value="@item.KartNo"
+                                       data-sahipismi="@item.SahipIsmi"
+                                       data-sahipsoymi="@item.SahipSoyismi"
+                                       data-cvv="@item.CVV"
+                                       data-skt="@item.SKT" />
+
+                            <label for="card_@item.KartNo" class="debit-card-content">
+                                <div>
+                                    <p class="text-white fw-bold">@item.SahipIsmi @item.SahipSoyismi</p>
+                                </div>
+                                <div>
+                                    <p class="text-white fw-bold">Kart Numarası: @item.KartNo</p>
+                                </div>
+                                <div>
+                                    <p class="text-white fw-bold">SKT: @item.SKT</p>
+                                </div>
+                                <div>
+                                    <p class="text-white fw-bold">CVV: @item.CVV</p>
+                                </div>
+                            </label>
+                        </div>
+                    }
+                    </div>
+                }
+                else
+                {
+                    <p>Kart bilgileri bulunmamaktadır.</p>
+                }
+            </div>
+        </div>
+
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="card">
@@ -298,35 +369,51 @@
                         <form asp-action="OdemeYap" method="post">
                             <div class="form-group">
                                 <label for="SahipIsmi">Kart Sahibi Adı</label>
-                                <input type="text" class="form-control" id="SahipIsmi" name="Sepet.SahipIsmi" asp-for="Sepet.SahipIsmi" required />
+                                <input type="text" class="form-control" id="SahipIsmi" name="Sepet.SahipIsmi" required />
                             </div>
 
                             <div class="form-group">
                                 <label for="SahipSoyismi">Kart Sahibi Soyadı</label>
-                                <input type="text" class="form-control" id="SahipSoyismi" name="Sepet.SahipSoyismi" asp-for="Sepet.SahipSoyismi" required />
+                                <input type="text" class="form-control" id="SahipSoyismi" name="Sepet.SahipSoyismi" required />
                             </div>
 
                             <div class="form-group">
                                 <label for="KartNo">Kart Numarası</label>
-                                <input type="text" class="form-control" id="KartNo" name="Sepet.KartNo" asp-for="Sepet.KartNo" required />
+                                <input type="text" class="form-control" id="KartNo" name="Sepet.KartNo" required />
                             </div>
 
                             <div class="form-group">
                                 <label for="CVV">CVV</label>
-                                <input type="number" class="form-control" id="CVV" name="Sepet.CVV" asp-for="Sepet.CVV" required />
+                                <input type="number" class="form-control" id="CVV" name="Sepet.CVV" required />
                             </div>
 
                             <div class="form-group">
                                 <label for="SKT">Son Kullanma Tarihi (MM/YY)</label>
-                                <input type="text" class="form-control" id="SKT" name="Sepet.SKT" asp-for="Sepet.SKT" required />
+                                <input type="text" class="form-control" id="SKT" name="Sepet.SKT" required />
                             </div>
-
                             <button type="submit" class="btn btn-primary">Ödeme Yap</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <script>
+        // Kart seçildiğinde form alanlarını güncellenir
+        document.querySelectorAll('input[name="selectedCard"]').forEach(function (card) {
+            card.addEventListener('change', function () {
+                if (this.checked) {
+                    document.getElementById('SahipIsmi').value = this.getAttribute('data-sahipismi');
+                    document.getElementById('SahipSoyismi').value = this.getAttribute('data-sahipsoymi');
+                    document.getElementById('KartNo').value = this.value;
+                    document.getElementById('CVV').value = this.getAttribute('data-cvv');
+                    document.getElementById('SKT').value = this.getAttribute('data-skt');
+                }
+            });
+        });
+
+    </script>
 
     <script>
         document.getElementById('skt').addEventListener('input', function (e) {

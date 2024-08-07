@@ -47,6 +47,7 @@ namespace KonserBiletim.ViewModels
         public decimal Fiyat { get; set; }
         public decimal FinalFiyat {  get; set; }
         public bool BosSepet { get; set; } //bos sepet kontrolu icin
-        public List<KartViewModel> Kartlar { get; set; } //odeme yaparken kullanıcıya ait kartlar arasından secim yapabilmesi icin kartları bu listeye aktardım
+        public IEnumerable<KartViewModel> Kartlar { get; set; } = new List<KartViewModel>(); //odeme yaparken kullanıcıya ait kartlar arasından secim yapabilmesi icin kartları bu listeye aktardım
+        public int SecilenKartID {  get; set; }
     }
 }

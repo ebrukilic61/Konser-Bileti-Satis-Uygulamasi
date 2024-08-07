@@ -198,6 +198,8 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public async Task<IActionResult> SepetGoruntule()
         {
+            string userID = HttpContext.Session.GetString("UserID");
+            int user_id = Convert.ToInt32(userID);
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
             if (sepetID == null)
             {
@@ -209,7 +211,12 @@ namespace KonserBiletim.Controllers
             var model = new MasterViewModel
             {
                 Sepet = new SepetViewModel()
+                {
+                    Kartlar = new List<KartViewModel>()
+                }
             };
+
+            model.Sepet.Kartlar = await GetKartlar(user_id);
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -414,12 +421,12 @@ namespace KonserBiletim.Controllers
 
 
         /* ---------------Ödeme İşlemleri------------------*/
-
         [HttpPost]
         public async Task<IActionResult> OdemeYap(MasterViewModel model)
         {
             string userID = HttpContext.Session.GetString("UserID");
             int user_id = Convert.ToInt32(userID);
+            int secilenKartID = model.Sepet.SecilenKartID;
 
             // Kart bilgileri kontrolü
             bool kartGecerli = await KartBilgileriniDogrulaAsync(model.Sepet, user_id);
@@ -448,6 +455,45 @@ namespace KonserBiletim.Controllers
             //islem basarılı mesajı:
             TempData["odeme"] = "Ödeme işleminiz başarıyla gerçekleştirildi.";
             return RedirectToAction("SepetGoruntule", "Sepet", model);
+        }
+
+        private async Task<List<KartViewModel>> GetKartlar(int userID)
+        {
+            List<KartViewModel> kartListesi = new List<KartViewModel>();
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                if (userID == null)
+                {
+                    return kartListesi;
+                }
+
+                string query = @"SELECT kart_no, cvv, skt, sahip_ismi, sahip_soyismi, kart_id FROM KartBilgileri WHERE cust_id = @CustID";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add("@CustID", SqlDbType.Int).Value = userID;
+                    using (SqlDataReader dreader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await dreader.ReadAsync())
+                        {
+                            KartViewModel kart = new KartViewModel()
+                            {
+                                KartNo = dreader["kart_no"].ToString(),
+                                CVV = Convert.ToInt32(dreader["cvv"]),
+                                SKT = dreader["skt"].ToString(),
+                                SahipIsmi = dreader["sahip_ismi"].ToString(),
+                                SahipSoyismi = dreader["sahip_soyismi"].ToString(),
+                                KartID = Convert.ToInt32(dreader["kart_id"])
+                            };
+                            kartListesi.Add(kart);
+                        }
+                    }
+                }
+            }
+            return kartListesi;
         }
 
 
