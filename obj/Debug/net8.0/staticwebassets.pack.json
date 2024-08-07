@@ -593,6 +593,10 @@
       "PackagePath": "staticwebassets\\uploads\\4b6a48f4-5765-4e0b-8ba9-4e4077e8ad7e_kedi.jpg"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\4eea2c42-bc00-433b-9457-c127a53e6fee_paramore_tour.jpg",
+      "PackagePath": "staticwebassets\\uploads\\4eea2c42-bc00-433b-9457-c127a53e6fee_paramore_tour.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\5919d428-672d-436b-a59d-b2df874f74f5_tsicon.jpg",
       "PackagePath": "staticwebassets\\uploads\\5919d428-672d-436b-a59d-b2df874f74f5_tsicon.jpg"
     },
@@ -657,6 +661,14 @@
       "PackagePath": "staticwebassets\\uploads\\ceeee7f0-c0d6-4710-8a0b-4f1f2b598dec_tsicon.jpg"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\d7518dee-a0bd-4521-b214-135e244e07ae_wendy.png",
+      "PackagePath": "staticwebassets\\uploads\\d7518dee-a0bd-4521-b214-135e244e07ae_wendy.png"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\d91ed26f-6ede-4d1e-a53d-6030beed8505_paramore_tour.jpg",
+      "PackagePath": "staticwebassets\\uploads\\d91ed26f-6ede-4d1e-a53d-6030beed8505_paramore_tour.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\db51f236-74f1-40e7-b82b-828d1f375172_altay.jpg",
       "PackagePath": "staticwebassets\\uploads\\db51f236-74f1-40e7-b82b-828d1f375172_altay.jpg"
     },
@@ -665,8 +677,16 @@
       "PackagePath": "staticwebassets\\uploads\\e6115001-e83f-41b8-9091-7ca47f3c71cd_ellaa.jpg"
     },
     {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\ebcdabbc-6f2b-4369-b63a-676c75ec7aa1_paramore_tour.jpg",
+      "PackagePath": "staticwebassets\\uploads\\ebcdabbc-6f2b-4369-b63a-676c75ec7aa1_paramore_tour.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\ed6bf6bb-1ecb-48d8-93ee-2716784eaa50_GNB1HGDagAAHNoK.jpg",
       "PackagePath": "staticwebassets\\uploads\\ed6bf6bb-1ecb-48d8-93ee-2716784eaa50_GNB1HGDagAAHNoK.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\f1b41968-28ff-46fe-89f6-20f2f730f869_wendy.png",
+      "PackagePath": "staticwebassets\\uploads\\f1b41968-28ff-46fe-89f6-20f2f730f869_wendy.png"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\uploads\\f96f5b6c-fe2e-4cd9-ab81-19b07cbb1108_15.jpg",

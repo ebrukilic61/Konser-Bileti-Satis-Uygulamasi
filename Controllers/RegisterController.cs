@@ -124,7 +124,7 @@ namespace KonserBiletim.Controllers
                         }
                         else
                         {
-                            ViewBag.Message = "Girdiğiniz şifreler eşleşmiyor. Şifreleri dikkatle giriniz.";
+                            TempData["mesaj"] = "Girdiğiniz şifreler eşleşmiyor. Şifreleri dikkatle giriniz.";
                             return RedirectToAction("Index","Register");
                         }
                     }

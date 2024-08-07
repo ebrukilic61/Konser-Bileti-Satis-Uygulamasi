@@ -43,7 +43,7 @@ namespace KonserBiletim.Controllers
                 }
                 else if (model.Role == "Organizator")
                 {
-                    query = "SELECT * FROM Organizator WHERE orgMail = @Email AND orgPassword = @Password";
+                    query = "SELECT * FROM Organizator WHERE orgMail = @Email AND orgPassword = @Password AND IsApproved = 1";
                 }
                 else if (model.Role == "Admin")
                 {
@@ -93,7 +93,7 @@ namespace KonserBiletim.Controllers
                         }
                         else
                         {
-                            ViewBag.mesaj = "Geçersiz email veya şifre girdiniz.";
+                            TempData["mesaj"] = "Geçersiz email veya şifre girdiniz.";
                             return RedirectToAction("Log");
                         }
                     }

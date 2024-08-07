@@ -311,7 +311,7 @@ namespace KonserBiletim.Controllers
         [HttpPost]
         public IActionResult KonserSil(int konserId, int kategoriId)
         {
-            if (GetUserRole() != "Organizator")
+            if (GetUserRole() != "Organizator" && GetUserRole() != "Admin")
             {
                 return Unauthorized();
             }
@@ -374,7 +374,7 @@ namespace KonserBiletim.Controllers
         [HttpGet]
         public IActionResult KonserDuzenle(int id)
         {
-            if (GetUserRole() != "Organizator") //bunu sonradan ekledim, hata yaratıyor mu diye kontrol et! -> calısıyor
+            if (GetUserRole() != "Organizator" && GetUserRole()!= "Admin") //bunu sonradan ekledim, hata yaratıyor mu diye kontrol et! -> calısıyor
             {
                 return Unauthorized();
             }
@@ -520,6 +520,8 @@ namespace KonserBiletim.Controllers
             model.KonserEkle.KonserAlanlari = GetKonserAlanlari();
             return View(model);
         }
+
+     //konser bilet fiyat grafiğini count ile yapabilirim
 
     }
 }

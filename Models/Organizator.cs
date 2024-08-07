@@ -32,6 +32,7 @@ namespace KonserBiletim.Models
         public string role { get; set; }
         public int? concertID { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsRejected { get; set; }
 
         [StringLength(255)]
         public string profilFotoPath {  get; set; }

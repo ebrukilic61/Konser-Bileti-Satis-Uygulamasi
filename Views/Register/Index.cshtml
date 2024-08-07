@@ -88,11 +88,10 @@
                                         </div>
                                         <button class="w-100 btn btn-lg btn-primary" type="submit">Kayıt Ol</button>
 
-                                        @if (ViewBag.Message != null)
+                                        @if (TempData["mesaj"] != null)
                                         {
-                                            <div class="alert alert-dismissible alert-danger">
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                                <strong>@ViewBag.Message</strong>
+                                            <div class="alert alert-danger">
+                                                @TempData["mesaj"]
                                             </div>
                                         }
                                         <p class="text-center text-muted mt-4 mb-0">

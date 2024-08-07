@@ -42,6 +42,10 @@ namespace KonserBiletim.Controllers
                 {
                     query = "SELECT o.orgID, o.orgName AS Name, o.orgSurname AS Surname, o.orgMail AS Email, p.telNo, p.profil_foto_path FROM Organizator o LEFT JOIN ProfilOrg p ON o.orgID = p.userID WHERE o.orgID = @UserID";
                 }
+                else if(userRole == "Admin") 
+                {
+                    query = "SELECT a.admin_id, a.adminName AS Name, a.adminSurname AS Surname, a.admin_mail AS Email, p.telNo, p.profil_foto_path FROM Admin a LEFT JOIN Profil p ON a.admin_id = p.userID WHERE a.admin_id = @UserID";
+                }
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
@@ -260,6 +264,23 @@ namespace KonserBiletim.Controllers
                                   "UPDATE ProfilOrg SET telNo = @TelNo, profil_foto_path = @ProfilFotoPath WHERE userID = @UserID " +
                                   "ELSE " +
                                   "INSERT INTO ProfilOrg (userID, telNo, profil_foto_path) VALUES (@UserID, @TelNo, @ProfilFotoPath)";
+                }
+                else if(userRole == "Admin") 
+                {
+                    updateQuery = "UPDATE Admin SET adminName = @Name, adminSurname = @Surname, admin_mail = @Email WHERE admin_id = @UserID";
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, con))
+                    {
+                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = profilModel?.Name ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Surname", SqlDbType.NVarChar).Value = profilModel?.Surname ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = profilModel?.Email ?? (object)DBNull.Value;
+                        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = int.Parse(userID);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    updateQuery = "IF EXISTS (SELECT 1 FROM ProfilAdmin WHERE userID = @UserID) " +
+                                  "UPDATE ProfilAdmin SET telNo = @TelNo, profil_foto_path = @ProfilFotoPath WHERE userID = @UserID " +
+                                  "ELSE " +
+                                  "INSERT INTO ProfilAdmin (userID, telNo, profil_foto_path) VALUES (@UserID, @TelNo, @ProfilFotoPath)";
                 }
 
                 using (SqlCommand cmd = new SqlCommand(updateQuery, con))

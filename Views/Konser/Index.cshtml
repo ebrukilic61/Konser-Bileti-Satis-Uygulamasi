@@ -14,11 +14,11 @@
 
         .card {
             width: 350px;
-            height: 380px; /* Yüksekliği sabitleyin */
+            height: 380px; 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            margin-bottom: 20px; /* Kartlar arasında boşluk bırakın */
+            margin-bottom: 20px; 
         }
 
         .card-img-top {
@@ -28,13 +28,13 @@
         }
 
         .card-body {
-            flex-grow: 1; /* İçeriğin kartın kalan alanını kaplamasını sağlayın */
-            overflow: hidden; /* İçeriğin taşmasını engelleyin */
+            flex-grow: 1; 
+            overflow: hidden;
         }
 
         .card-footer {
             display: flex;
-            flex-direction: column; /* Butonları alt alta yerleştirin */
+            flex-direction: column; 
             align-items: center;
         }
 
@@ -43,7 +43,7 @@
         }
 
             .btn-group a {
-                width: 100%; /* Butonların genişliğini kartla uyumlu hale getirin */
+                width: 100%; 
             }
     </style>
 </head>
@@ -86,7 +86,7 @@
                     <div>
                         <a href="@Url.Action("Details", "Konser", new { id = item.KonserID })" class="btn btn-primary d-block mb-2">Detaylar</a>
 
-                        @if (User.IsInRole("Organizator"))
+                        @if (User.IsInRole("Organizator") || User.IsInRole("Admin"))
                         {
                             <!-- Kullanıcı organizatörse düzenleme butonunu göstersin istedim -->
                             <a href="@Url.Action("KonserDuzenle", "Konser", new { id = item.KonserID })" class="btn btn-secondary d-block mb-2">

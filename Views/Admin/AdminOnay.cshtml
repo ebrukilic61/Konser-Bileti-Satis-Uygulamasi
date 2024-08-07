@@ -1,0 +1,166 @@
+﻿@model MasterViewModel
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f4949c;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1, h2 {
+            margin: 0 0 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .approval-list {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4949c;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .approve-btn, .reject-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .approve-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+            .approve-btn:hover {
+                background-color: #218838;
+            }
+
+        .reject-btn {
+            background-color: #dc3545;
+            color: #fff;
+            margin-left: 8px;
+        }
+
+            .reject-btn:hover {
+                background-color: #c82333;
+            }
+
+        .alert {
+            padding: 15px;
+            background-color: #f44336;
+            color: white;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <main class="main-content">
+        <header>
+            <h1>Onay Sayfası</h1>
+        </header>
+
+        <section class="content">
+            <h2>Organizatör Onay İşlemleri</h2>
+
+            @if (TempData["mesaj"] != null)
+            {
+                <div class="alert">
+                    @TempData["mesaj"]
+                </div>
+            }
+
+            <div class="approval-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>İsim</th>
+                            <th>Soyisim</th>
+                            <th>Email</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Admin.pendingOrganizators)
+                        {
+                            <tr>
+                                <td>@item.orgID</td>
+                                <td>@item.orgName</td>
+                                <td>@item.orgSurname</td>
+                                <td>@item.orgMail</td>
+                                <td>@(item.IsApproved ? "Onaylandı" : "Beklemede")</td>
+                                <td>@(item.IsRejected ? "Reddedildi" : "Beklemede")</td>
+                                <td>
+                                    <form asp-action="AdminOnay" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@item.orgID" />
+                                        <button type="submit" class="approve-btn"><i class="fas fa-check"></i> Onayla</button>
+                                    </form>
+                                    <form asp-action="AdminRet" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@item.orgID" />
+                                        <button type="submit" class="reject-btn"><i class="fas fa-times"></i> Reddet</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

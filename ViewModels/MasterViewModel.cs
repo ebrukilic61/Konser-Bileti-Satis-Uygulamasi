@@ -20,5 +20,6 @@ namespace KonserBiletim.ViewModels
         public IEnumerable<BiletimViewModel> BiletSatisVerileri { get; set; }
         public LoginViewModel Login { get; set; } = new LoginViewModel();
         public RegisterViewModel Register { get; set; } = new RegisterViewModel();
+        public AdminViewModel Admin { get; set; }
     }
 }

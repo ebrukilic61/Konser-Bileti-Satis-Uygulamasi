@@ -41,6 +41,10 @@ namespace KonserBiletim.Controllers
             {
                 return RedirectToAction("Dashboard", "Organizator");
             }
+            if(userRole == "Admin")
+            {
+                return RedirectToAction("Index","Admin");
+            }
 
             return View(model); // Modeli view'a gönder
         }
@@ -79,6 +83,10 @@ namespace KonserBiletim.Controllers
             if (userRole == "Organizator")
             {
                 return RedirectToAction("Dashboard", "Organizator");
+            }
+            if (userRole == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
             }
 
             return View(model);

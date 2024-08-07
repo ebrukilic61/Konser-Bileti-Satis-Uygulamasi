@@ -33,6 +33,10 @@ namespace KonserBiletim.ViewComponents
                         {
                             query = "SELECT p.profil_foto_path FROM Organizator o LEFT JOIN ProfilOrg p ON o.orgID = p.userID WHERE o.orgID = @UserID";
                         }
+                        else if(userRole == "Admin")
+                        {
+                            query = "SELECT p.profil_foto_path FROM Admin a LEFT JOIN Profil p ON a.admin_id = p.userID WHERE a.admin_id = @UserID";
+                        }
 
                         using (SqlCommand cmd = new SqlCommand(query, con))
                         {
