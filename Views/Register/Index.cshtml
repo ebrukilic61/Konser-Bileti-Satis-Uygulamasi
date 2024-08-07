@@ -88,12 +88,34 @@
                                         </div>
                                         <button class="w-100 btn btn-lg btn-primary" type="submit">Kayıt Ol</button>
 
-                                        @if (TempData["mesaj"] != null)
+                                        @if (TempData["msg"] != null)
                                         {
                                             <div class="alert alert-danger">
-                                                @TempData["mesaj"]
+                                                @TempData["msg"]
                                             </div>
                                         }
+                                        @if (TempData["kayit"] != null)
+                                        {
+                                            <div class="alert alert-dismissible alert-success">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                <strong>@TempData["kayit"]</strong><a href="#" class="alert-link"></a>.
+                                            </div>
+                                        }
+                                        @if (TempData["kayit2"] != null)
+                                        {
+                                            <div class="alert alert-dismissible alert-success">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                <strong>@TempData["kayit2"]</strong><a href="#" class="alert-link"></a>.
+                                            </div>
+                                        }
+                                        @if (TempData["mail"] != null)
+                                        {
+                                            <div class="alert alert-dismissible alert-danger">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                <strong>@TempData["mail"]</strong> <a href="#" class="alert-link"></a>
+                                            </div>
+                                        }
+
                                         <p class="text-center text-muted mt-4 mb-0">
                                             Zaten hesabın var mı? @Html.ActionLink("Giriş Yap", "Log", "Login", null, new { @class = "fw-bold text" })
                                         </p>

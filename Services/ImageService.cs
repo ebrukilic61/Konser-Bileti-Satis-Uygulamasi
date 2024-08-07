@@ -18,8 +18,13 @@ public class ImageService
     {
         if (_imageUrls.TryGetValue(sanatciId, out var imageUrl))
         {
-            return $"/images/singers/concerts/{imageUrl}";
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "singers", "concerts", imageUrl);
+            if (File.Exists(fullPath))
+            {
+                return $"/images/singers/concerts/{imageUrl}";
+            }
+            return "/images/oneway.png";
         }
-        return "/images/default.jpg"; // Varsayılan bir resim yolu
+        return "/images/oneway.png";
     }
 }

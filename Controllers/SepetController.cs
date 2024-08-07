@@ -412,6 +412,9 @@ namespace KonserBiletim.Controllers
 
         }
 
+
+        /* ---------------Ödeme İşlemleri------------------*/
+
         [HttpPost]
         public async Task<IActionResult> OdemeYap(MasterViewModel model)
         {

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "rarmYwG42xaFBIs7OWTf6oRaVP10w4r6E/BAcxEE7ts=",
+  "Hash": "JDRRnQD8KB31HcENU1QuT8voCzPCYA2cA9YMFwmIk2o=",
   "Source": "KonserBiletim",
   "BasePath": "_content/KonserBiletim",
   "Mode": "Default",
@@ -2411,12 +2411,12 @@
       "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\julia_conc2.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\paramore_tour.jpg",
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\paramoretour.jpg",
       "SourceId": "KonserBiletim",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
       "BasePath": "_content/KonserBiletim",
-      "RelativePath": "images/singers/concerts/paramore_tour.jpg",
+      "RelativePath": "images/singers/concerts/paramoretour.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2427,7 +2427,26 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\paramore_tour.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\paramoretour.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\sezen.jpg",
+      "SourceId": "KonserBiletim",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\",
+      "BasePath": "_content/KonserBiletim",
+      "RelativePath": "images/singers/concerts/sezen.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\singers\\concerts\\sezen.jpg"
     },
     {
       "Identity": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\top_tour4.jpg",

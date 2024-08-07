@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using KonserBiletim.ViewModels;
 using System.Data;
+using System.Net.Mail;
+using System.Net;
+using KonserBiletim.Services;
 
 namespace KonserBiletim.Controllers
 {
@@ -57,7 +60,7 @@ namespace KonserBiletim.Controllers
 
                     if (existingUser != null)
                     {
-                        ViewBag.Message = "Bu email adresi adına bir hesap bulunmaktadır. Başka bir email adresi kullanınız.";
+                        TempData["mail"] = "Bu email adresi adına bir hesap bulunmaktadır. Başka bir email adresi kullanınız.";
                         return RedirectToAction("Index", "Register");
                     }
                     else
@@ -66,7 +69,7 @@ namespace KonserBiletim.Controllers
                         {
                             int userID;
 
-                            // Yeni kullanıcı ekleme
+                            //Yeni kullanıcı ekleme
                             using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
                             {
                                 insertCmd.Parameters.AddWithValue("@Name", model.Name);
@@ -79,7 +82,7 @@ namespace KonserBiletim.Controllers
 
                             }
 
-                            // Profil tablosuna kullanıcı bilgilerini ekleme
+                            //Profil tablosuna kullanıcı bilgilerini ekleme
                             if (model.Role == "Musteri")
                             {
 
@@ -93,9 +96,8 @@ namespace KonserBiletim.Controllers
                                 using (SqlCommand cmd = new SqlCommand(insertProfilQuery, conn))
                                 {
                                     cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userID;
-                                    cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = model.Email; // Gerekirse modelde e-posta bilgisi saklanıyor
-                                    //cmd.Parameters.Add("@TelNo", SqlDbType.VarChar).Value = model.TelNo;
-                                    //cmd.Parameters.Add("@ProfilFotoPath", SqlDbType.VarChar).Value = model.ProfilFotoPath;
+                                    cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = model.Email; 
+
                                     cmd.ExecuteNonQuery();
                                 }
                             }
@@ -103,7 +105,7 @@ namespace KonserBiletim.Controllers
                             if (model.Role == "Organizator")
                             {
 
-                                // Yeni eklenen kullanıcının ID'sini almak için
+                                //Yeni eklenen kullanıcının ID'sini almak için
                                 using (SqlCommand idCmd = new SqlCommand("SELECT orgID from Organizator where orgMail = @Email", conn))
                                 {
                                     idCmd.Parameters.AddWithValue("@Email", model.Email);
@@ -113,23 +115,31 @@ namespace KonserBiletim.Controllers
                                 using (SqlCommand cmd = new SqlCommand(insertProfilQuery, conn))
                                 {
                                     cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userID;
-                                    cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = model.Email; // Gerekirse modelde e-posta bilgisi saklanıyor
-                                    //cmd.Parameters.Add("@TelNo", SqlDbType.VarChar).Value = model.TelNo;
-                                    //cmd.Parameters.Add("@ProfilFotoPath", SqlDbType.VarChar).Value = model.ProfilFotoPath;
+                                    cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = model.Email; 
+
                                     cmd.ExecuteNonQuery();
                                 }
+
+                                TempData["kayit"] = "Kaydınız alınmıştır. Admin Onayından sonra giriş yapabileceksiniz";
+                                return RedirectToAction("Index", "Register");
                             }
 
-                            return RedirectToAction("Index", "Home");
+                            //var confirmationCode = Guid.NewGuid().ToString();
+
+                            //e posta gonderme islemi:
+                            //_emailService.SendConfirmationEmail(model.Email, confirmationCode);
+                            TempData["kayit2"] = "Kayıt işleminiz başarıyla gerçekleşti. Giriş Yapabilirsiniz.";
+                            return RedirectToAction("Index", "Register");
                         }
                         else
                         {
-                            TempData["mesaj"] = "Girdiğiniz şifreler eşleşmiyor. Şifreleri dikkatle giriniz.";
+                            TempData["msg"] = "Girdiğiniz şifreler eşleşmiyor. Şifreleri dikkatle giriniz.";
                             return RedirectToAction("Index","Register");
                         }
                     }
                 }
             }
         }
+
     }
 }

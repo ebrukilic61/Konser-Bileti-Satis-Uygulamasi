@@ -261,8 +261,12 @@
       "PackagePath": "staticwebassets\\images\\singers\\concerts\\julia_conc2.jpg"
     },
     {
-      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\paramore_tour.jpg",
-      "PackagePath": "staticwebassets\\images\\singers\\concerts\\paramore_tour.jpg"
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\paramoretour.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\paramoretour.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\sezen.jpg",
+      "PackagePath": "staticwebassets\\images\\singers\\concerts\\sezen.jpg"
     },
     {
       "Id": "C:\\Users\\Lenovo\\source\\repos\\KonserBiletim\\KonserBiletim\\wwwroot\\images\\singers\\concerts\\top_tour4.jpg",

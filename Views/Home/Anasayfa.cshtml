@@ -38,11 +38,12 @@
 
         .card {
             width: 350px;
-            height: 380px; /* Yüksekliği sabitleyin */
+            height: 420px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            margin-bottom: 20px; /* Kartlar arasında boşluk bırakın */
+            margin-bottom: 20px; 
+            overflow: hidden;
         }
 
         .card-img-top {
@@ -67,7 +68,7 @@
         }
 
             .btn-group a {
-                width: 100%; /* Butonların genişliğini kartla uyumlu hale getirin */
+                width: 100%; 
             }
 
         .card.concert-item {
@@ -134,21 +135,21 @@
             scroll-snap-type: x mandatory;
             gap: 1rem;
             padding: 1rem 0;
-            -webkit-overflow-scrolling: touch; /* Mobil uyumluluk */
-            scroll-behavior: smooth; /* Yumuşak kaydırma */
+            -webkit-overflow-scrolling: touch; 
+            scroll-behavior: smooth; 
         }
 
         .artist-item {
             flex: 0 0 auto;
             scroll-snap-align: center;
-            width: 280px; /* Sabit genişlik */
-            height: 280px; /* Sabit yükseklik */
+            width: 280px; 
+            height: 280px; 
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             border: 1px solid #ddd;
-            border-radius: 10px; /* Köşeleri yuvarlatma */
+            border-radius: 10px; 
             padding: 1rem;
         }
 
@@ -160,7 +161,7 @@
         }
 
         .artist-carousel::-webkit-scrollbar {
-            display: none; /* Tarayıcı kaydırma çubuğunu gizle */
+            display: none; 
         }
     </style>
 </head>
@@ -187,9 +188,6 @@
                     <div class="carousel-item">
                         <img class="d-block w-100" src="/images/klasik.png" alt="Second slide">
                         <div class="container">
-                            <div class="carousel-caption d-none d-md-block">
-                                <p><a class="btn btn-lg btn-primary" href="#" role="button">Ayrıntılı Bilgi</a></p>
-                            </div>
                         </div>
                     </div>
                     <div class="carousel-item">
@@ -234,7 +232,7 @@
         </div>
     </section>
 
-    <!-- Concert Items Section -->
+    <!-- konser card yapısı -->
     <section class="py-5">
         <div class="container">
             <div class="row">
