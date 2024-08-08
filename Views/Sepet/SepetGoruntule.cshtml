@@ -398,7 +398,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Kart seçildiğinde form alanlarını güncellenir
         document.querySelectorAll('input[name="selectedCard"]').forEach(function (card) {
@@ -413,6 +413,70 @@
             });
         });
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Plus butonuna tıklama
+            $('.plus').click(function () {
+                var konserID = $(this).data('konserid');
+                var miktarElement = $(this).siblings('p.mb-0');
+                var miktar = parseInt(miktarElement.text());
+
+                miktar++;
+                updateQuantity(konserID, miktar, miktarElement);
+            });
+
+            // Minus butonuna tıklama
+            $('.minus').click(function () {
+                var konserID = $(this).data('konserid');
+                var miktarElement = $(this).siblings('p.mb-0');
+                var miktar = parseInt(miktarElement.text());
+
+                if (miktar > 1) { //Miktarın minimum 1 olmasını sağlamak için kontrol
+                    miktar--;
+                    updateQuantity(konserID, miktar, miktarElement);
+                }
+            });
+
+            //Miktarı güncelleyen AJAX fonksiyonu
+            function updateQuantity(konserID, miktar, miktarElement) {
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Sepet")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ KonserID: konserID, Miktar: miktar }),
+                    success: function (response) {
+                        if (response.success) {
+                            miktarElement.text(response.newQuantity);
+                            getTotalPrice();
+                        } else {
+                            alert('Miktar güncellenirken bir hata oluştu.');
+                        }
+                    },
+                    error: function () {
+                        alert('Sunucuya bağlanırken bir hata oluştu.');
+                    }
+                });
+            }
+
+            function getTotalPrice() {
+                $.ajax({
+                    url: '@Url.Action("GetTotalPrice", "Sepet")',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#toplamFiyat').text('Toplam Fiyat: ' + response.totalPrice.toFixed(2));
+                        } else {
+                            alert('Toplam fiyat hesaplanırken bir hata oluştu.');
+                        }
+                    },
+                    error: function () {
+                        alert('Sunucuya bağlanırken bir hata oluştu.');
+                    }
+                });
+            }
+        });
     </script>
 
     <script>

@@ -305,6 +305,59 @@ namespace KonserBiletim.Controllers
         }
 
         [HttpPost]
+        public IActionResult UpdateQuantity([FromBody] SepetViewModel model)
+        {
+            var success = UpdateTicketQuantityInDatabase(model.KonserID, model.Miktar);
+
+            if (success)
+            {
+                return Json(new { success = true, newQuantity = model.Miktar });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        private bool UpdateTicketQuantityInDatabase(int konserID, int miktar)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+
+                    var sepetID = HttpContext.Session.GetInt32("SepetID");
+
+                    string updateQuery = "UPDATE SepetDetay SET miktar = @Miktar WHERE konserID = @KonserID AND sepetID = @SepetID";
+
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, con))
+                    {
+                        cmd.Parameters.Add("@Miktar", SqlDbType.Int).Value = miktar;
+                        cmd.Parameters.Add("@KonserID", SqlDbType.Int).Value = konserID;
+                        cmd.Parameters.Add("@SepetID", SqlDbType.Int).Value = sepetID;
+
+                        //GetTotalPrice();
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        [HttpPost]
         public async Task<JsonResult> UpdateBiletMiktar(int konserID, int miktar)
         {
             try
