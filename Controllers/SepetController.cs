@@ -402,7 +402,7 @@ namespace KonserBiletim.Controllers
         [HttpPost]
         public JsonResult GetTotalPrice()
         {
-            // Sepetteki tüm biletlerin toplam fiyatını hesapla
+            //sepet total fiyat:
             var toplamFiyat = HesaplaToplamFiyat(); 
 
             return Json(new { success = true, totalPrice = toplamFiyat });
@@ -412,7 +412,7 @@ namespace KonserBiletim.Controllers
         {
             int? sepetID = HttpContext.Session.GetInt32("SepetID");
 
-            // Eğer sepetID null ise 0 döner
+            //sepetID null ise 0 döner
             if (sepetID == null)
             {
                 return 0;
@@ -422,7 +422,7 @@ namespace KonserBiletim.Controllers
 
             decimal toplamFiyat = 0;
 
-            // SepetDetaylar null değilse ve içinde eleman varsa fiyat hesapla
+            //SepetDetaylar null değilse ve içinde eleman varsa fiyat hesaplar:
             if (model.Sepet.SepetDetaylar != null && model.Sepet.SepetDetaylar.Any())
             {
                 foreach (var item in model.Sepet.SepetDetaylar)
@@ -486,7 +486,7 @@ namespace KonserBiletim.Controllers
             if (!kartGecerli)
             {
                 ViewBag.mesaj = "Geçersiz kart bilgileri.";
-                return View("SepetGoruntule", model); // Kart bilgileri geçersizse sepete geri dön
+                return View("SepetGoruntule", model); //kart bilgileri geçersizse ödeme yapmaz, sepete geri döner
             }
 
             //toplam fiyat:
